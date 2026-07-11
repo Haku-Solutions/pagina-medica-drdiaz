@@ -1,4 +1,5 @@
 import Image from "next/image";
+import WhatsAppButton from "@/components/contactButton";
 
 export default function Home() {
   return (
@@ -56,9 +57,12 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Documentation
           </a>
         </div>
+          <WhatsAppButton
+        phone=""
+        message="Hola. Me gustaría agendar una cita."
+         />
       </main>
     </div>
   );
