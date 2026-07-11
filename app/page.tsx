@@ -1,5 +1,5 @@
 import Image from "next/image";
-import WhatsAppButton from "@/components/contactButton";
+import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 
 export default function Home() {
   return (
