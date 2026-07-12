@@ -1,0 +1,52 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding:  10 1rem;
+    background-color: #ffffff;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+.navbar-title {
+    display: flex;
+    align-items: center;
+    gap: 0 1rem;
+}
+.navbar-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+.navbar-text {
+    display: flex;
+    flex-direction: column;
+    h1 {
+        font-size: 44px;
+        color: #333333;
+    }
+    p {
+        font-size: 20px;
+        color: #0E518E;
+    }
+}
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    padding: 0 1rem;
+}
+.navbar-links {
+    display: flex;
+    gap: 3rem;
+    font-size: 20px;
+    color: #333333;
+    a {
+        transition: color 0.3s ease;
+    }
+    a:hover {
+        color: #0E518E;
+    }
+
+}
