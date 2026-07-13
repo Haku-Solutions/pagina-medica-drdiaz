@@ -1,6 +1,7 @@
 import Image from "next/image";
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import NavBar from "@/src/styles/components/navBar/navBar";
+import FlipCard from "@/src/styles/components/flipCard/flipCard";
 import { Carousel } from "@/src/styles/components/carousel/carousel";
 
 export default function Home() {
@@ -140,6 +141,14 @@ export default function Home() {
         phone=""
         message="Hola. Me gustaría agendar una cita."
          />
+        <div>
+          <FlipCard
+            imageSrc="/assets/servicios/default.jpg"
+            imageAlt="Example photo"
+            title="Cirugía de Vesicula Biliar"
+            description="Esta es una descripción muy larga porque quiero ver si la chingadera es responsiva o no ajajaja miren como me proyecto"
+          />
+        </div>
          <div>
                     <h2 className="text-4xl font-bold text-[#0D1B2A] tracking-tight">Servicios</h2>
           <p className="text-sky-600 font-semibold mb-10 text-sm tracking-wide uppercase">Atención general y quirúrgica</p>
