@@ -1,5 +1,6 @@
 import Image from "next/image";
 import WhatsAppButton from "@/components/contactButton";
+import TestimonialCard from "@/components/testimonialCard";
 
 export default function Home() {
   return (
@@ -58,11 +59,19 @@ export default function Home() {
             rel="noopener noreferrer"
           >
           </a>
+          
         </div>
-          <WhatsAppButton
-        phone=""
-        message="Hola. Me gustaría agendar una cita."
-         />
+          <TestimonialCard
+          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+          author="John Doe"
+          variant="white"
+        />
+        
+          <TestimonialCard
+          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+          author="John Doe"
+          variant="blue"
+        />
       </main>
     </div>
   );
