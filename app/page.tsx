@@ -1,8 +1,75 @@
 import Image from "next/image";
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import NavBar from "@/src/styles/components/navBar/navBar";
+import { Carousel } from "@/src/styles/components/carousel/carousel";
 
 export default function Home() {
+    const servicios = [
+    {
+      id: 1,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg", // Reemplaza por la ruta de tu imagen escalada
+    },
+    {
+      id: 2,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg",
+    },
+    {
+      id: 3,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg",
+    },
+    {
+      id: 4,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg",
+    },
+    {
+      id: 5,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg",
+    },
+    {
+      id: 6,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/image_1838de.jpg",
+    },
+    {
+      id: 7,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+    },
+    {
+      id: 8,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+    },
+      {
+      id: 9,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      },
+      {
+      id: 10,
+      titulo: "Cirugía de Vesícula Biliar",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      },
+      {
+      id: 11,
+      titulo: "LMO SDSDSD",
+      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+
+      }
+
+    
+  ];
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <NavBar
@@ -73,6 +140,31 @@ export default function Home() {
         phone=""
         message="Hola. Me gustaría agendar una cita."
          />
+         <div>
+                    <h2 className="text-4xl font-bold text-[#0D1B2A] tracking-tight">Servicios</h2>
+          <p className="text-sky-600 font-semibold mb-10 text-sm tracking-wide uppercase">Atención general y quirúrgica</p>
+<Carousel itemsPerPage={3}>
+            {servicios.map((servicio) => (
+              <div 
+                key={servicio.id} 
+                className="flex flex-col bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden h-full transition-transform hover:scale-[1.01]"
+              >
+                <div className="relative w-full h-64 bg-zinc-100">
+                  <Image
+                    src={servicio.imagen}
+                    alt={servicio.titulo}
+                    fill
+                    className="object-cover object-center p-2 rounded-2xl"
+                  />
+                </div>
+                <div className="p-6 flex flex-col justify-between flex-1">
+                  <h3 className="text-xl font-bold text-[#0D1B2A] mb-3">{servicio.titulo}</h3>
+                  <p className="text-zinc-500 text-sm leading-relaxed italic">{servicio.descripcion}</p>
+                </div>
+              </div>
+            ))}
+          </Carousel>
+         </div>
       </main>
     </div>
   );
