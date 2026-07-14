@@ -1,5 +1,6 @@
 .testimonial-card {
-  width: 480px;
+  width: 100%;
+  max-width: 450px; 
   min-height: 250px;
 
   padding: 28px 24px;
@@ -12,8 +13,8 @@
   justify-content: space-between;
 
   transition: 0.25s ease;
+  box-sizing: border-box;
 }
-
 
 .testimonial-text {
   font-family: "Montserrat", sans-serif;
@@ -33,7 +34,14 @@
   font-weight: 700;
 }
 
-/* Azul */
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+}
+
+
+/* Blue */
 
 .testimonial-card.blue {
   background: #8fb0d3;
@@ -44,7 +52,7 @@
   color: #243447;
 }
 
-/* Blanca */
+/* White*/
 
 .testimonial-card.white {
   background: #ffffff;
