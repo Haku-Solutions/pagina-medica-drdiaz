@@ -48,6 +48,7 @@ export default function Footer({
                 </section>
 
                 <section className="footer-qr">
+                    <p className="footer-bottom-title">Tarjeta de presentación</p>
                     <img 
                         src={qrCode}
                         alt="Código QR"
@@ -57,7 +58,7 @@ export default function Footer({
                 </section>
 
                 <section className="footer-social">
-                    <h2>Redes sociales</h2>
+                    <p className="footer-bottom-title">Redes sociales</p>
 
                     <ul className="footer-social-media">
                         <li>
