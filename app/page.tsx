@@ -1,6 +1,7 @@
 import Image from "next/image";
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import NavBar from "@/src/styles/components/navBar/navBar";
+import Footer from "@/src/styles/components/footer/footer";
 
 export default function Home() {
   return (
@@ -74,6 +75,13 @@ export default function Home() {
         message="Hola. Me gustaría agendar una cita."
          />
       </main>
+      <Footer
+        quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
+        qrCode="/assets/qr_code/qrcode.png"
+        instagram=""
+        facebook=""
+        email=""
+      />
     </div>
   );
 }

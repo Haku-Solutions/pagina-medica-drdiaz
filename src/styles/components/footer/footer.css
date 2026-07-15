@@ -1,0 +1,102 @@
+.footer{
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+.footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 4rem;
+    background-color: #32405A;
+}
+.footer-top-text {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 28px;
+    gap: 1rem;
+}
+.footer-logo {
+    width: 100px;
+    height: 100px;
+}
+.footer-wabutton {
+    align-items: flex-end;
+    padding-right: 3rem;
+}
+.footer-content { 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding:  2rem 3rem;
+    gap: 4rem;
+
+    color: #01000B;
+    background-color: #8EB1D1;
+}
+.footer-qr-image {
+    width: 200px;
+    height: 200px;
+}
+.footer-quote {
+    flex: 2;
+    padding-right: 0.2rem;
+}
+.footer-qr {
+    flex: 1;
+}
+.footer-social {
+    flex: 2;
+    padding-right: 1rem;
+}
+.footer-social-media {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-social h2 {
+    font-size: 18px;
+    font-weight: bold;
+    padding-bottom: 0.8rem;
+}
+.footer-social-media li {
+    width: 100%;
+}
+.footer-social-media a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+}
+.footer-quote h1 {
+    font-size: 34px;
+    font-weight: bold;
+    padding-bottom: 0.6rem;
+}
+.footer-quote p {
+    font-style: italic;
+}
+.footer-bottom { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.1rem 2rem;
+    color: #01000B;
+    background-color: #8EB1D1;
+
+    border-top: 0.1px solid #01000B;
+}
+.footer-bottom-left {
+    display: flex;
+    align-items: center;
+} 
+.footer-bottom-logo {
+    margin: 0.4rem;
+    width: 40px;
+    height: 40px;
+}
