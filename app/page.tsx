@@ -77,12 +77,24 @@ export default function Home() {
         <div>
           <FlipCard
             imageSrc="/assets/servicios/default.jpg"
-            imageAlt="Example photo"
-            title="Cirugía de Vesicula Biliar"
-            description="Esta es una descripción muy larga porque quiero ver si la chingadera es responsiva o no ajajaja miren como me proyecto"
+            imageAlt="Servicio"
+            title="Cirugía de Vesícula Biliar"
+            description="Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua"
+            back_description="Era una noche maravillosa, una de esas noches que quizá
+                              sólo vemos cuando somos jóvenes, querido lector. Había un
+                              cielo tan profundo y tan claro que, al mirarlo, no tenía uno más
+                              remedio que preguntarse, sin querer, si era verdad que debajo
+                              de un cielo semejante pudiesen vivir criaturas malvadas y
+                              tétricas cuestión esta que, a decir verdad, sólo se la puede uno
+                              plantear cuando es joven, muy joven, querido lector. ¡Quiera
+                              Dios revivir con frecuencia esa edad en vuestra alma!...
+                              Mientras yo pensaba todavía de ese modo en los hombres más
+                              diversos, no tenía más remedio también que acordarme
+                              involuntariamente de mi propio panegírico de aquellos
+                              tiempos" 
           />
         </div>
-      </main>
+      </main> 
     </div>
   );
 }
