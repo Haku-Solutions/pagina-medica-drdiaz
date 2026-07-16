@@ -1,0 +1,145 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding:  10px 1rem;
+    background-color: #E8ECEF;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+.navbar-title {
+    display: flex;
+    align-items: center;
+    gap: 0 1rem;
+}
+.navbar-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+.navbar-text {
+    display: flex;
+    flex-direction: column;
+    h1 {
+        font-size: 44px;
+        color: #01000B;
+    }
+    p {
+        font-size: 20px;
+        color: #0E518E;
+    }
+}
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    padding: 0 1rem;
+}
+.navbar-toggle {
+    display: none;
+    color: #01000B;
+}
+.navbar-mobile {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 70%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    padding-top: 8rem;
+    padding-right: 2rem;
+    align-items: flex-end;
+
+    background-color: #E8ECEF;
+    z-index: 1000;
+
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    
+    transition:
+        transform 0.35s ease,
+        opacity 0.35s ease,
+        visibility 0.35s;
+}
+.navbar-mobile.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.60);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: 
+        opacity 0.35s ease
+        visibility 0.35s;
+
+    z-index: 999;
+}
+.menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+.navbar-links {
+    display: flex;
+    gap: 3rem;
+    font-weight: bold;
+    font-size: 20px;
+    color: #01000B;
+    a {
+        transition: 
+        color 0.3s ease,
+        transform 0.3s ease,
+        opacity 0.3s ease;
+    }
+    a:hover {
+        color: #0E518E;
+    }
+}
+.navbar-mobile .navbar-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    font-size: 24px;
+}
+@media (max-width: 1150px) {
+    .navbar-menu {
+        display: none;
+    }
+    .navbar-toggle {
+        display: block;
+        position: relative;
+        z-index: 1001;
+
+        font-size: 40px;
+        cursor: pointer;
+        color: #01000B;
+        padding-right: 1rem;
+    }
+    .navbar-text {
+        h1 {
+            font-size: 22px;
+            padding-right: 2rem;
+        }
+        p {
+            font-size: 14px;
+            padding-right: 2rem;
+        }
+    }
+}
+@media (max-width: 419px) {
+    .navbar-text {
+        visibility: hidden;
+    }
+}

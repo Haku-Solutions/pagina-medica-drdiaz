@@ -1,9 +1,29 @@
 import Image from "next/image";
+import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
+import NavBar from "@/src/styles/components/navBar/navBar";
+import Footer from "@/src/styles/components/footer/footer";
+import FlipCard from "@/src/styles/components/flipCard/flipCard";
+import { Carousel } from "@/src/styles/components/carousel/carousel";
+import { servicios } from "@/src/styles/components/carousel/servicios";
+import TestimonialCard from "@/src/styles/components/testimonialCard/testimonialCard";
+import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
+
 
 export default function Home() {
+
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+      <NavBar
+        title="DR. JOSÉ DÍAZ"
+        subtitle="Cirugía general y laparoscopista"
+        links={[
+          { label: "Inicio", href: "/inicio" },
+          { label: "Servicios", href: "/servicios" },
+          { label: "Testimonios", href: "/testimonios" },
+        ]}
+      />
+      
+      <main className="flex flex-1 w-full max-w-6xl flex-col items-center justify-between p-1rem py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -12,26 +32,13 @@ export default function Home() {
           height={20}
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+        
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left my-8">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             Test Darius King
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+            Looking for a starting point or more instructions? Head over to Templates.
           </p>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
@@ -56,10 +63,56 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Documentation
           </a>
         </div>
-      </main>
+          <WhatsAppButton
+        phone=""
+        message="Hola. Me gustaría agendar una cita."
+         />
+        <div>
+          <Carousel itemsPerPage={4}>
+            {servicios.map((servicio) => (
+              <div key={servicio.id} className="flex justify-center p-2">
+          <FlipCard
+            imageSrc={servicio.imagen}
+            imageAlt={servicio.titulo}
+            title={servicio.titulo}
+            description={servicio.descripcion}
+            back_description={servicio.back_description}
+          />
+        </div>
+            ))}
+          </Carousel>
+        </div>
+      </main> 
+      <div>
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            Testimonios
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to Templates.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard
+              key={index}
+              text={testimonial.text}
+              author={testimonial.author}
+              variant={testimonial.variant}
+            />
+          ))}
+        </div>
+      <Footer
+        quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
+        qrCode="/assets/qr_code/qrcode.png"
+        instagram=""
+        facebook=""
+        email=""
+      />
+      
     </div>
   );
 }
+
+

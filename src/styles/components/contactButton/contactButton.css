@@ -1,0 +1,33 @@
+.whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  height: 62px;
+  padding: 0 24px;
+
+  background: #43506f;
+  color: #fff;
+  text-decoration: none;
+
+  border-radius: 9999px;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+
+  transition: all .2s ease;
+}
+
+.whatsapp-button:hover {
+  background: #3b4762;
+  transform: translateY(-1px);
+}
+
+.icon {
+  color: #25D366;
+  font-size: 34px;
+  flex-shrink: 0;
+}
