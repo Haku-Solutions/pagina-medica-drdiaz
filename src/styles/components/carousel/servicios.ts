@@ -2,15 +2,17 @@ export interface Servicio {
   id: number;
   titulo: string;
   descripcion: string;
+  back_description?: string;
   imagen: string;
 }
 
 export const servicios: Servicio[] = [
   {
     id: 1,
-    titulo: "Cirugía de Vesícula Biliar",
+    titulo: "Cirugía de Vesícula Biliar 0",
     descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
     imagen: "/assets/servicios/default.jpg",
+    back_description: "Era una noche maravillosa, una de esas noches que quizá sólo vemos cuando somos jóvenes, querido lector. Había un cielo tan profundo y tan claro que, al mirarlo, no tenía uno másremedio que preguntarse, sin querer, si era verdad que debajo de un cielo semejante pudiesen vivir criaturas malvadas y tétricas cuestión esta que, a decir verdad, sólo se la puede uno plantear cuando es joven, muy joven, querido lector. ¡Quiera Dios revivir con frecuencia esa edad en vuestra alma!... Mientras yo pensaba todavía de ese modo en los hombres más diversos, no tenía más remedio también que acordarme involuntariamente de mi propio panegírico de aquellos tiempos",
   },
   {
     id: 2,
