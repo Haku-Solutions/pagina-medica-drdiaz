@@ -5,72 +5,75 @@ import FlipCard from "@/src/styles/components/flipCard/flipCard";
 import { Carousel } from "@/src/styles/components/carousel/carousel";
 
 export default function Home() {
-    const servicios = [
+  const servicios = [
     {
       id: 1,
       titulo: "Cirugía de Vesícula Biliar",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg", // Reemplaza por la ruta de tu imagen escalada
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 2,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 1",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg",
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 3,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 2",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg",
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 4,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 3",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg",
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 5,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 4",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg",
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 6,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 5",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      imagen: "/image_1838de.jpg",
+      imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 7,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 6",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/assets/servicios/default.jpg", // Fallback para evitar errores de renderizado de Next.js
     },
     {
       id: 8,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 7",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      imagen: "/assets/servicios/default.jpg",
     },
-      {
+    {
       id: 9,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 8",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      },
-      {
+      imagen: "/assets/servicios/default.jpg",
+    },
+    {
       id: 10,
-      titulo: "Cirugía de Vesícula Biliar",
+      titulo: "Cirugía de Vesícula Biliar 9",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-      },
-      {
+      imagen: "/assets/servicios/default.jpg",
+    },
+    {
       id: 11,
-      titulo: "LMO SDSDSD",
+      titulo: "Cirugía de Vesícula Biliar 10",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-
-      }
-
-    
+      imagen: "/assets/servicios/default.jpg",
+    }
   ];
+
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <NavBar
@@ -82,7 +85,9 @@ export default function Home() {
           { label: "Testimonios", href: "/testimonios" },
         ]}
       />
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+      
+      <main className="flex flex-1 w-full max-w-6xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        {/* Se subió el max-w de la sección anterior a max-w-6xl para que el carrusel de 3 columnas tenga espacio para lucir */}
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -91,89 +96,39 @@ export default function Home() {
           height={20}
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+        
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left my-8">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             Test Darius King
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+            Looking for a starting point or more instructions? Head over to Templates.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-          </a>
-        </div>
-          <WhatsAppButton
-        phone=""
-        message="Hola. Me gustaría agendar una cita."
-         />
-        <div>
-          <FlipCard
-            imageSrc="/assets/servicios/default.jpg"
-            imageAlt="Example photo"
-            title="Cirugía de Vesicula Biliar"
-            description="Esta es una descripción muy larga porque quiero ver si la chingadera es responsiva o no ajajaja miren como me proyecto"
-          />
-        </div>
-         <div>
-                    <h2 className="text-4xl font-bold text-[#0D1B2A] tracking-tight">Servicios</h2>
+
+        <WhatsAppButton
+          phone=""
+          message="Hola. Me gustaría agendar una cita."
+        />
+
+        {/* Sección de visualización del Carrusel con las FlipCards de tu colega */}
+        <div className="w-full mt-12">
+          <h2 className="text-4xl font-bold text-[#0D1B2A] tracking-tight">Servicios</h2>
           <p className="text-sky-600 font-semibold mb-10 text-sm tracking-wide uppercase">Atención general y quirúrgica</p>
-<Carousel itemsPerPage={3}>
+          
+          <Carousel itemsPerPage={4}>
             {servicios.map((servicio) => (
-              <div 
-                key={servicio.id} 
-                className="flex flex-col bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden h-full transition-transform hover:scale-[1.01]"
-              >
-                <div className="relative w-full h-64 bg-zinc-100">
-                  <Image
-                    src={servicio.imagen}
-                    alt={servicio.titulo}
-                    fill
-                    className="object-cover object-center p-2 rounded-2xl"
-                  />
-                </div>
-                <div className="p-6 flex flex-col justify-between flex-1">
-                  <h3 className="text-xl font-bold text-[#0D1B2A] mb-3">{servicio.titulo}</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed italic">{servicio.descripcion}</p>
-                </div>
+              <div key={servicio.id} className="flex justify-center p-2">
+                <FlipCard
+                  imageSrc={servicio.imagen}
+                  imageAlt={servicio.titulo}
+                  title={servicio.titulo}
+                  description={servicio.descripcion}
+                />
               </div>
             ))}
           </Carousel>
-         </div>
+        </div>
       </main>
     </div>
   );

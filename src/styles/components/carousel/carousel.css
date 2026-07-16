@@ -36,8 +36,8 @@
 .carousel-arrow {
   background: none;
   border: none;
-  font-size: 20px;
-  color: #0d1b2a; /* Azul marino de tu paleta */
+  font-size: 35px;
+  color: #8EB1D1; 
   cursor: pointer;
   padding: 8px;
   display: flex;
@@ -61,13 +61,13 @@
   height: 10px;
   border-radius: 50%;
   border: none;
-  background-color: #ac0b0b; /* Gris inactivo */
+  background-color: #8EB1D1; 
   cursor: pointer;
   padding: 0;
   transition: background-color 0.3s, transform 0.3s;
 }
 
 .carousel-dot.active {
-  background-color: #0d1b2a; /* Tu color principal activo */
+  background-color: #A7C7E7; 
   transform: scale(1.3);
 }
