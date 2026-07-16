@@ -1,6 +1,7 @@
 import Image from "next/image";
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import NavBar from "@/src/styles/components/navBar/navBar";
+import Footer from "@/src/styles/components/footer/footer";
 import FlipCard from "@/src/styles/components/flipCard/flipCard";
 import { Carousel } from "@/src/styles/components/carousel/carousel";
 import { servicios } from "@/src/styles/components/carousel/servicios";
@@ -82,6 +83,13 @@ export default function Home() {
           </Carousel>
         </div>
       </main> 
+      <Footer
+        quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
+        qrCode="/assets/qr_code/qrcode.png"
+        instagram=""
+        facebook=""
+        email=""
+      />
     </div>
   );
 }

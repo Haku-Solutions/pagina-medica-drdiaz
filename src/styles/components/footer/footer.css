@@ -1,0 +1,162 @@
+.footer {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+.footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 4rem;
+    background-color: #32405A;
+}
+.footer-top-text {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 28px;
+    gap: 1rem;
+}
+.footer-logo {
+    width: 100px;
+    height: 100px;
+}
+.footer-wabutton {
+    overflow: hidden;
+    padding-right: 3rem;
+}
+.footer-content { 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding:  2rem 4rem;
+    gap: 4rem;
+
+    color: #01000B;
+    background-color: #8EB1D1;
+}
+.footer-quote {
+    flex: 2;
+    padding-right: 0.2rem;
+}
+.footer-qr {
+    flex: 1;
+}
+.footer-bottom-title {
+    margin: 0 0 0.8rem 0;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+}
+.footer-qr-image {
+    margin: 1rem;
+    width: 180px;
+    height: 180px;
+    overflow: hidden;
+    
+}
+.footer-social {
+    flex: 1;
+    padding-right: 1rem;
+}
+.footer-social-media {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-social-media li {
+    width: 100%;
+}
+.footer-social-media a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    font-size: 20px;
+}
+.footer-quote h1 {
+    font-size: 44px;
+    font-weight: bold;
+    padding-top: 0.4rem;
+    padding-bottom: 0.6rem;
+}
+.footer-quote p {
+    font-size: 18px;
+    font-style: italic;
+}
+.footer-bottom { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2rem 2rem;
+    color: #01000B;
+    background-color: #8EB1D1;
+
+    border-top: 0.1px solid #01000B;
+}
+.footer-bottom-left {
+    display: flex;
+    align-items: center;
+} 
+.footer-bottom-logo {
+    margin: 0.4rem;
+    width: 40px;
+    height: 40px;
+}
+
+@media (max-width: 1150px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 3rem;
+    }
+    .footer-bottom {
+        padding-bottom: 1rem;
+    }
+    .footer-top-text {
+        padding-right: 3rem;
+    }
+}
+@media (max-width: 800px) {
+    .footer-quote h1 {
+        font-size: 30px;
+    }
+    .footer-quote p {
+        font-size: 14px;
+    }
+}
+@media (max-width: 670px) {
+    .footer-top {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .footer-top-text {
+        font-size: 20px;
+        padding-right: 0;
+    }
+    .footer-logo {
+        height: 50px;
+        width: 50px;
+    }
+    .footer-wabutton {
+        padding-right: 0;
+        padding-bottom: 0.5rem;
+    }
+    .footer-bottom {
+        font-size: 10px;
+    }
+    .footer-bottom-left {
+        padding-right: 1rem;
+    }
+    .footer-bottom-middle {
+        padding-right: 1rem;
+    }
+}
