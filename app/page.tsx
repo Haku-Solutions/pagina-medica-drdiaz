@@ -105,31 +105,61 @@ export default function Home() {
             Looking for a starting point or more instructions? Head over to Templates.
           </p>
         </div>
-
-        <WhatsAppButton
-          phone=""
-          message="Hola. Me gustaría agendar una cita."
-        />
-
-        {/* Sección de visualización del Carrusel con las FlipCards de tu colega */}
-        <div className="w-full mt-12">
-          <h2 className="text-4xl font-bold text-[#0D1B2A] tracking-tight">Servicios</h2>
-          <p className="text-sky-600 font-semibold mb-10 text-sm tracking-wide uppercase">Atención general y quirúrgica</p>
-          
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+          </a>
+        </div>
+          <WhatsAppButton
+        phone=""
+        message="Hola. Me gustaría agendar una cita."
+         />
+        <div>
           <Carousel itemsPerPage={4}>
             {servicios.map((servicio) => (
               <div key={servicio.id} className="flex justify-center p-2">
-                <FlipCard
-                  imageSrc={servicio.imagen}
-                  imageAlt={servicio.titulo}
-                  title={servicio.titulo}
-                  description={servicio.descripcion}
-                />
-              </div>
+          <FlipCard
+            imageSrc="/assets/servicios/default.jpg"
+            imageAlt="Servicio"
+            title="Cirugía de Vesícula Biliar"
+            description="Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua"
+            back_description="Era una noche maravillosa, una de esas noches que quizá
+                              sólo vemos cuando somos jóvenes, querido lector. Había un
+                              cielo tan profundo y tan claro que, al mirarlo, no tenía uno más
+                              remedio que preguntarse, sin querer, si era verdad que debajo
+                              de un cielo semejante pudiesen vivir criaturas malvadas y
+                              tétricas cuestión esta que, a decir verdad, sólo se la puede uno
+                              plantear cuando es joven, muy joven, querido lector. ¡Quiera
+                              Dios revivir con frecuencia esa edad en vuestra alma!...
+                              Mientras yo pensaba todavía de ese modo en los hombres más
+                              diversos, no tenía más remedio también que acordarme
+                              involuntariamente de mi propio panegírico de aquellos
+                              tiempos" 
+          />
+        </div>
             ))}
           </Carousel>
         </div>
-      </main>
+      </main> 
     </div>
   );
 }
