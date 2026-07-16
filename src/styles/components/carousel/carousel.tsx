@@ -1,19 +1,36 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './carousel.css';
 
 
 interface CarouselProps {
   children: React.ReactNode[];
-  itemsPerPage?: number; // Por si quieres mostrar 1, 2 o 3 elementos por vista
+  itemsPerPage?: number; 
 }
 
 export const Carousel: React.FC<CarouselProps> = ({ children, itemsPerPage = 3 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
 
   // Filtrar nodos válidos para evitar errores si viene un null o undefined
   const validChildren = React.Children.toArray(children);
-  const totalPages = Math.ceil(validChildren.length / itemsPerPage);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setVisibleItems(1); // 1 elemento en móviles/tablets chicas
+      } else {
+        setVisibleItems(itemsPerPage); // El valor configurado en pantallas grandes
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [itemsPerPage]);
+
+  const totalPages = Math.ceil(validChildren.length / visibleItems);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
@@ -29,7 +46,6 @@ export const Carousel: React.FC<CarouselProps> = ({ children, itemsPerPage = 3 }
 
   return (
     <div className="carousel-container">
-      {/* Ventana de visualización de las tarjetas */}
       <div className="carousel-window">
         <div 
           className="carousel-track" 
@@ -39,7 +55,7 @@ export const Carousel: React.FC<CarouselProps> = ({ children, itemsPerPage = 3 }
             <div 
               className="carousel-item" 
               key={index}
-              style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
+              style={{ flex: `0 0 ${100 / visibleItems}%` }}
             >
               {child}
             </div>

@@ -9,7 +9,7 @@ export default function Home() {
     {
       id: 1,
       titulo: "Cirugía de Vesícula Biliar",
-      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
       imagen: "/assets/servicios/default.jpg",
     },
     {
@@ -21,7 +21,7 @@ export default function Home() {
     {
       id: 3,
       titulo: "Cirugía de Vesícula Biliar 2",
-      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
       imagen: "/assets/servicios/default.jpg",
     },
     {
@@ -33,13 +33,13 @@ export default function Home() {
     {
       id: 5,
       titulo: "Cirugía de Vesícula Biliar 4",
-      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
       imagen: "/assets/servicios/default.jpg",
     },
     {
       id: 6,
       titulo: "Cirugía de Vesícula Biliar 5",
-      descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
+      descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
       imagen: "/assets/servicios/default.jpg",
     },
     {
@@ -68,7 +68,7 @@ export default function Home() {
     },
     {
       id: 11,
-      titulo: "Cirugía de Vesícula Biliar 10",
+      titulo: "Cirugía de Vesícula Biliar 11",
       descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
       imagen: "/assets/servicios/default.jpg",
     }
@@ -138,10 +138,10 @@ export default function Home() {
             {servicios.map((servicio) => (
               <div key={servicio.id} className="flex justify-center p-2">
           <FlipCard
-            imageSrc="/assets/servicios/default.jpg"
-            imageAlt="Servicio"
-            title="Cirugía de Vesícula Biliar"
-            description="Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua"
+            imageSrc={servicio.imagen}
+            imageAlt={servicio.titulo}
+            title={servicio.titulo}
+            description={servicio.descripcion}
             back_description="Era una noche maravillosa, una de esas noches que quizá
                               sólo vemos cuando somos jóvenes, querido lector. Había un
                               cielo tan profundo y tan claro que, al mirarlo, no tenía uno más
