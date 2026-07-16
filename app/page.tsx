@@ -5,6 +5,9 @@ import Footer from "@/src/styles/components/footer/footer";
 import FlipCard from "@/src/styles/components/flipCard/flipCard";
 import { Carousel } from "@/src/styles/components/carousel/carousel";
 import { servicios } from "@/src/styles/components/carousel/servicios";
+import TestimonialCard from "@/src/styles/components/testimonialCard/testimonialCard";
+import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
+
 
 export default function Home() {
 
@@ -20,8 +23,7 @@ export default function Home() {
         ]}
       />
       
-      <main className="flex flex-1 w-full max-w-6xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        {/* Se subió el max-w de la sección anterior a max-w-6xl para que el carrusel de 3 columnas tenga espacio para lucir */}
+      <main className="flex flex-1 w-full max-w-6xl flex-col items-center justify-between p-1rem py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -83,6 +85,24 @@ export default function Home() {
           </Carousel>
         </div>
       </main> 
+      <div>
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            Testimonios
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to Templates.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard
+              key={index}
+              text={testimonial.text}
+              author={testimonial.author}
+              variant={testimonial.variant}
+            />
+          ))}
+        </div>
       <Footer
         quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
         qrCode="/assets/qr_code/qrcode.png"
@@ -90,6 +110,9 @@ export default function Home() {
         facebook=""
         email=""
       />
+      
     </div>
   );
 }
+
+
