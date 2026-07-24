@@ -102,16 +102,4 @@ export const servicios: Servicio[] = [
         "Seguimiento antes o después de una cirugía del aparato digestivo.",
       ],
     },
-    {
-      id: 8,
-      titulo: "Endoscopia diagnóstica ",
-      descripcion: "Es un procedimiento que permite que el médico vea el interior de su cuerpo para buscar anomalías como úlceras, pólipos, tumores u otros.",
-      imagen: "/assets/servicios/vesicula.jpg",
-
-      backTitle: "¿Cuándo se necesita?",
-      backItems: [
-        "Puede ayudar a determinar qué está causando los signos y síntomas digestivos a través de la observación o la toma de muestras de tejido (biopsia).",
-        "Una endoscopia se puede usar para quemar un vaso con sangrado y detener el sangrado, ensanchar un esófago estrecho, cortar un pólipo o extraer un objeto extraño.",
-      ],
-    },
 ];
