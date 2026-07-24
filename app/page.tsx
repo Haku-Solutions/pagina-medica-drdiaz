@@ -70,6 +70,14 @@ export default function Home() {
         message="Hola. Me gustaría agendar una cita."
          />
         <div>
+          <div>
+            <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+              Servicios
+            </h1>
+            <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+              Looking for a starting point or more instructions? Head over to Templates.
+            </p>
+          </div>
           <Carousel itemsPerPage={4}>
             {servicios.map((servicio) => (
               <div key={servicio.id} className="flex justify-center p-2">
@@ -78,7 +86,8 @@ export default function Home() {
             imageAlt={servicio.titulo}
             title={servicio.titulo}
             description={servicio.descripcion}
-            back_description={servicio.back_description}
+            backTitle={servicio.backTitle}
+            backItems={servicio.backItems}
           />
         </div>
             ))}

@@ -2,76 +2,116 @@ export interface Servicio {
   id: number;
   titulo: string;
   descripcion: string;
-  back_description?: string;
   imagen: string;
+  backTitle: string;
+  backItems: string[];
 }
 
 export const servicios: Servicio[] = [
   {
     id: 1,
-    titulo: "Cirugía de Vesícula Biliar 0",
-    descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
-    imagen: "/assets/servicios/default.jpg",
-    back_description: "Era una noche maravillosa, una de esas noches que quizá sólo vemos cuando somos jóvenes, querido lector. Había un cielo tan profundo y tan claro que, al mirarlo, no tenía uno másremedio que preguntarse, sin querer, si era verdad que debajo de un cielo semejante pudiesen vivir criaturas malvadas y tétricas cuestión esta que, a decir verdad, sólo se la puede uno plantear cuando es joven, muy joven, querido lector. ¡Quiera Dios revivir con frecuencia esa edad en vuestra alma!... Mientras yo pensaba todavía de ese modo en los hombres más diversos, no tenía más remedio también que acordarme involuntariamente de mi propio panegírico de aquellos tiempos",
+    titulo: "Cirugía de Vesícula Biliar",
+    descripcion: "Es una cirugía para extirpar la vesícula biliar usando un dispositivo médico llamado laparoscopio para tratar cálculos biliares o inflamación.",
+    imagen: "/assets/servicios/cirugía_vesícula_biliar.jpg",
+
+    backTitle: "¿Cuándo se necesita?",
+    backItems: [
+      "Dolor ocasionado por cálculos biliares.",
+      "Vesícula biliar que no funciona correctamente.",
+      "Indigestión (distensión, acidez y gases).",
+      "Dolor después de comer.",
+      "Náuseas y vómitos.",
+    ],
   },
   {
-    id: 2,
-    titulo: "Cirugía de Vesícula Biliar 1",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 3,
-    titulo: "Cirugía de Vesícula Biliar 2",
-    descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 4,
-    titulo: "Cirugía de Vesícula Biliar 3",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 5,
-    titulo: "Cirugía de Vesícula Biliar 4",
-    descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 6,
-    titulo: "Cirugía de Vesícula Biliar 5",
-    descripcion: "Esta es una descripción mediana pa ver que tan chido se ve en el frente orales me quedo re padre juajua",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 7,
-    titulo: "Cirugía de Vesícula Biliar 6",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 8,
-    titulo: "Cirugía de Vesícula Biliar 7",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 9,
-    titulo: "Cirugía de Vesícula Biliar 8",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 10,
-    titulo: "Cirugía de Vesícula Biliar 9",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  },
-  {
-    id: 11,
-    titulo: "Cirugía de Vesícula Biliar 11",
-    descripcion: "Puede necesitar esta cirugía si tiene dolor u otros síntomas a raíz de los cálculos biliares.",
-    imagen: "/assets/servicios/default.jpg",
-  }
+      id: 2,
+      titulo: "Cirugía de Hernia",
+      descripcion: "Una hernia ocurre cuando las capas internas de la pared abdominal se debilitan, lo que provoca un abultamiento o desgarro.",
+      imagen: "/assets/servicios/cirugia_hernia.avif",
+
+      backTitle: "¿Cuándo se necesita?",
+      backItems: [
+        "la cirugía para una hernia se realiza si usted tiene dolor o la hernia le molesta durante sus actividades cotidianas.",
+        "Algunas veces, el intestino puede quedar atrapado en el interior de la hernia. Esto se conoce como una hernia encarcelada o estrangulada. Este tipo de hernia puede cortar el suministro de sangre a los intestinos."
+      ],
+    },
+    {
+      id: 3,
+      titulo: "Cirugía de Apéndice",
+      descripcion: "El apéndice es un órgano pequeño se extiende desde la primera parte del intestino grueso. Cuando se inflama o se infecta, su apéndice puede necesitar ser removido.",
+      imagen: "/assets/servicios/cirugia_apendice.avif",
+
+      backTitle: "Síntomas",
+      backItems: [
+       "Dolor agudo o intenso",
+       "Dolor que traslada al cuadrante abdominal inferior derecho y se vuelve más concentrado en esta área.",
+       "Diarrea o estreñimiento",
+       "Fiebre (generalmente no muy alta)",
+       "Náuseas y vómitos",
+       "Disminución del apetito",
+      ],
+    },
+    {
+      id: 4,
+      titulo: "Cirugía de Obstrucción Intenstinal",
+      descripcion: "Se realiza cuando los contenidos del intestino no pueden pasar ni salir del cuerpo.",
+      imagen: "/assets/servicios/obstruccion_intestinal.jpg",
+
+      backTitle: "¿Cuándo se necesita?",
+      backItems: [
+        "Un bloqueo que dura mucho tiempo puede reducir o bloquear la circulación de la sangre a la zona. Esto puede causar la muerte del intestino.",
+      ],
+    },
+    {
+      id: 5,
+      titulo: "Cirugía de Pie Diabético",
+      descripcion: "Consiste en eliminar el tejido no viable o necrótico de la herida causada por las úlceras del pié diabético.",
+      imagen: "/assets/servicios/cirugia_pie_diabetico.jpg",
+
+      backTitle: "¿Cuándo se necesita?",
+      backItems: [
+        "Cuando hay exposición prolongada a niveles altos de azúcar en la sangre los nervios y los vasos sanguíneos de los pies se dañan.",
+        "Perder la sensibilidad del pie puede provocar complicaciones, como cortes, ampollas o úlceras inadvertidas. Estas heridas pueden infectarse, especialmente porque los vasos sanguíneos dañados afectan el flujo sanguíneo adecuado en los pies."
+      ],
+    },
+    {
+      id: 6,
+      titulo: "Endoscopía",
+      descripcion: "Es un procedimiento que permite que el médico vea el interior de su cuerpo para buscar anomalías como úlceras, pólipos, tumores u otros.",
+      imagen: "/assets/servicios/cirugía_endoscopia.avif",
+
+      backTitle: "¿Cuándo se necesita?",
+      backItems: [
+        "Puede ayudar a determinar qué está causando los signos y síntomas digestivos a través de la observación o la toma de muestras de tejido (biopsia).",
+        "Una endoscopia se puede usar para quemar un vaso con sangrado y detener el sangrado, ensanchar un esófago estrecho, cortar un pólipo o extraer un objeto extraño.",
+      ],
+    },
+    {
+      id: 7,
+      titulo: "Consultas de gastro cirugía",
+      descripcion: "Evaluación especializada para el diagnóstico y tratamiento de enfermedades del aparato digestivo que pueden requerir manejo quirúrgico.",
+      imagen: "/assets/servicios/consulta.png",
+
+      backTitle: "¿Cuándo acudir a una consulta de gastrocirugía?",
+      backItems: [
+        "Dolor abdominal persistente o recurrente.",
+        "Reflujo gastroesofágico que no mejora con tratamiento médico.",
+        "Hernias abdominales o inguinales.",
+        "Enfermedades de la vesícula biliar, como cálculos biliares.",
+        "Problemas del estómago, intestino, colon o recto que requieran valoración quirúrgica.",
+        "Seguimiento antes o después de una cirugía del aparato digestivo.",
+      ],
+    },
+    {
+      id: 8,
+      titulo: "Endoscopia diagnóstica ",
+      descripcion: "Es un procedimiento que permite que el médico vea el interior de su cuerpo para buscar anomalías como úlceras, pólipos, tumores u otros.",
+      imagen: "/assets/servicios/vesicula.jpg",
+
+      backTitle: "¿Cuándo se necesita?",
+      backItems: [
+        "Puede ayudar a determinar qué está causando los signos y síntomas digestivos a través de la observación o la toma de muestras de tejido (biopsia).",
+        "Una endoscopia se puede usar para quemar un vaso con sangrado y detener el sangrado, ensanchar un esófago estrecho, cortar un pólipo o extraer un objeto extraño.",
+      ],
+    },
 ];
