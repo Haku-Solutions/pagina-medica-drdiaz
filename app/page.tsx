@@ -25,18 +25,19 @@ export default function Home() {
       <ExperienceBanner />
       <div>
         <Carousel itemsPerPage={4}>
-          {servicios.map((servicio) => (
-            <div key={servicio.id} className="flex justify-center p-2">
-              <FlipCard
-                imageSrc={servicio.imagen}
-                imageAlt={servicio.titulo}
-                title={servicio.titulo}
-                description={servicio.descripcion}
-                back_description={servicio.back_description}
-              />
-            </div>
-          ))}
-        </Carousel>
+            {servicios.map((servicio) => (
+              <div key={servicio.id} className="flex justify-center p-2">
+          <FlipCard
+            imageSrc={servicio.imagen}
+            imageAlt={servicio.titulo}
+            title={servicio.titulo}
+            description={servicio.descripcion}
+            backTitle={servicio.backTitle}
+            backItems={servicio.backItems}
+          />
+        </div>
+            ))}
+          </Carousel>
       </div>
 
       <div>
