@@ -139,7 +139,19 @@
     }
 }
 @media (max-width: 419px) {
+    .navbar-logo {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+    }
     .navbar-text {
-        visibility: hidden;
+        h1 {
+            font-size: 17px;
+            padding-right: 2rem;
+        }
+        p {
+            font-size: 13px;
+            padding-right: 2rem;
+        }
     }
 }
