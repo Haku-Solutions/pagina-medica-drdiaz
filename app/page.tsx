@@ -8,6 +8,8 @@ import { servicios } from "@/src/styles/components/carousel/servicios";
 import TestimonialCard from "@/src/styles/components/testimonialCard/testimonialCard";
 import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
 import ExperienceBanner from "./experienceBanner";
+import type { Metadata } from 'next';
+
 
 export default function Home() {
 
