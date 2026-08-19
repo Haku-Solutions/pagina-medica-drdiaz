@@ -1,4 +1,4 @@
-import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
+import MessengerButton from "@/src/styles/components/messengerButton/messengerButton";
 
 import "./experienceBanner.css";
 
@@ -36,9 +36,9 @@ export default function ExperienceBanner() {
         </div>
 
         <div className="experience-button">
-          <WhatsAppButton
-            phone=""
-            message="Hola. Me gustaría agendar una cita."
+          <MessengerButton
+            username="1245458325315373"
+            text="CONTACTO"
           />
         </div>
 
