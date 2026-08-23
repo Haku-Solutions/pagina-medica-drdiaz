@@ -1,6 +1,6 @@
 import { FaInstagram, FaFacebookF } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
+import MessengerButton from "../messengerButton/messengerButton";
 import "./footer.css";
 
 interface FooterProps {
@@ -31,10 +31,10 @@ export default function Footer({
                         <h1>Contáctate conmigo</h1>
                     </div>
                     <div className="footer-wabutton">
-                        <WhatsAppButton
-                            phone=""
-                            message="Hola. Me gustaría agendar una cita." 
-                    />
+                        <MessengerButton
+                                                username="1245458325315373"
+                                                text="CONTACTO"
+                        />
                     </div>
                     
             </div>

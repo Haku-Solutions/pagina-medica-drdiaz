@@ -1,5 +1,4 @@
 import Image from "next/image";
-import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import NavBar from "@/src/styles/components/navBar/navBar";
 import Footer from "@/src/styles/components/footer/footer";
 import FlipCard from "@/src/styles/components/flipCard/flipCard";

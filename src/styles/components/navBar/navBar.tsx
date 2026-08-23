@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { HiBars3, HiXMark } from "react-icons/hi2"; 
-import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
+import MessengerButton from "../messengerButton/messengerButton";
 import "./navBar.css";
 
 interface Link {
@@ -64,11 +64,10 @@ export default function NavBar({
                         ))}
                     </ul>
 
-                    <WhatsAppButton
-                        phone=""
-                        message="Hola. Me gustaría agendar una cita." 
+                    <MessengerButton
+                        username="1245458325315373"
+                        text="CONTACTO"
                     />
-
                 </div>
 
                 <button 
@@ -99,10 +98,10 @@ export default function NavBar({
                     ))}
                 </ul>
 
-                <WhatsAppButton
-                    phone=""
-                    message="Hola. Me gustaría agendar una cita." 
-                />
+                <MessengerButton
+                        username="1245458325315373"
+                        text="CONTACTO"
+                    />
             </div>
 
         </>   
