@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     siteName: 'Dr. José Díaz - Cirugía General',
     images: [
       {
-        url: '/assets/images/logo_drdiaz.svg', 
+        url: '/assets/og/og-image.png', 
         width: 1200,
         height: 630,
         alt: 'Dr. José Díaz - Cirujano General',
@@ -61,6 +61,15 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dr. José Díaz | Cirujano General y Laparoscopista',
+    description: 'Especialista en cirugía general y de mínima invasión (laparoscopía). Más de 20 años de experiencia en Acapulco y Costa Chica de Guerrero.',
+    images: ['/assets/og/og-image.png'],
+  },
+  alternates: {
+    canonical: 'https://drjosediazzacarias.com',
+  },
 };
 
 export default function RootLayout({
@@ -68,12 +77,59 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: 'Dr. José Díaz Zacarías',
+    description:
+      'Cirujano General y Laparoscopista con más de 20 años de experiencia en cirugía de mínima invasión.',
+    medicalSpecialty: [
+      'Cirugía General',
+      'Laparoscopía',
+      'Endoscopia',
+    ],
+    knowsAbout: [
+      'Cirugía de Vesícula Biliar',
+      'Cirugía de Hernias',
+      'Cirugía de Apendicitis',
+      'Cirugía de Obstrucción Intestinal',
+      'Cirugía de Pie Diabético',
+      'Endoscopia Digestiva',
+    ],
+    url: 'https://drjosediazzacarias.com',
+    image: 'https://drjosediazzacarias.com/assets/logos/logo_drdiaz.svg',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Acapulco',
+      addressRegion: 'Guerrero',
+      addressCountry: 'MX',
+    },
+    areaServed: [
+      {
+        '@type': 'GeoCircle',
+        name: 'Costa Chica de Guerrero y Acapulco',
+      },
+    ],
+    memberOf: [
+      {
+        '@type': 'MedicalOrganization',
+        name: 'Consejo Mexicano de Cirugía General',
+      },
+    ],
+  };
+
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

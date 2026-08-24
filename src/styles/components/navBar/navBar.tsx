@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { HiBars3, HiXMark } from "react-icons/hi2"; 
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 import "./navBar.css";
@@ -41,14 +42,16 @@ export default function NavBar({
         <>
             <nav className="navbar">    
                 <div className="navbar-title">
-                    <img 
+                    <Image 
                         className="navbar-logo"
                         src="/assets/logos/logo_drdiaz.svg"
-                        alt="Logo"
+                        alt="Logo Dr. José Díaz - Cirujano General"
+                        width={60}
+                        height={60}
                     />
 
                     <div className="navbar-text">
-                        <h1>{title}</h1>
+                        <p className="navbar-site-title">{title}</p>
                         <p>{subtitle}</p>
                     </div>
                 </div>

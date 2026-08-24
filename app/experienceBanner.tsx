@@ -1,3 +1,4 @@
+import Image from "next/image";
 import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
 
 import "./experienceBanner.css";
@@ -43,10 +44,10 @@ export default function ExperienceBanner() {
         </div>
 
         <div className="experience-logos">
-          <img src="/assets/logos/cmcg.svg" alt="CMCG" />
-          <img src="/assets/logos/CGClogo.png" alt="Colegio" />
-          <img src="/assets/logos/endoscopialogo.png" alt="Endoscopia" />
-          <img src="/assets/logos/federacionmx.png" alt="Federación" />
+          <Image src="/assets/logos/cmcg.svg" alt="Consejo Mexicano de Cirugía General" width={80} height={80} />
+          <Image src="/assets/logos/CGClogo.png" alt="Colegio de Cirujanos de Guerrero" width={80} height={80} />
+          <Image src="/assets/logos/endoscopialogo.png" alt="Sociedad Mexicana de Endoscopia" width={80} height={80} />
+          <Image src="/assets/logos/federacionmx.png" alt="Federación Mexicana de Cirugía General" width={80} height={80} />
         </div>
       </div>
     </section>
