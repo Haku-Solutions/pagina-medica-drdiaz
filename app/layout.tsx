@@ -40,15 +40,15 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Dr. José Díaz' }],
   creator: 'Dr. José Díaz',
-  metadataBase: new URL('https://midominio.com'), // Cuando se tenga el dominio real remplazar | Vista previa en links compartidos
+  metadataBase: new URL('https://drjosediazzacarias.com'), 
   openGraph: {
     title: 'Dr. José Díaz | Cirujano General y Laparoscopista',
     description: 'Atención médica quirúrgica especializada y de mínima invasión.',
-    url: 'https://midominio.com', // Cuando se tenga el dominio real remplazar | Vista previa en links compartidos
+    url: 'https://drjosediazzacarias.com', 
     siteName: 'Dr. José Díaz - Cirugía General',
     images: [
       {
-        url: '/og-image.jpg', // Imagen de 1200x630px en la carpeta public
+        url: '/assets/images/logo_drdiaz.svg', 
         width: 1200,
         height: 630,
         alt: 'Dr. José Díaz - Cirujano General',
