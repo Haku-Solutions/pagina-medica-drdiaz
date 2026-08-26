@@ -1,6 +1,6 @@
 .testimonial-card {
   width: 100%;
-  max-width: 450px; 
+  max-width: 360px; 
   min-height: 250px;
 
   padding: 28px 24px;
@@ -18,7 +18,7 @@
 
 .testimonial-text {
   font-family: "Montserrat", sans-serif;
-  font-size: 1.20rem;
+  font-size: 1.0rem;
   font-weight: 400;
   line-height: 1.6;
   margin: 0;
@@ -30,7 +30,7 @@
   margin-top: 24px;
 
   font-family: "Montserrat", sans-serif;
-  font-size: 1.154rem;
+  font-size: 1.0rem;
   font-weight: 700;
 }
 
