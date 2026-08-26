@@ -1,4 +1,3 @@
-import Image from "next/image";
 import NavBar from "@/src/styles/components/navBar/navBar";
 import Footer from "@/src/styles/components/footer/footer";
 import FlipCard from "@/src/styles/components/flipCard/flipCard";
@@ -7,11 +6,12 @@ import { servicios } from "@/src/styles/components/carousel/servicios";
 import TestimonialCard from "@/src/styles/components/testimonialCard/testimonialCard";
 import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
 import ExperienceBanner from "./experienceBanner";
+import "./page.css";
 
 export default function Home() {
 
   return (
-    <div >
+    <div className="page-container">
       <NavBar
         title="DR. JOSÉ DÍAZ"
         subtitle="Cirugía general y laparoscopista"
@@ -22,7 +22,9 @@ export default function Home() {
         ]}
       />
       <ExperienceBanner />
-      <div>
+      <div className="servicios-section">
+        <h2 className="servicios-title">Servicios</h2>
+        <p className="servicios-subtitle">Atención general y quirúrgica </p>
         <Carousel itemsPerPage={4}>
             {servicios.map((servicio) => (
               <div key={servicio.id} className="flex justify-center p-2">
@@ -39,29 +41,26 @@ export default function Home() {
           </Carousel>
       </div>
 
-      <div>
-        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+      <div className="testimonios-section">
+        <h2 className="testimonios-title">
           Testimonios
-        </h1>
-        <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-          Looking for a starting point or more instructions? Head over to Templates.
-        </p>
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {testimonials.map((testimonial, index) => (
-          <TestimonialCard
-            key={index}
-            text={testimonial.text}
-            author={testimonial.author}
-            variant={testimonial.variant}
-          />
-        ))}
+        </h2>
+        <p className="testimonios-subtitle">Declaraciones de pacientes</p>
+        <div className="testimonios-cards">
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard
+              key={index}
+              text={testimonial.text}
+              author={testimonial.author}
+              variant={testimonial.variant}
+            />
+          ))}
+        </div>
       </div>
       <Footer
         quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
         qrCode="/assets/qr_code/qrcode.png"
-        instagram=""
-        facebook=""
+        facebook="https://www.facebook.com/profile.php?id=61592800274943&mibextid=wwXIfr&rdid=bTlYTkuAomkummKd&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1D1GnmpTuV%2F%3Fmibextid%3DwwXIfr#"
         email=""
       />
 

@@ -42,7 +42,6 @@ export default function Footer({
             <div className="footer-content">
 
                 <section className="footer-quote">
-                    <h1>DR. JOSÉ DÍAZ</h1>
                     <p>{quote}</p>
 
                 </section>
@@ -61,17 +60,11 @@ export default function Footer({
                     <p className="footer-bottom-title">Redes sociales</p>
 
                     <ul className="footer-social-media">
-                        <li>
-                            <a href={instagram}>
-                                <FaInstagram />
-                                <span>Instagram</span>
-                            </a>
-                        </li>
 
                         <li>
                             <a href={facebook}>
                                 <FaFacebookF />
-                                <span>Facebook</span>
+                                <span>DR. JOSÉ DÍAZ</span>
                             </a>
                         </li>
 
