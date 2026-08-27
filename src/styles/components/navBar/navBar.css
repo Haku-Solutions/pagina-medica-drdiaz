@@ -15,15 +15,15 @@
     gap: 0 1rem;
 }
 .navbar-logo {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
 }
 .navbar-text {
     display: flex;
     flex-direction: column;
-    h1 {
-        font-size: 44px;
+    h2 {
+        font-size: 36px;
         color: #01000B;
     }
     p {
@@ -138,7 +138,7 @@
         }
     }
 }
-@media (max-width: 419px) {
+@media (max-width: 480px) {
     .navbar-logo {
         width: 90px;
         height: 90px;

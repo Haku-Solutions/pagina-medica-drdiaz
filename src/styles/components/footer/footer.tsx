@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FaInstagram, FaFacebookF } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import WhatsAppButton from "@/src/styles/components/contactButton/contactButton";
+import MessengerButton from "../messengerButton/messengerButton";
 import "./footer.css";
 
 interface FooterProps {
@@ -34,10 +34,10 @@ export default function Footer({
                         <h2>Contáctate conmigo</h2>
                     </div>
                     <div className="footer-wabutton">
-                        <WhatsAppButton
-                            phone=""
-                            message="Hola. Me gustaría agendar una cita." 
-                    />
+                        <MessengerButton
+                                                username="1245458325315373"
+                                                text="CONTACTO"
+                        />
                     </div>
                     
             </div>
@@ -45,7 +45,6 @@ export default function Footer({
             <div className="footer-content">
 
                 <section className="footer-quote">
-                    <h2>DR. JOSÉ DÍAZ</h2>
                     <p>{quote}</p>
 
                 </section>
@@ -66,23 +65,13 @@ export default function Footer({
                     <p className="footer-bottom-title">Redes sociales</p>
 
                     <ul className="footer-social-media">
-                        {instagram && (
-                            <li>
-                                <a href={instagram} aria-label="Visitar perfil de Instagram">
-                                    <FaInstagram />
-                                    <span>Instagram</span>
-                                </a>
-                            </li>
-                        )}
 
-                        {facebook && (
-                            <li>
-                                <a href={facebook} aria-label="Visitar perfil de Facebook">
-                                    <FaFacebookF />
-                                    <span>Facebook</span>
-                                </a>
-                            </li>
-                        )}
+                        <li>
+                            <a href={facebook}>
+                                <FaFacebookF />
+                                <span>DR. JOSÉ DÍAZ</span>
+                            </a>
+                        </li>
 
                         {email && (
                             <li>
