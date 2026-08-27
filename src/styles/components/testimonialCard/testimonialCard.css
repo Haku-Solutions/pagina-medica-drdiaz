@@ -1,6 +1,6 @@
 .testimonial-card {
   width: 100%;
-  max-width: 360px; 
+  max-width: 288px;
   min-height: 250px;
 
   padding: 28px 24px;
@@ -64,4 +64,15 @@
 
 .testimonial-card.white .testimonial-author {
   color: #8fb0d3;
+}
+
+@media (max-width: 480px) {
+  .testimonial-card {
+    min-height: 180px;
+    padding: 20px 16px;
+  }
+
+  .testimonial-author {
+    margin-top: 16px;
+  }
 }

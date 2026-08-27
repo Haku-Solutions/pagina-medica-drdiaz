@@ -26,7 +26,7 @@ export default function Card({
 
   return (
     <div
-      className={`${styles.scene} w-72 h-96 cursor-pointer`}
+      className={`${styles.scene} w-64 h-[22rem] sm:w-72 sm:h-96 cursor-pointer`}
       onClick={() => setFlipped((prev) => !prev)}
     >
       <div

@@ -119,9 +119,26 @@
 @media (max-width: 1150px) {
     .footer-content {
         flex-direction: column;
+        align-items: center;
         gap: 3rem;
     }
+    .footer-quote {
+        text-align: center;
+        padding-right: 0;
+    }
+    .footer-qr {
+        text-align: center;
+    }
+    .footer-social {
+        text-align: center;
+    }
+    .footer-social-media a {
+        justify-content: center;
+    }
     .footer-bottom {
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
         padding-bottom: 1rem;
     }
     .footer-top-text {
@@ -141,12 +158,14 @@
     .footer-top {
         display: flex;
         flex-direction: column;
+        align-items: center;
         padding: 1rem;
         gap: 1rem;
     }
     .footer-top-text {
         font-size: 20px;
         padding-right: 0;
+        justify-content: center;
     }
     .footer-logo {
         height: 50px;
@@ -156,13 +175,31 @@
         padding-right: 0;
         padding-bottom: 0.5rem;
     }
+    .footer-content {
+        padding: 1.5rem 1rem;
+        gap: 2rem;
+    }
+    .footer-quote h2 {
+        font-size: 22px;
+    }
+    .footer-qr-image {
+        width: 120px;
+        height: 120px;
+        margin: 1rem auto;
+    }
+    .footer-social-media a {
+        font-size: 16px;
+    }
     .footer-bottom {
         font-size: 10px;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
     }
     .footer-bottom-left {
-        padding-right: 1rem;
+        padding-right: 0;
     }
     .footer-bottom-middle {
-        padding-right: 1rem;
+        padding-right: 0;
     }
 }
