@@ -87,3 +87,20 @@
     height: 55px;
   }
 }
+
+@media (max-width: 480px) {
+  .experience-content {
+    padding: 40px 16px;
+    gap: 30px;
+  }
+
+  .experience-text p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .experience-logos img {
+    height: 40px;
+  }
+}

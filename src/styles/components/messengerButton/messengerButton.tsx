@@ -18,7 +18,7 @@ export default function MessengerButton({
       rel="noopener noreferrer"
       className="messenger-button"
     >
-      <FaFacebookMessenger className="icon" />
+      <FaFacebookMessenger className="btn-icon" />
 
       <span>{text}</span>
     </a>

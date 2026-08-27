@@ -20,7 +20,7 @@ export default function WhatsAppButton({
       rel="noopener noreferrer"
       className="whatsapp-button"
     >
-      <FaWhatsapp className="icon" />
+      <FaWhatsapp className="btn-icon" />
 
       <span>{text}</span>
     </a>

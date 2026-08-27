@@ -26,8 +26,20 @@
   transform: translateY(-1px);
 }
 
-.icon {
+.btn-icon {
   color: #25D366;
   font-size: 34px;
   flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .whatsapp-button {
+    height: 50px;
+    padding: 0 18px;
+    font-size: 16px;
+  }
+
+  .btn-icon {
+    font-size: 26px;
+  }
 }
