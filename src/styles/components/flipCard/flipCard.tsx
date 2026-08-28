@@ -44,6 +44,7 @@ export default function Card({
               src={imageSrc}
               alt={imageAlt}
               fill
+              sizes="(min-width: 640px) 288px, 256px"
               className="object-cover"
             />
           </div>

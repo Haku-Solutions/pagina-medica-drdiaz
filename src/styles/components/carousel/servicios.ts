@@ -12,7 +12,7 @@ export const servicios: Servicio[] = [
     id: 1,
     titulo: "Cirugía de Vesícula Biliar",
     descripcion: "Es una cirugía para extirpar la vesícula biliar usando un dispositivo médico llamado laparoscopio para tratar cálculos biliares o inflamación.",
-    imagen: "/assets/servicios/cirugía_vesícula_biliar.jpg",
+    imagen: "/assets/servicios/cirugia_vesicula_biliar.webp",
 
     backTitle: "¿Cuándo se necesita?",
     backItems: [
@@ -55,7 +55,7 @@ export const servicios: Servicio[] = [
       id: 4,
       titulo: "Cirugía de Obstrucción Intenstinal",
       descripcion: "Se realiza cuando los contenidos del intestino no pueden pasar ni salir del cuerpo.",
-      imagen: "/assets/servicios/obstruccion_intestinal.jpg",
+      imagen: "/assets/servicios/obstruccion_intestinal.webp",
 
       backTitle: "¿Cuándo se necesita?",
       backItems: [
@@ -66,7 +66,7 @@ export const servicios: Servicio[] = [
       id: 5,
       titulo: "Cirugía de Pie Diabético",
       descripcion: "Consiste en eliminar el tejido no viable o necrótico de la herida causada por las úlceras del pié diabético.",
-      imagen: "/assets/servicios/cirugia_pie_diabetico.jpg",
+      imagen: "/assets/servicios/cirugia_pie_diabetico.webp",
 
       backTitle: "¿Cuándo se necesita?",
       backItems: [
@@ -78,7 +78,7 @@ export const servicios: Servicio[] = [
       id: 6,
       titulo: "Endoscopía",
       descripcion: "Es un procedimiento que permite que el médico vea el interior de su cuerpo para buscar anomalías como úlceras, pólipos, tumores u otros.",
-      imagen: "/assets/servicios/cirugía_endoscopia.avif",
+      imagen: "/assets/servicios/cirugia_endoscopia.avif",
 
       backTitle: "¿Cuándo se necesita?",
       backItems: [
@@ -90,7 +90,7 @@ export const servicios: Servicio[] = [
       id: 7,
       titulo: "Consultas de gastro cirugía",
       descripcion: "Evaluación especializada para el diagnóstico y tratamiento de enfermedades del aparato digestivo que pueden requerir manejo quirúrgico.",
-      imagen: "/assets/servicios/consulta.png",
+      imagen: "/assets/servicios/consulta.webp",
 
       backTitle: "¿Cuándo acudir a una consulta de gastrocirugía?",
       backItems: [

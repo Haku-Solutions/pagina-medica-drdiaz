@@ -51,8 +51,8 @@ export default function NavBar({
                     />
 
                     <div className="navbar-text">
-                        <h2>{title}</h2>
-                        <p>{subtitle}</p>
+                        <p className="navbar-brand">{title}</p>
+                        <p className="navbar-subtitle">{subtitle}</p>
                     </div>
                 </div>
 

@@ -22,14 +22,14 @@
 .navbar-text {
     display: flex;
     flex-direction: column;
-    h2 {
-        font-size: 36px;
-        color: #01000B;
-    }
-    p {
-        font-size: 20px;
-        color: #0E518E;
-    }
+}
+.navbar-brand {
+    font-size: 36px;
+    color: #01000B;
+}
+.navbar-subtitle {
+    font-size: 20px;
+    color: #0E518E;
 }
 .navbar-menu {
     display: flex;
@@ -127,15 +127,13 @@
         color: #01000B;
         padding-right: 1rem;
     }
-    .navbar-text {
-        h1 {
-            font-size: 22px;
-            padding-right: 2rem;
-        }
-        p {
-            font-size: 14px;
-            padding-right: 2rem;
-        }
+    .navbar-text .navbar-brand {
+        font-size: 22px;
+        padding-right: 2rem;
+    }
+    .navbar-text .navbar-subtitle {
+        font-size: 14px;
+        padding-right: 2rem;
     }
 }
 @media (max-width: 480px) {
@@ -144,14 +142,12 @@
         height: 90px;
         object-fit: cover;
     }
-    .navbar-text {
-        h1 {
-            font-size: 17px;
-            padding-right: 2rem;
-        }
-        p {
-            font-size: 13px;
-            padding-right: 2rem;
-        }
+    .navbar-text .navbar-brand {
+        font-size: 17px;
+        padding-right: 2rem;
+    }
+    .navbar-text .navbar-subtitle {
+        font-size: 13px;
+        padding-right: 2rem;
     }
 }

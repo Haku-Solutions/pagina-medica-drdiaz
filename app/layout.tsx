@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -80,9 +81,13 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Physician',
+    '@id': 'https://drjosediazzacarias.com/#physician',
     name: 'Dr. José Díaz Zacarías',
     description:
       'Cirujano General y Laparoscopista con más de 20 años de experiencia en cirugía de mínima invasión.',
+    url: 'https://drjosediazzacarias.com',
+    image: 'https://drjosediazzacarias.com/assets/logos/logo_drdiaz.svg',
+    sameAs: ['https://www.facebook.com/profile.php?id=61592800274943'],
     medicalSpecialty: [
       'Cirugía General',
       'Laparoscopía',
@@ -96,13 +101,23 @@ export default function RootLayout({
       'Cirugía de Pie Diabético',
       'Endoscopia Digestiva',
     ],
-    url: 'https://drjosediazzacarias.com',
-    image: 'https://drjosediazzacarias.com/assets/logos/logo_drdiaz.svg',
+    hasCredential: [
+      {
+        '@type': 'EducationalOccupationalCredential',
+        credentialCategory: 'Cédula Profesional',
+        name: 'Cédula Profesional 12345677',
+      },
+    ],
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Acapulco',
       addressRegion: 'Guerrero',
       addressCountry: 'MX',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 16.8531,
+      longitude: -99.8237,
     },
     areaServed: [
       {
@@ -116,6 +131,14 @@ export default function RootLayout({
         name: 'Consejo Mexicano de Cirugía General',
       },
     ],
+    review: testimonials.map((testimonial) => ({
+      '@type': 'Review',
+      reviewBody: testimonial.text,
+      author: {
+        '@type': 'Person',
+        name: testimonial.author,
+      },
+    })),
   };
 
   return (
