@@ -2,14 +2,18 @@
   position: relative;
   width: 100%;
 
-  background-size: cover;
-  background-position: center;
   overflow: hidden;
+}
+
+.experience-banner-image {
+  object-fit: cover;
+  z-index: 0;
 }
 
 .experience-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
 
   background: linear-gradient(
     90deg,
@@ -38,10 +42,20 @@
   max-width: 500px;
 }
 
-.experience-text h2 {
+.experience-tagline {
+  color: #a7c7e7;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.experience-text h1 {
   color: #fff;
   font-size: clamp(2.3rem, 5vw, 3rem);
   font-weight: 800;
+  line-height: 1.25;
   margin-bottom: 30px;
 }
 

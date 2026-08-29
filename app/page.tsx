@@ -11,18 +11,18 @@ import "./page.css";
 export default function Home() {
 
   return (
-    <div className="page-container">
+    <div className="page-container" id="inicio">
       <NavBar
         title="DR. JOSÉ DÍAZ"
         subtitle="Cirugía general y laparoscopista"
         links={[
-          { label: "Inicio", href: "/inicio" },
-          { label: "Servicios", href: "/servicios" },
-          { label: "Testimonios", href: "/testimonios" },
+          { label: "Inicio", href: "#inicio" },
+          { label: "Servicios", href: "#servicios" },
+          { label: "Testimonios", href: "#testimonios" },
         ]}
       />
       <ExperienceBanner />
-      <div className="servicios-section">
+      <div className="servicios-section" id="servicios">
         <h2 className="servicios-title">Servicios</h2>
         <p className="servicios-subtitle">Atención general y quirúrgica </p>
         <Carousel itemsPerPage={4}>
@@ -41,7 +41,7 @@ export default function Home() {
           </Carousel>
       </div>
 
-      <div className="testimonios-section">
+      <div className="testimonios-section" id="testimonios">
         <h2 className="testimonios-title">
           Testimonios
         </h2>
@@ -58,12 +58,11 @@ export default function Home() {
         </div>
       </div>
       <Footer
-        quote="“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."
+        quote={"“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."}
         qrCode="/assets/qr_code/qrcode.png"
         facebook="https://www.facebook.com/profile.php?id=61592800274943&mibextid=wwXIfr&rdid=bTlYTkuAomkummKd&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1D1GnmpTuV%2F%3Fmibextid%3DwwXIfr#"
-        email=""
+        email="jossdiz@hotmail.com"
       />
-
     </div>
   );
 }

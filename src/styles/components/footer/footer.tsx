@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FaInstagram, FaFacebookF } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import MessengerButton from "../messengerButton/messengerButton";
@@ -23,12 +24,14 @@ export default function Footer({
         <footer className="footer">
             <div className="footer-top">
                    <div className="footer-top-text"> 
-                        <img 
+                        <Image 
                             className="footer-logo"
                             src="/assets/logos/logo_drdiaz.svg"
-                            alt="Logo"
+                            alt="Logo Dr. José Díaz Zacarías"
+                            width={60}
+                            height={60}
                         />
-                        <h1>Contáctate conmigo</h1>
+                        <h2>Contáctate conmigo</h2>
                     </div>
                     <div className="footer-wabutton">
                         <MessengerButton
@@ -48,10 +51,12 @@ export default function Footer({
 
                 <section className="footer-qr">
                     <p className="footer-bottom-title">Tarjeta de presentación</p>
-                    <img 
+                    <Image 
                         src={qrCode}
-                        alt="Código QR"
+                        alt="Código QR - Tarjeta de presentación Dr. José Díaz"
                         className="footer-qr-image"
+                        width={150}
+                        height={150}
                     />
 
                 </section>
@@ -68,12 +73,14 @@ export default function Footer({
                             </a>
                         </li>
 
-                        <li>
-                            <a href={`mailto:${email}`}>
-                                <MdEmail />
-                                <span>jossdiz@hotmail.com</span>
-                            </a>
-                        </li>
+                        {email && (
+                            <li>
+                                <a href={`mailto:${email}`} aria-label="Enviar correo electrónico">
+                                    <MdEmail />
+                                    <span>{email}</span>
+                                </a>
+                            </li>
+                        )}
 
                     </ul>
 
@@ -82,10 +89,12 @@ export default function Footer({
 
             <div className="footer-bottom">
                 <section className="footer-bottom-left">
-                        <img 
+                        <Image 
                             className="footer-bottom-logo"
                             src="/assets/logos/logo_drdiaz.svg"
-                            alt="Logo"
+                            alt="Logo Dr. José Díaz Zacarías"
+                            width={40}
+                            height={40}
                         />
                         <p>Dr. José Díaz Zacarías</p>
                 </section>
