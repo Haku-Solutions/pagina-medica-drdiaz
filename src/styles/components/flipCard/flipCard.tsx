@@ -26,7 +26,7 @@ export default function Card({
 
   return (
     <div
-      className={`${styles.scene} w-64 h-[22rem] sm:w-72 sm:h-96 cursor-pointer`}
+      className={`${styles.scene} w-full max-w-[280px] aspect-[3/4] cursor-pointer`}
       onClick={() => setFlipped((prev) => !prev)}
     >
       <div
@@ -44,7 +44,7 @@ export default function Card({
               src={imageSrc}
               alt={imageAlt}
               fill
-              sizes="(min-width: 640px) 288px, 256px"
+              sizes="(min-width: 640px) 280px, 90vw"
               className="object-cover"
             />
           </div>

@@ -17,10 +17,15 @@ export const Carousel: React.FC<CarouselProps> = ({ children, itemsPerPage = 3 }
   const validChildren = React.Children.toArray(children);
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setVisibleItems(1); // 1 elemento en móviles/tablets chicas
+      const width = window.innerWidth;
+      if (width < 640) {
+        setVisibleItems(1); 
+      } else if (width < 1024) {
+        setVisibleItems(2); 
+      } else if (width < 1280) {
+        setVisibleItems(3); 
       } else {
-        setVisibleItems(itemsPerPage); // El valor configurado en pantallas grandes
+        setVisibleItems(itemsPerPage); 
       }
     };
 
@@ -31,6 +36,10 @@ export const Carousel: React.FC<CarouselProps> = ({ children, itemsPerPage = 3 }
   }, [itemsPerPage]);
 
   const totalPages = Math.ceil(validChildren.length / visibleItems);
+
+  if (currentIndex > totalPages - 1) {
+    setCurrentIndex(totalPages - 1);
+  }
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
