@@ -45,7 +45,8 @@ export default function Card({
               alt={imageAlt}
               fill
               sizes="(min-width: 640px) 280px, 90vw"
-              className="object-cover"
+              className="object-cover pointer-events-none select-none"
+              draggable={false}
             />
           </div>
 
