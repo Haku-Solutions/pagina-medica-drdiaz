@@ -59,9 +59,9 @@ export default function Home() {
       </div>
       <Footer
         quote={"“Con más de 20 años de experiencia en cirugía general y endoscopia, mi compromiso es brindar una atención médica profesional, ética y de calidad. Gracias por confiar en mi experiencia para cuidar de tu salud”."}
-        qrCode="/assets/qr_code/qrcode.png"
+        qrCode="/assets/qr_code/qr_code.png"
         facebook="https://www.facebook.com/profile.php?id=61592800274943&mibextid=wwXIfr&rdid=bTlYTkuAomkummKd&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1D1GnmpTuV%2F%3Fmibextid%3DwwXIfr#"
-        email="jossdiz@hotmail.com"
+        email="jodiazza@gmail.com"
       />
     </div>
   );
