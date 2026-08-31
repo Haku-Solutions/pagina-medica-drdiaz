@@ -27,7 +27,7 @@ export default function Home() {
         <p className="servicios-subtitle">Atención general y quirúrgica </p>
         <Carousel itemsPerPage={4}>
             {servicios.map((servicio) => (
-              <div key={servicio.id} className="flex justify-center p-2">
+              <div key={servicio.id} className="flex justify-center">
           <FlipCard
             imageSrc={servicio.imagen}
             imageAlt={servicio.titulo}

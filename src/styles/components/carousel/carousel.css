@@ -11,6 +11,8 @@
 .carousel-window {
   width: 100%;
   overflow: hidden;
+  user-select: none;
+  touch-action: pan-y;
 }
 
 .carousel-track {
@@ -22,6 +24,13 @@
 .carousel-item {
   box-sizing: border-box;
   padding: 0 12px; /* Espaciado entre columnas/tarjetas */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.carousel-item img {
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 /* Zona de navegación */

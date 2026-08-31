@@ -26,7 +26,7 @@ export default function Card({
 
   return (
     <div
-      className={`${styles.scene} w-64 h-[22rem] sm:w-72 sm:h-96 cursor-pointer`}
+      className={`${styles.scene} w-full max-w-[280px] aspect-[3/4] cursor-pointer`}
       onClick={() => setFlipped((prev) => !prev)}
     >
       <div
@@ -44,8 +44,9 @@ export default function Card({
               src={imageSrc}
               alt={imageAlt}
               fill
-              sizes="(min-width: 640px) 288px, 256px"
-              className="object-cover"
+              sizes="(min-width: 640px) 280px, 90vw"
+              className="object-cover pointer-events-none select-none"
+              draggable={false}
             />
           </div>
 
@@ -64,14 +65,14 @@ export default function Card({
 
         {/* BACK */}
         <div
-          className={`${styles.face} ${styles.back} rounded-2xl shadow-md bg-[#A7C7E7]`}
+          className={`${styles.face} ${styles.back} overflow-hidden rounded-2xl shadow-md bg-[#A7C7E7]`}
         >
-          <div className="flex h-full flex-col justify-center p-6">
-            <h2 className="mb-4 text-center text-lg font-bold text-[#FFFFFF]">
+          <div className="flex h-full flex-col overflow-y-auto overscroll-contain p-5">
+            <h2 className="mb-3 shrink-0 text-center text-lg font-bold text-[#FFFFFF]">
               {backTitle}
             </h2>
 
-            <ul className="list-disc space-y-2 pl-5 text-sm text-[#1C2B48]">
+            <ul className="my-auto list-disc space-y-1.5 pl-5 text-sm text-[#1C2B48]">
               {backItems.map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
