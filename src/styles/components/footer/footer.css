@@ -42,6 +42,12 @@
 .footer-qr {
     flex: 1;
 }
+.footer-certification {
+    flex: 1;
+}
+.footer-social {
+    flex: 1;
+}
 .footer-bottom-title {
     margin: 0 0 0.8rem 0;
 
@@ -50,6 +56,15 @@
 
     line-height: 1.2;
 
+}
+.footer-certification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 .footer-qr-image {
     margin: 1rem;
@@ -127,6 +142,9 @@
         padding-right: 0;
     }
     .footer-qr {
+        text-align: center;
+    }
+    .footer-certification {
         text-align: center;
     }
     .footer-social {

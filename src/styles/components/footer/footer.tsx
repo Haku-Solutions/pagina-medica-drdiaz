@@ -35,7 +35,7 @@ export default function Footer({
                     </div>
                     <div className="footer-wabutton">
                         <MessengerButton
-                                                username="1245458325315373"
+                                                username="61592800274943"
                                                 text="CONTACTO"
                         />
                     </div>
@@ -47,6 +47,16 @@ export default function Footer({
                 <section className="footer-quote">
                     <p>{quote}</p>
 
+                </section>
+
+                <section className="footer-certification">
+                    <p className="footer-bottom-title">Cédulas profesionales</p>
+                    
+                        <ul className="footer-certification-list">
+                            <li> Ced. Profesional: 2391817</li>
+                            <li> Ced. Especialidad: 4964110</li>
+                        </ul>
+                    
                 </section>
 
                 <section className="footer-qr">
@@ -99,10 +109,10 @@ export default function Footer({
                         <p>Dr. José Díaz Zacarías</p>
                 </section>
                 <section className="footer-bottom-middle">
-                        <p>Ced. Prof 12345677</p>
+                        <p>Ced. Prof 2391817</p>
                 </section>
                 <section className="footer-bottom-right">
-                        <p>Developed by Haku Solutions</p>
+                        <p>Developed by Haku Dev</p>
                 </section>
             </div>
         </footer>
