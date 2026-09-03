@@ -105,7 +105,12 @@ export default function RootLayout({
       {
         '@type': 'EducationalOccupationalCredential',
         credentialCategory: 'Cédula Profesional',
-        name: 'Cédula Profesional 12345677',
+        name: 'Cédula Profesional 2391817',
+      },
+      {
+        '@type': 'EducationalOccupationalCredential',
+        credentialCategory: 'Cédula de Especialidad',
+        name: 'Cédula de Especialidad 4964110',
       },
     ],
     address: {
@@ -131,12 +136,26 @@ export default function RootLayout({
         name: 'Consejo Mexicano de Cirugía General',
       },
     ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      bestRating: '5',
+      worstRating: '1',
+      ratingCount: '2',
+      reviewCount: '2',
+    },
     review: testimonials.map((testimonial) => ({
       '@type': 'Review',
       reviewBody: testimonial.text,
       author: {
         '@type': 'Person',
         name: testimonial.author,
+      },
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: '5',
+        bestRating: '5',
+        worstRating: '1',
       },
     })),
   };
