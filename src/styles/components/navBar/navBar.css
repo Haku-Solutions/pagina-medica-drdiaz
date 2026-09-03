@@ -1,7 +1,7 @@
 .navbar {
     position: sticky;
     top: 0;
-    z-index: 900;
+    z-index: 1002;
 
     display: flex;
     justify-content: space-between;
@@ -84,7 +84,7 @@
     visibility: hidden;
 
     transition: 
-        opacity 0.35s ease
+        opacity 0.35s ease,
         visibility 0.35s;
 
     z-index: 999;
