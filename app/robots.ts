@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/api/',
+      disallow: ['/admin', '/api'],
     },
     sitemap: 'https://drjosediazzacarias.com/sitemap.xml',
   };
