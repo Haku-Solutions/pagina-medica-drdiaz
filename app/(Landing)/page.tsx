@@ -1,10 +1,10 @@
-import NavBar from "@/src/styles/components/navBar/navBar";
-import Footer from "@/src/styles/components/footer/footer";
-import FlipCard from "@/src/styles/components/flipCard/flipCard";
-import { Carousel } from "@/src/styles/components/carousel/carousel";
-import { servicios } from "@/src/styles/components/carousel/servicios";
-import TestimonialCard from "@/src/styles/components/testimonialCard/testimonialCard";
-import { testimonials } from "@/src/styles/components/testimonialCard/testimonials";
+import NavBar from "@/src/landing/components/navBar/navBar";
+import Footer from "@/src/landing/components/footer/footer";
+import FlipCard from "@/src/landing/components/flipCard/flipCard";
+import { Carousel } from "@/src/landing/components/carousel/carousel";
+import { servicios } from "@/src/landing/components/carousel/servicios";
+import TestimonialCard from "@/src/landing/components/testimonialCard/testimonialCard";
+import { testimonials } from "@/src/landing/components/testimonialCard/testimonials";
 import ExperienceBanner from "./experienceBanner";
 import "./page.css";
 

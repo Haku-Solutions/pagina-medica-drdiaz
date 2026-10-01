@@ -1,5 +1,5 @@
 import Image from "next/image";
-import MessengerButton from "@/src/styles/components/messengerButton/messengerButton";
+import MessengerButton from "@/src/landing/components/messengerButton/messengerButton";
 
 import "./experienceBanner.css";
 
