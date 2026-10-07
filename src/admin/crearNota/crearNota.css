@@ -1,0 +1,182 @@
+.crear-nota-shell { 
+    width: 100%;
+    min-height: 100vh; 
+    padding: 28px 16px 56px; 
+    background: linear-gradient(180deg, #f1f4fc 0%, #b8c4ec 100%); 
+    color: #000000; 
+    font-family: Arial, Helvetica, sans-serif; 
+}
+.crear-nota-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 10px; 
+}
+.crear-nota-logo { 
+    width: 58px; 
+    height: 58px; 
+    flex: 0 0 auto;
+}
+.crear-nota-header h1 { 
+    margin: 0; 
+    color: #000000; 
+    font-size: clamp(21px, 5vw, 34px); 
+    font-weight: bold;
+    line-height: 1.15; 
+    letter-spacing: -.04em; 
+}
+.crear-nota-form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.nota-section { 
+    padding: 20px 14px;
+}
+.nota-section-heading { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 20px; 
+}
+.nota-section-heading > span { 
+    display: grid; 
+    flex: 0 0 auto; 
+    place-items: center; 
+    border-radius: 12px; 
+    color: #3864b5; 
+    font-size: 17px; 
+    font-weight: 800; 
+}
+.nota-section-heading h2 { 
+    margin: 0; 
+    color: #202f49; 
+    font-size: 17px; 
+    font-weight: 750; 
+    letter-spacing: -.02em; 
+}
+.nota-fields-grid { 
+    display: grid; 
+    grid-template-columns: minmax(0, 1fr); 
+    gap: 15px; 
+}
+.nota-field { 
+    display: flex; 
+    min-width: 0; 
+    flex-direction: column; 
+    gap: 7px; 
+    color: #000000; 
+    font-size: 12px;
+    font-weight: 600; 
+}
+.nota-field input, .nota-field select, .nota-field textarea { 
+    width: 100%; 
+    box-sizing: border-box; 
+    border: 1px solid #dce3ef; 
+    border-radius: 10px; 
+    outline: none; 
+    background: #fbfcff; 
+    color: #24324a; 
+    font: inherit; 
+    font-size: 14px; 
+    font-weight: 400; 
+    transition: border-color .18s, box-shadow .18s, background .18s; 
+}
+.nota-field input, .nota-field select { 
+    height: 45px; 
+    padding: 0 12px; 
+}
+.nota-field textarea { 
+    min-height: 94px; 
+    padding: 12px; 
+    resize: vertical; 
+    line-height: 1.5; 
+}
+.nota-field input:focus, .nota-field select:focus, .nota-field textarea:focus { 
+    border-color: #7397dd; 
+    background: #fff; 
+    box-shadow: 0 0 0 3px #7397dd20; 
+}
+.nota-textarea-grid textarea { 
+    min-height: 100px; 
+}
+.nota-file-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    margin: 12px 0 0; 
+    padding: 0; 
+    list-style: none; 
+}
+.nota-file-list li { 
+    display: flex; 
+    align-items: center; 
+    gap: 9px; 
+    min-width: 0; 
+    padding: 10px 12px; 
+    border: 1px solid #e5eaf2; 
+    border-radius: 10px; 
+    background: #fff; 
+    color: #52627b; 
+    font-size: 12px; 
+}
+.nota-file-list li svg { 
+    width: 17px; 
+    height: 17px; 
+    flex: 0 0 auto; 
+    color: #6584be; 
+}
+.nota-file-list li span { 
+    overflow: hidden; 
+    flex: 1; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+}
+.nota-file-list li small { 
+    flex: 0 0 auto; 
+    color: #96a0b1; 
+}
+.nota-form-actions { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 40px;
+    padding-left: 18px;
+    padding-bottom: 3px; 
+    padding-top: 3px; 
+}
+.nota-form-actions button { 
+    display: inline-flex; 
+    min-height: 48px; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    padding: 0 20px; 
+    border: 0; 
+    border-radius: 11px; 
+    color: #fff; 
+    cursor: pointer; 
+    font: inherit; 
+    font-size: 14px; 
+    font-weight: 700; 
+    transition: transform .18s, box-shadow .18s, filter .18s; 
+}
+.nota-form-actions button:hover { 
+    filter: brightness(1.06); 
+    transform: translateY(-1px); 
+    box-shadow: 0 6px 14px #17243b22; 
+}
+.nota-back-button { 
+    background: #182131; 
+}
+.nota-back-button svg { 
+    width: 17px; 
+    height: 17px; 
+}
+.nota-create-button { background: #178451; }
+
+@media (min-width: 640px) { .crear-nota-header { gap: 18px; margin-bottom: 25px;} .crear-nota-logo { width: 68px; height: 68px; } .nota-section { padding: 25px 24px; } .nota-form-actions { flex-direction: row; justify-content: space-between; } }
+@media (min-width: 960px) { .nota-section { padding: 28px 30px; } }
