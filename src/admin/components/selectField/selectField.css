@@ -1,0 +1,23 @@
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.nota-field select { 
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    padding-right: 2.5rem;
+}
+.select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #000000;
+    font-size: 1.1rem;
+}
+.nota-field input:user-invalid, .nota-field select:user-invalid {
+    border-color: #d64545;
+}
