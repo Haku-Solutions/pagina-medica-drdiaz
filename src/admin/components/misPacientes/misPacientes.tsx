@@ -1,20 +1,22 @@
-"use client";
+  "use client";
+  import { useMemo, useState } from "react";
+  import Image from "next/image";
+  import { useRouter } from "next/navigation";
+  import {
+    HiMagnifyingGlass,
+    HiChevronLeft,
+    HiChevronRight,
+    HiPlus,
+  } from "react-icons/hi2";
+  import PacienteRow from "./pacienteRow";
+  import { pacientes } from "./pacientes";
+  import "./misPacientes.css";
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import {
-  HiMagnifyingGlass,
-  HiChevronLeft,
-  HiChevronRight,
-  HiPlus,
-} from "react-icons/hi2";
-import PacienteRow from "./pacienteRow";
-import { pacientes } from "./pacientes";
-import "./misPacientes.css";
 
 const POR_PAGINA = 10;
 
 export default function MisPacientes() {
+  const router = useRouter();
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(0);
 
@@ -77,7 +79,7 @@ export default function MisPacientes() {
           />
         </div>
 
-        <button type="button" className="mis-pacientes-create">
+        <button type="button" className="mis-pacientes-create"  onClick={() => router.push("/admin/crear-expediente")}>
           <HiPlus className="mis-pacientes-create-icon" />
 
           <span>Crear expediente</span>

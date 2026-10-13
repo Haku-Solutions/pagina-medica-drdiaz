@@ -1,0 +1,28 @@
+.nota-date-wrap { 
+    position: relative; 
+}
+.nota-date-wrap input { 
+    padding-right: 42px; 
+    color-scheme: light; 
+}
+.nota-date-wrap > svg { 
+    position: absolute; 
+    top: 50%; 
+    right: 13px; 
+    width: 19px; 
+    height: 19px; 
+    color: #6e83a8; 
+    pointer-events: none; 
+    transform: translateY(-50%); 
+}
+.nota-date-wrap input::-webkit-calendar-picker-indicator { 
+    position: absolute; 
+    inset: 0; 
+    width: auto; 
+    height: auto; 
+    opacity: 0; 
+    cursor: pointer; 
+}
+.nota-field input:user-invalid, .nota-field select:user-invalid {
+    border-color: #d64545;
+}
