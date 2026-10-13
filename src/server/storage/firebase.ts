@@ -1,20 +1,26 @@
-import { initializeApp, getApps, cert, type ServiceAccount } from "firebase-admin/app";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
+import { env } from "../config/env";
 
-export function getBucket() {
+let bucketInstance: ReturnType<typeof buildBucket> | undefined;
+
+function buildBucket() {
   if (getApps().length === 0) {
-    const serviceAccount: ServiceAccount = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    };
     initializeApp({
-      credential: cert(serviceAccount),
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      credential: cert({
+        projectId: env.FIREBASE_PROJECT_ID(),
+        clientEmail: env.FIREBASE_CLIENT_EMAIL(),
+        privateKey: env.FIREBASE_PRIVATE_KEY(),
+      }),
+      storageBucket: env.FIREBASE_STORAGE_BUCKET(),
     });
   }
-  const bucket = getStorage().bucket();
-  const nombreNota = "notas";
-  const url = `gs://${process.env.FIREBASE_STORAGE_BUCKET}/${nombreNota}`;
-  return { bucket, url };
+  return getStorage().bucket();
+}
+
+export function firebaseBucket(): ReturnType<typeof buildBucket> {
+  if (!bucketInstance) {
+    bucketInstance = buildBucket();
+  }
+  return bucketInstance;
 }

@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
+import { env } from "./config/env";
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongo: Promise<typeof mongoose> | undefined;
 }
 
-const MONGODB_URI = process.env.DATABASE_URL!;
-
-export function connectDB(): Promise<typeof mongoose> {
+export async function connectDB(): Promise<typeof mongoose> {
   if (!globalThis._mongo) {
-    globalThis._mongo = mongoose.connect(MONGODB_URI);
+    globalThis._mongo = mongoose.connect(env.DATABASE_URL());
   }
-  return globalThis._mongo;
+  await globalThis._mongo;
+  return mongoose;
 }
