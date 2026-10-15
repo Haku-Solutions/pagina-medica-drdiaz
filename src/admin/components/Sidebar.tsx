@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface SidebarItem {
   label: string;
@@ -37,6 +37,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -52,6 +53,17 @@ export default function Sidebar({
   const closeMenu = () => {
     setIsOpen(false);
     onNavigate?.();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      /* la cookie se limpia igual al navegar */
+    }
+    closeMenu();
+    router.replace("/admin/login");
+    router.refresh();
   };
 
   return (
@@ -125,6 +137,18 @@ export default function Sidebar({
             );
           })}
         </ul>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={`mt-4 rounded-2xl border border-white/70 px-3 py-2.5 text-base font-bold text-[#1C2B48] transition hover:bg-white/45 ${
+            isOpen
+              ? "pointer-events-auto opacity-100 delay-100"
+              : "pointer-events-none opacity-0"
+          }`}
+        >
+          Cerrar sesión
+        </button>
       </nav>
     </>
   );

@@ -10,23 +10,45 @@ export default function AdminLoginPage() {
 
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
+  const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const usuarioLimpio = usuario.trim();
-    const contraseñaLimpia = contraseña.trim();
-
-    if (!usuarioLimpio || !contraseñaLimpia) {
-      console.warn("[MOCK LOGIN] Credenciales incompletas", {
-        usuario: usuarioLimpio,
-        tieneContraseña: contraseñaLimpia.length > 0,
-      });
+    if (!usuarioLimpio || !contraseña) {
+      setError("Ingresa tu usuario y contraseña.");
       return;
     }
 
-    console.log("[MOCK LOGIN] Sesión simulada para", usuarioLimpio);
-    router.push("/admin/dashboard");
+    setEnviando(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombreUsuario: usuarioLimpio, contraseña }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        setError(data?.error ?? "No se pudo iniciar sesión.");
+        setEnviando(false);
+        return;
+      }
+
+      const destino = new URLSearchParams(window.location.search).get(
+        "redirect"
+      );
+      router.replace(destino?.startsWith("/") ? destino : "/admin/mispacientes");
+      router.refresh();
+    } catch {
+      setError("Error de conexión. Intenta de nuevo.");
+      setEnviando(false);
+    }
   };
 
   return (
@@ -91,10 +113,20 @@ export default function AdminLoginPage() {
 
           <button
             type="submit"
-            className="w-full rounded-full bg-[#1C2B48] py-3.5 text-base font-semibold text-white shadow-md transition active:scale-[0.98]"
+            disabled={enviando}
+            className="w-full rounded-full bg-[#1C2B48] py-3.5 text-base font-semibold text-white shadow-md transition active:scale-[0.98] disabled:opacity-60"
           >
-            Entrar
+            {enviando ? "Entrando..." : "Entrar"}
           </button>
+
+          {error && (
+            <p
+              role="alert"
+              className="rounded-2xl bg-red-100 px-4 py-3 text-center text-sm font-semibold text-red-700"
+            >
+              {error}
+            </p>
+          )}
         </form>
       </div>
 
