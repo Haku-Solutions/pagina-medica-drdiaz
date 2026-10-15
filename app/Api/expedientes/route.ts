@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   const cirujano = await Cirujano.findOneAndUpdate(
     { nombreUsuario: session.usuario },
     { $setOnInsert: { nombreUsuario: session.usuario, contraseña: "" } },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: "after" }
   );
 
   const expediente = await ExpedienteMedico.create({

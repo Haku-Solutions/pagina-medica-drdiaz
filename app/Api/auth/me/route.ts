@@ -6,5 +6,5 @@ export async function GET() {
   if (!session) {
     return fail("No hay sesión activa", 401);
   }
-  return ok({ usuario: session.usuario });
+  return ok({ id: session.id, usuario: session.usuario });
 }

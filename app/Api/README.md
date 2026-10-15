@@ -17,7 +17,7 @@ Todos los endpoints viven bajo `app/api/`. Son Route Handlers de Next.js y se ex
 
 | Ruta                     | Métodos                     | Descripción                              |
 | ------------------------ | --------------------------- | ---------------------------------------- |
-| `/api/auth/login`        | `POST`                      | Inicio de sesión (bcrypt + cookie)       |
+| `/api/auth/login`        | `POST`                      | Inicio de sesión (Cirujano en Mongo + bcrypt + cookie JWT) |
 | `/api/auth/logout`       | `POST`                      | Cierra la sesión (borra cookie)          |
 | `/api/auth/me`           | `GET`                       | Devuelve el usuario de la sesión activa  |
 | `/api/expedientes`       | `GET` (búsqueda), `POST`    | Lista/crea expedientes                   |

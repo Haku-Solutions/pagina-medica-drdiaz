@@ -4,7 +4,8 @@ export const cirujanoSchema = new Schema(
   {
     nombreUsuario: { type: String, required: true, unique: true },
     contraseña: { type: String, required: true },
-  }
+  },
+  { timestamps: true }
 );
 
 export const expedienteSchema = new Schema(

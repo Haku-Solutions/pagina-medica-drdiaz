@@ -15,10 +15,7 @@ export const env = {
   FIREBASE_PRIVATE_KEY: () =>
     process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n") ?? "",
 
-  ADMIN_USERNAME: () => process.env.ADMIN_USERNAME ?? "doctor",
-  ADMIN_PASSWORD_HASH: () => process.env.ADMIN_PASSWORD_HASH ?? "",
-  ADMIN_SESSION_SECRET: () =>
-    process.env.ADMIN_SESSION_SECRET ?? "dev-secret-cambiar-en-produccion",
+  ADMIN_SESSION_SECRET: () => required("ADMIN_SESSION_SECRET"),
 };
 
 export function databaseName(): string {

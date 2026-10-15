@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
-import { env } from "@/src/server/config/env";
+import { connectDB } from "@/src/server";
+import { Cirujano } from "@/src/server/db/model";
 import { verifyPassword } from "@/src/server/auth/password";
 import {
   createSessionToken,
@@ -10,28 +11,32 @@ import { fail, ok } from "@/src/server/utils/apiResponse";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
-  const usuario = typeof body?.usuario === "string" ? body.usuario.trim() : "";
+  const nombreUsuario =
+    typeof body?.nombreUsuario === "string" ? body.nombreUsuario.trim() : "";
   const contraseña = typeof body?.contraseña === "string" ? body.contraseña : "";
 
-  if (!usuario || !contraseña) {
+  if (!nombreUsuario || !contraseña) {
     return fail("Faltan credenciales", 400);
   }
 
-  const configuredUser = env.ADMIN_USERNAME();
-  const configuredHash = env.ADMIN_PASSWORD_HASH();
+  await connectDB();
 
-  const credencialesValidas =
-    usuario === configuredUser &&
-    Boolean(configuredHash) &&
-    (await verifyPassword(contraseña, configuredHash));
-
-  if (!credencialesValidas) {
+  const cirujano = await Cirujano.findOne({ nombreUsuario }).lean();
+  if (!cirujano) {
     return fail("Credenciales inválidas", 401);
   }
 
-  const token = await createSessionToken(usuario);
+  const coincide = await verifyPassword(contraseña, String(cirujano.contraseña));
+  if (!coincide) {
+    return fail("Credenciales inválidas", 401);
+  }
 
-  const response = ok({ usuario });
+  const token = await createSessionToken({
+    id: String(cirujano._id),
+    usuario: cirujano.nombreUsuario,
+  });
+
+  const response = ok({ usuario: cirujano.nombreUsuario });
   response.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

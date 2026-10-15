@@ -37,14 +37,26 @@ Los 4 esquemas viven en un solo archivo y se exportan listos para usarse:
 6. **Timestamps automáticos:** los esquemas usan `timestamps: true` (Mongoose crea `createdAt` / `updatedAt`). No los guardes manualmente.
 7. **Datos médicos (PHI):** no registrar datos clínicos en `console.log`, no exponer la cookie, y usar `https` en producción.
 
-## Sesión
+## Autenticación (monousuario)
 
-- Cookie `httpOnly` llamada `session`, firmada con `ADMIN_SESSION_SECRET` (HS256, jose).
-- Login: `POST /api/auth/login` (usuario + contraseña → bcrypt contra `ADMIN_PASSWORD_HASH` del `.env`).
-- Logout: `POST /api/auth/logout`. Ver sesión: `GET /api/auth/me`.
+Sistema de un solo cirujano: **una** colección `Cirujano`, sin roles ni registros múltiples.
 
-Pendiente por decidir: migrar la autenticación a la colección `Cirujano` de Mongo
-(`nombreUsuario` + `contraseña`), en lugar de variables de entorno.
+- **Credenciales en Mongo:** el cirujano se guarda en la colección `Cirujano` con
+  `nombreUsuario` y `contraseña` (hash bcrypt). Ya no se usan variables de entorno
+  para el usuario/contraseña.
+- **Seed (crear el usuario una sola vez):**
+  ```bash
+  npm run seed:cirujano -- --usuario dr.diaz --password 'tu-password'
+  ```
+  Usa `--force` para actualizar la contraseña de un usuario existente.
+- **Login:** `POST /api/auth/login` → busca el usuario, compara con `bcrypt.compare`
+  y firma un JWT con el `id` (subject) y el `nombreUsuario` del cirujano.
+- **Cookie:** `httpOnly`, `sameSite=lax`, `secure` en producción, nombre `session`,
+  firmada con `ADMIN_SESSION_SECRET` (HS256, jose), expira en 4 h.
+- **Logout:** `POST /api/auth/logout` borra la cookie. Ver sesión: `GET /api/auth/me`.
+- **Protección de rutas:** `proxy.ts` (raíz del proyecto) valida la cookie en
+  todas las rutas `/admin/:path*`; sin sesión válida redirige a `/admin/login`.
+  Si ya hay sesión y se visita el login, redirige a `/admin/mispacientes`.
 
 ## Endpoints actuales
 
