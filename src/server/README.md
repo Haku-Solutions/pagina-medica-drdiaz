@@ -18,7 +18,7 @@ Route Handler (app/api/*)  →  Service (lógica de negocio)  →  Repository (a
 | `auth/`        | `password.ts` (bcrypt) y `session.ts` (JWT con jose)                     |
 | `storage/`     | Modulo de Firebase Storage (`firebase.ts`)                               |
 | `repositories/`| Funciones puras de acceso a MongoDB/agregaciones (aun en construcción)   |
-| `services/`    | Lógica de negocio (aun en construcción)                                  |
+| `services/`    | Lógica de negocio: `pacientes.ts` normaliza/valida los datos del paciente |
 | `utils/`       | `apiResponse.ts`: `ok()`, `created()`, `fail()`                          |
 | `constants/`   | Enums y listas: `SEXO`, etc.                                             |
 
@@ -67,7 +67,36 @@ Sistema de un solo cirujano: **una** colección `Cirujano`, sin roles ni registr
 | `GET /api/auth/me`                 | funcional   |
 | `GET/POST /api/expedientes`        | funcional   |
 | `GET/PUT/DELETE /api/expedientes/[id]` | funcional |
+| `GET/POST /api/pacientes`          | funcional (solo los del cirujano con sesión; `?busqueda=&pagina=&porPagina=`) |
+| `GET/PUT/DELETE /api/pacientes/[id]` | funcional |
 | `POST /api/notas`                  | funcional   |
 | `GET/PUT/DELETE /api/notas/[id]`   | funcional   |
 | `POST /api/archivos`               | recibe el archivo como multipart; aún no sube a Firebase |
 | `GET /api/estadisticas`            | funcional   |
+
+## Pacientes (`/api/pacientes`)
+
+Un paciente se guarda como un `ExpedienteMedico` con `idCirujano` = cirujano de la
+sesión, así que cada cirujano solo ve sus propios pacientes. Todos los endpoints
+requieren sesión válida (si no → `401`).
+
+- **Listar:** `GET /api/pacientes?busqueda=&pagina=1&porPagina=10` →
+  `{ pacientes, total, pagina, totalPaginas, porPagina }`. La búsqueda filtra por
+  `nombreCompleto` o `curp` (ignora mayúsculas).
+- **Crear:** `POST /api/pacientes` (el nombre completo es obligatorio) → `201`.
+- **Detalle:** `GET /api/pacientes/[id]` → `{ paciente, notas }`.
+- **Actualizar:** `PUT /api/pacientes/[id]` (solo actualiza los campos enviados).
+- **Eliminar:** `DELETE /api/pacientes/[id]`.
+
+Campos aceptados por `POST`/`PUT` (la normalización vive en
+`services/pacientes.ts`):
+
+| Campo                 | Notas                                                        |
+| --------------------- | ------------------------------------------------------------ |
+| `nombreCompleto`      | Obligatorio al crear.                                        |
+| `fechaNacimiento`     | Fecha ISO; el servidor calcula `edad` a partir de ella.      |
+| `sexo`                | Acepta `"M"`/`"F"` o `hombre`/`mujer`.                       |
+| `curp`                | Se guarda en mayúsculas.                                     |
+| `estado`, `municipio`, `lugarResidencia`, `antecedentes` | Texto libre. |
+| `telefono`, `telefonoFamiliar` | Aceptan número o texto; se guardan solo los dígitos.  |
+| `familiarResponsable` | Nombre del familiar.
