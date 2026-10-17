@@ -16,6 +16,14 @@ export const env = {
     process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n") ?? "",
 
   ADMIN_SESSION_SECRET: () => required("ADMIN_SESSION_SECRET"),
+
+  // Opcional: lista de servidores DNS separados por coma (ej. "8.8.8.8,1.1.1.1").
+  // Solo se usa si el resolutor de Node no puede resolver `mongodb+srv`.
+  DNS_SERVERS: () =>
+    (process.env.DNS_SERVERS ?? "")
+      .split(",")
+      .map((server) => server.trim())
+      .filter(Boolean),
 };
 
 export function databaseName(): string {
