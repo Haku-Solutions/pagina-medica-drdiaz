@@ -1,5 +1,16 @@
+import dns from "node:dns";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+
+// Opcional: si Node no resuelve los registros SRV de `mongodb+srv`,
+// definir DNS_SERVERS (ej. "8.8.8.8,1.1.1.1") en el .env.
+if (process.env.DNS_SERVERS) {
+  dns.setServers(
+    process.env.DNS_SERVERS.split(",")
+      .map((server) => server.trim())
+      .filter(Boolean)
+  );
+}
 
 function getArg(name) {
   const index = process.argv.indexOf(`--${name}`);
