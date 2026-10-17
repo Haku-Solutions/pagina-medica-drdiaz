@@ -76,6 +76,8 @@ export default function CrearExpediente() {
   const router = useRouter();
   const [form, setForm] = useState<Formulario>(FORM_INICIAL);
   const [errores, setErrores] = useState<Errores>({});
+  const [enviando, setEnviando] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
 
   const edad = calcularEdad(form.fechaNacimiento);
 
@@ -110,21 +112,56 @@ export default function CrearExpediente() {
     return Object.keys(nuevos).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validar()) return;
 
-    const expediente = {
-      ...form,
-      edad,
-      ingreso: new Date().toISOString(),
-    };
+    setEnviando(true);
+    setErrorEnvio(null);
 
-    // TODO: enviar `expediente` al backend / API.
-    console.log("Expediente creado:", expediente);
+    try {
+      const respuesta = await fetch("/api/pacientes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombreCompleto: form.nombre,
+          fechaNacimiento: form.fechaNacimiento,
+          sexo:
+            form.sexo === "hombre"
+              ? "M"
+              : form.sexo === "mujer"
+                ? "F"
+                : undefined,
+          curp: form.curp,
+          estado: form.estadoNacimiento,
+          municipio: form.ciudadNacimiento,
+          lugarResidencia: form.residencia,
+          antecedentes: form.antecedentes,
+          telefono: form.telefono,
+          familiarResponsable: form.familiarNombre,
+          telefonoFamiliar: form.familiarTelefono,
+        }),
+      });
 
-    router.push("/admin/pacientes");
+      const json = await respuesta.json().catch(() => null);
+
+      if (respuesta.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!respuesta.ok || !json?.ok) {
+        setErrorEnvio(json?.error ?? "No se pudo guardar el expediente.");
+        return;
+      }
+
+      router.push("/admin/pacientes");
+    } catch {
+      setErrorEnvio("No se pudo conectar con el servidor.");
+    } finally {
+      setEnviando(false);
+    }
   };
 
   const ahora = new Date();
@@ -332,11 +369,18 @@ export default function CrearExpediente() {
           />
         </Campo>
 
+        {errorEnvio && (
+          <p className="crear-expediente-envio-error" role="alert">
+            {errorEnvio}
+          </p>
+        )}
+
         <div className="crear-expediente-actions">
           <button
             type="button"
             className="crear-expediente-btn crear-expediente-btn-back"
             onClick={() => router.back()}
+            disabled={enviando}
           >
             Atrás
           </button>
@@ -344,8 +388,9 @@ export default function CrearExpediente() {
           <button
             type="submit"
             className="crear-expediente-btn crear-expediente-btn-submit"
+            disabled={enviando}
           >
-            Crear Expediente
+            {enviando ? "Guardando…" : "Crear Expediente"}
           </button>
         </div>
       </form>

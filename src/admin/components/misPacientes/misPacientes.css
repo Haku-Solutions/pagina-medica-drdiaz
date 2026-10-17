@@ -145,6 +145,41 @@
   color: #4b5563;
 }
 
+.mis-pacientes-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 2rem 0;
+  text-align: center;
+  color: #b91c1c;
+}
+
+.mis-pacientes-error p {
+  margin: 0;
+}
+
+.mis-pacientes-retry {
+  padding: 0.5rem 1.25rem;
+
+  background-color: #0E518E;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mis-pacientes-retry:hover {
+  background-color: #0b3f6f;
+}
+
 .mis-pacientes-list {
   list-style: none;
   margin: 0;

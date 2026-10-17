@@ -184,6 +184,19 @@
   filter: brightness(0.92);
 }
 
+.crear-expediente-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.crear-expediente-envio-error {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #c0272d;
+}
+
 @media (min-width: 768px) {
   .crear-expediente {
     padding: 2rem 1rem;

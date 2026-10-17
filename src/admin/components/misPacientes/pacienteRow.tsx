@@ -16,14 +16,14 @@ export default function PacienteRow({
       <HiClipboardDocumentList className="paciente-row-icon" />
 
       <div className="paciente-row-info">
-        <p className="paciente-row-nombre">{paciente.nombre}</p>
+        <p className="paciente-row-nombre">{paciente.nombreCompleto}</p>
       </div>
 
       <button
         type="button"
         className="paciente-row-ver"
         onClick={() => onVerExpediente?.(paciente)}
-        aria-label={`Ver expediente de ${paciente.nombre}`}
+        aria-label={`Ver expediente de ${paciente.nombreCompleto}`}
       >
         Ver Expediente
       </button>
