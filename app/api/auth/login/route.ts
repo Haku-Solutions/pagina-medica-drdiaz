@@ -19,7 +19,12 @@ export async function POST(request: NextRequest) {
     return fail("Faltan credenciales", 400);
   }
 
-  await connectDB();
+  try {
+    await connectDB();
+  } catch (error) {
+    console.error("No se pudo conectar a MongoDB:", error);
+    return fail("No se pudo conectar a la base de datos", 503);
+  }
 
   const cirujano = await Cirujano.findOne({ nombreUsuario }).lean();
   if (!cirujano) {
