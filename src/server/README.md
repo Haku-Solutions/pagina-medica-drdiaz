@@ -56,7 +56,7 @@ Sistema de un solo cirujano: **una** colección `Cirujano`, sin roles ni registr
 - **Logout:** `POST /api/auth/logout` borra la cookie. Ver sesión: `GET /api/auth/me`.
 - **Protección de rutas:** `proxy.ts` (raíz del proyecto) valida la cookie en
   todas las rutas `/admin/:path*`; sin sesión válida redirige a `/admin/login`.
-  Si ya hay sesión y se visita el login, redirige a `/admin/mispacientes`.
+  Si ya hay sesión y se visita el login, redirige a `/admin/pacientes`.
 
 ## Endpoints actuales
 

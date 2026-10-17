@@ -124,7 +124,7 @@ export default function CrearExpediente() {
     // TODO: enviar `expediente` al backend / API.
     console.log("Expediente creado:", expediente);
 
-    router.push("/admin/mispacientes");
+    router.push("/admin/pacientes");
   };
 
   const ahora = new Date();
