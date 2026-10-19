@@ -10,12 +10,12 @@ export async function GET(request: NextRequest) {
 
   await connectDB();
 
-  const q = request.nextUrl.searchParams.get("q")?.trim() ?? "";
-  const filter = q
+  const query = request.nextUrl.searchParams.get("query")?.trim() ?? "";
+  const filter = query
     ? {
         $or: [
-          { nombreCompleto: { $regex: q, $options: "i" } },
-          { curp: { $regex: q, $options: "i" } },
+          { nombreCompleto: { $regex: query, $options: "i" } },
+          { curp: { $regex: query, $options: "i" } },
         ],
       }
     : {};
