@@ -336,9 +336,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <h2 className="crear-expediente-section">
-          2. Datos del Familiar responsable
-        </h2>
+        <h2 className="crear-expediente-section">2. Datos del Familiar responsable</h2>
 
         <Campo id="familiarNombre" label="Nombre Completo del Familiar Responsable">
           <input
