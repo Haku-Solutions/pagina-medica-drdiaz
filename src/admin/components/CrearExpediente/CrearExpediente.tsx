@@ -217,54 +217,6 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="fechaNacimiento" label="Fecha de Nacimiento">
-          <input
-            id="fechaNacimiento"
-            type="date"
-            value={form.fechaNacimiento}
-            max={new Date().toISOString().split("T")[0]}
-            onChange={(e) => actualizar("fechaNacimiento", e.target.value)}
-            className="crear-expediente-input crear-expediente-input-short"
-          />
-        </Campo>
-
-        <Campo id="edad" label="Edad">
-          <input
-            id="edad"
-            type="text"
-            value={edad}
-            readOnly
-            tabIndex={-1}
-            className="crear-expediente-input crear-expediente-input-tiny"
-          />
-        </Campo>
-
-        <fieldset className="crear-expediente-field crear-expediente-sexo m-20">
-          <legend className="crear-expediente-label">Sexo</legend>
-
-          <label className="crear-expediente-radio">
-            <input
-              type="radio"
-              name="sexo"
-              value="hombre"
-              checked={form.sexo === "hombre"}
-              onChange={() => actualizar("sexo", "hombre")}
-            />
-            <span>Hombre</span>
-          </label>
-
-          <label className="crear-expediente-radio">
-            <input
-              type="radio"
-              name="sexo"
-              value="mujer"
-              checked={form.sexo === "mujer"}
-              onChange={() => actualizar("sexo", "mujer")}
-            />
-            <span>Mujer</span>
-          </label>
-        </fieldset>
-
         <Campo id="ciudadNacimiento" label="Ciudad (Lugar de Nacimiento)">
           <input
             id="ciudadNacimiento"
