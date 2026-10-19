@@ -228,17 +228,6 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="estadoNacimiento" label="Estado (Lugar de Nacimiento)">
-          <input
-            id="estadoNacimiento"
-            type="text"
-            value={form.estadoNacimiento}
-            onChange={(e) => actualizar("estadoNacimiento", e.target.value)}
-            placeholder="Estado (Lugar de Nacimiento)"
-            className="crear-expediente-input"
-          />
-        </Campo>
-
         <Campo id="curp" label="CURP" error={errores.curp}>
           <input
             id="curp"
@@ -254,17 +243,6 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="residencia" label="Lugar de Residencia">
-          <input
-            id="residencia"
-            type="text"
-            value={form.residencia}
-            onChange={(e) => actualizar("residencia", e.target.value)}
-            placeholder="Ciudad (Lugar de Residencia)"
-            className="crear-expediente-input"
-          />
-        </Campo>
-
         <Campo id="antecedentes" label="Antecedentes">
           <textarea
             id="antecedentes"
@@ -273,18 +251,6 @@ export default function CrearExpediente() {
             placeholder="Antecedentes"
             className="crear-expediente-input crear-expediente-textarea"
             rows={5}
-          />
-        </Campo>
-
-        <Campo id="telefono" label="Teléfono" error={errores.telefono}>
-          <input
-            id="telefono"
-            type="tel"
-            inputMode="numeric"
-            value={form.telefono}
-            onChange={(e) => actualizar("telefono", soloDigitos(e.target.value))}
-            placeholder="Teléfono (10 dígitos)"
-            className="crear-expediente-input"
           />
         </Campo>
 
