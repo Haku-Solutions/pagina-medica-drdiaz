@@ -202,7 +202,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <fieldset className="crear-expediente-field crear-expediente-sexo m-20">
+        <fieldset className="crear-expediente-field crear-expediente-sexo mb-10">
           <legend className="crear-expediente-label">Sexo</legend>
 
           <label className="crear-expediente-radio">
