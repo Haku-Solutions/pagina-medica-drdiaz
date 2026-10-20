@@ -19,7 +19,11 @@ export const env = {
 };
 
 export function databaseName(): string {
-  const url = new URL(env.DATABASE_URL());
-  const path = url.pathname.replace(/^\/|\/$/g, "");
-  return path || "Expediente";
+  const uri = env.DATABASE_URL();
+  const withoutScheme = uri.replace(/^mongodb(?:\+srv)?:\/\//, "");
+  const slashIndex = withoutScheme.indexOf("/");
+  if (slashIndex === -1) return "Expediente";
+  const path = withoutScheme.slice(slashIndex + 1);
+  const name = decodeURIComponent(path.split("?")[0].trim());
+  return name || "Expediente";
 }

@@ -6,6 +6,15 @@ function getArg(name) {
   return index !== -1 ? process.argv[index + 1] : undefined;
 }
 
+function databaseName(uri) {
+  const withoutScheme = uri.replace(/^mongodb(?:\+srv)?:\/\//, "");
+  const slashIndex = withoutScheme.indexOf("/");
+  if (slashIndex === -1) return "Expediente";
+  const path = withoutScheme.slice(slashIndex + 1);
+  const name = decodeURIComponent(path.split("?")[0].trim());
+  return name || "Expediente";
+}
+
 const uri = process.env.DATABASE_URL;
 if (!uri) {
   console.error("Falta DATABASE_URL. Ejecuta con: node --env-file=.env scripts/seed-cirujano.mjs ...");
@@ -34,7 +43,7 @@ const cirujanoSchema = new mongoose.Schema(
 const Cirujano = mongoose.model("Cirujano", cirujanoSchema);
 
 async function main() {
-  await mongoose.connect(uri);
+  await mongoose.connect(uri, { dbName: databaseName(uri) });
 
   const existente = await Cirujano.findOne({ nombreUsuario });
   if (existente && !force) {

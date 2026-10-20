@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { env } from "./config/env";
+import { databaseName, env } from "./config/env";
 
 declare global {
   var _mongo: Promise<typeof mongoose> | undefined;
@@ -7,7 +7,9 @@ declare global {
 
 export async function connectDB(): Promise<typeof mongoose> {
   if (!globalThis._mongo) {
-    globalThis._mongo = mongoose.connect(env.DATABASE_URL());
+    globalThis._mongo = mongoose.connect(env.DATABASE_URL(), {
+      dbName: databaseName(),
+    });
   }
   await globalThis._mongo;
   return mongoose;
