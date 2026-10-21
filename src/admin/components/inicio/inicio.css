@@ -1,0 +1,276 @@
+.inicio {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  box-sizing: border-box;
+
+  color: #01000B;
+
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.inicio-page {
+  min-height: 100vh;
+
+  background: linear-gradient(180deg, #f1f4fc 0%, #b8c4ec 100%);
+}
+
+/* Header */
+
+.inicio-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.inicio-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.inicio-titulos {
+  flex: 1;
+  min-width: 0;
+}
+
+.inicio-titulo {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.inicio-subtitulo {
+  margin: 0.35rem 0 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.inicio-actualizar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.1rem;
+  flex-shrink: 0;
+
+  background-color: #1C2B48;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-actualizar:hover:not(:disabled) {
+  background-color: #16233a;
+}
+
+.inicio-actualizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inicio-actualizar .girando {
+  animation: inicio-giro 1s linear infinite;
+}
+
+@keyframes inicio-giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estados */
+
+.inicio-cargando {
+  padding: 3rem 0;
+  text-align: center;
+  color: #4b5563;
+}
+
+.inicio-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+
+  background-color: #fdecec;
+  border-left: 4px solid #dc2626;
+  border-radius: 8px;
+
+  color: #991b1b;
+}
+
+.inicio-error p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.inicio-error button {
+  padding: 0.5rem 1rem;
+
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-error button:hover {
+  background-color: #b91c1c;
+}
+
+/* Tarjetas de totales */
+
+.inicio-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inicio-tarjeta {
+  padding: 1.25rem 1.5rem;
+
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(28, 43, 72, 0.12);
+}
+
+.inicio-tarjeta-icono {
+  font-size: 1.5rem;
+  color: #1C2B48;
+}
+
+.inicio-tarjeta-valor {
+  margin: 0.75rem 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.inicio-tarjeta-etiqueta {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Grilla de gráficas */
+
+.inicio-grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+}
+
+.inicio-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(28, 43, 72, 0.12);
+}
+
+.inicio-panel-ancho {
+  grid-column: 1 / -1;
+}
+
+.inicio-panel-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.inicio-panel-icono {
+  font-size: 1.25rem;
+  color: #1C2B48;
+}
+
+.inicio-panel-subtitulo {
+  margin: 0.35rem 0 1.25rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Anillo */
+
+.grafica-anillo-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grafica-anillo-contenedor .grafica-svg {
+  max-width: 220px;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .inicio {
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .inicio-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .inicio-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .inicio-actualizar {
+    height: 40px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .inicio-titulo {
+    font-size: 1.5rem;
+  }
+
+  .inicio-subtitulo {
+    font-size: 0.875rem;
+  }
+
+  .inicio-grilla {
+    grid-template-columns: 1fr;
+  }
+
+  .inicio-panel {
+    padding: 1.25rem;
+  }
+}

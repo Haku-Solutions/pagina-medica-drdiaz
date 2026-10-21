@@ -27,6 +27,29 @@ Todos los endpoints viven bajo `app/api/`. Son Route Handlers de Next.js y se ex
 | `/api/archivos`          | `POST` (multipart)          | Subida de adjuntos (aun sin Firebase)    |
 | `/api/estadisticas`      | `GET`                       | Resumen para el dashboard                |
 
+### `/api/estadisticas`
+
+Devuelve los agregados que consume la vista `/admin/inicio`. Todas las series
+usan la forma `{ etiqueta: string, valor: number }`:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "totalExpedientes": 0,
+    "totalCirugias": 0,
+    "cirugiasPorTipo": [{ "etiqueta": "Apendicectomía", "valor": 4 }],
+    "lugaresMasComunes": [{ "etiqueta": "Hospital Diamante", "valor": 4 }],
+    "porSexo": [{ "etiqueta": "M", "valor": 3 }],
+    "cirugiasPorMes": [{ "etiqueta": "2026-10", "valor": 1 }]
+  }
+}
+```
+
+`cirugiasPorMes` devuelve siempre los últimos 12 meses (incluidos los que
+tienen valor `0`), para que la gráfica de área mantenga una línea de tiempo
+continua.
+
 ## Cómo agregar un endpoint
 
 1. Crea `app/api/<recurso>/route.ts` (o `[id]/route.ts` si es por recurso).

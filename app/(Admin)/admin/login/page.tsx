@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
       const destino = new URLSearchParams(window.location.search).get(
         "redirect"
       );
-      router.replace(destino?.startsWith("/") ? destino : "/admin/mispacientes");
+      router.replace(destino?.startsWith("/") ? destino : "/admin/inicio");
       router.refresh();
     } catch {
       setError("Error de conexión. Intenta de nuevo.");

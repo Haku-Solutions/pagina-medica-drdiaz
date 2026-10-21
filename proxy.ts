@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/src/server/auth/session";
 
 const LOGIN_PATH = "/admin/login";
+const INICIO_PATH = "/admin/inicio";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -10,7 +11,7 @@ export async function proxy(request: NextRequest) {
 
   if (pathname === LOGIN_PATH) {
     if (session) {
-      return NextResponse.redirect(new URL("/admin/mispacientes", request.url));
+      return NextResponse.redirect(new URL(INICIO_PATH, request.url));
     }
     return NextResponse.next();
   }
