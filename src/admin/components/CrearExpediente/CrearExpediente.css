@@ -189,6 +189,7 @@
   }
 
   .crear-expediente-card {
+    max-width: 880px;
     border-radius: 8px;
   }
 }
