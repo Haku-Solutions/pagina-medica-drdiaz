@@ -139,14 +139,6 @@ export default function CrearExpediente() {
         noValidate
       >
         <header className="crear-expediente-header">
-          <Image
-            src="/assets/logos/logo_drdiaz.svg"
-            alt="Dr. José Díaz"
-            width={48}
-            height={48}
-            className="crear-expediente-logo"
-          />
-
           <h1 className="crear-expediente-title">Crear Expediente</h1>
         </header>
 

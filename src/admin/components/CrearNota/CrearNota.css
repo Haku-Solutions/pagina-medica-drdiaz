@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background: #d9dde1;
+  background: linear-gradient(180deg, #f1f4fc 0%, #b8c4ec 100%);
   color: #111;
   font-family: "Montserrat", sans-serif;
 }
@@ -13,7 +13,6 @@
   max-width: 520px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 2.5rem;
-  background: linear-gradient(180deg, #e8ebee 0%, #e8ebee 70%, #c8ccfa 100%);
 }
 
 .crear-nota-header {
@@ -24,12 +23,10 @@
 }
 
 .crear-nota-header h1 {
-  width: 100%;
   margin: 0;
   color: #111;
   font-size: 1.5rem;
   font-weight: 800;
-  line-height: 1.1;
   text-align: center;
 }
 
