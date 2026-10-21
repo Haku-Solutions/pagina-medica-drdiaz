@@ -220,6 +220,125 @@
   font-size: 0.875rem;
 }
 
+/* Cabecera de panel con selector */
+
+.inicio-panel-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inicio-panel-cabecera .inicio-panel-subtitulo {
+  margin-bottom: 0;
+}
+
+.inicio-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inicio-selector-etiqueta {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inicio-selector-select {
+  min-width: 15rem;
+  max-width: 100%;
+  height: 42px;
+  padding: 0 2.25rem 0 0.9rem;
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C2B48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 16px 16px;
+
+  border: 2px solid #d7dde8;
+  border-radius: 10px;
+
+  color: #01000B;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.inicio-selector-select:focus {
+  outline: none;
+  border-color: #0E518E;
+}
+
+.inicio-selector-select:hover {
+  border-color: #a7c7e7;
+}
+
+/* Botón para quitar la selección de cirugía */
+
+.inicio-limpiar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 38px;
+  padding: 0 0.95rem;
+  flex-shrink: 0;
+
+  background-color: #eef2f9;
+  color: #1C2B48;
+  border: 2px solid #d7dde8;
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.inicio-limpiar:hover {
+  background-color: #e2e9f5;
+  border-color: #a7c7e7;
+}
+
+/* Sub-grilla del detalle por cirugía */
+
+.inicio-subgrilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.inicio-subpanel {
+  min-width: 0;
+}
+
+.inicio-subpanel-titulo {
+  margin: 0 0 0.75rem;
+  color: #1C2B48;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* Separación entre la cabecera del panel y la gráfica que sigue */
+
+.inicio-panel-cabecera ~ .grafica-svg,
+.inicio-panel-cabecera ~ .inicio-subgrilla {
+  margin-top: 1.25rem;
+}
+
 /* Anillo */
 
 .grafica-anillo-contenedor {
@@ -272,5 +391,15 @@
 
   .inicio-panel {
     padding: 1.25rem;
+  }
+
+  .inicio-panel-cabecera {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inicio-selector-select {
+    width: 100%;
+    min-width: 0;
   }
 }

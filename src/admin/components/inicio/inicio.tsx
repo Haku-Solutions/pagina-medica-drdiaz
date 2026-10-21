@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   HiArrowPath,
@@ -9,12 +9,20 @@ import {
   HiMapPin,
   HiScissors,
   HiUserGroup,
+  HiXMark,
 } from "react-icons/hi2";
 import GraficaAnillo from "./graficas/GraficaAnillo";
 import GraficaArea from "./graficas/GraficaArea";
 import GraficaBarras from "./graficas/GraficaBarras";
+import GraficaHistograma from "./graficas/GraficaHistograma";
 import type { DatoGrafica } from "./graficas/utils";
 import "./inicio.css";
+
+interface DesglosePorTipo {
+  tipo: string;
+  etiqueta: string;
+  valor: number;
+}
 
 interface Estadisticas {
   totalExpedientes: number;
@@ -23,6 +31,8 @@ interface Estadisticas {
   lugaresMasComunes: DatoGrafica[];
   porSexo: DatoGrafica[];
   cirugiasPorMes: DatoGrafica[];
+  cirugiasPorTipoMes: DesglosePorTipo[];
+  cirugiasPorTipoLugar: DesglosePorTipo[];
 }
 
 const ETIQUETA_SEXO: Record<string, string> = {
@@ -34,6 +44,7 @@ export default function Inicio() {
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState<string | null>(null);
 
   const cargar = async () => {
     setCargando(true);
@@ -63,15 +74,70 @@ export default function Inicio() {
     void cargar();
   }, []);
 
-  const porSexo = (estadisticas?.porSexo ?? []).map((dato) => ({
-    ...dato,
-    etiqueta: ETIQUETA_SEXO[dato.etiqueta] ?? dato.etiqueta,
-  }));
+  /** Si el tipo elegido deja de existir (por ejemplo tras recargar), se limpia. */
+  useEffect(() => {
+    if (!tipoSeleccionado || !estadisticas) return;
 
-  const totalCirugiasMes = estadisticas?.cirugiasPorMes.reduce(
-    (suma, dato) => suma + dato.valor,
-    0,
-  ) ?? 0;
+    const sigueExistiendo = estadisticas.cirugiasPorTipo.some(
+      (dato) => dato.etiqueta === tipoSeleccionado,
+    );
+
+    if (!sigueExistiendo) setTipoSeleccionado(null);
+  }, [estadisticas, tipoSeleccionado]);
+
+  const porSexo = useMemo(
+    () =>
+      (estadisticas?.porSexo ?? []).map((dato) => ({
+        ...dato,
+        etiqueta: ETIQUETA_SEXO[dato.etiqueta] ?? dato.etiqueta,
+      })),
+    [estadisticas],
+  );
+
+  /**
+   * Al elegir un tipo de cirugía se arma el histograma de ese tipo:
+   * distribución por mes (ventana de 12 meses) y por lugar de cirugía.
+   */
+  const detallePorTipo = useMemo(() => {
+    if (!estadisticas || !tipoSeleccionado) {
+      return { porMes: [] as DatoGrafica[], porLugar: [] as DatoGrafica[] };
+    }
+
+    const porMes = new Map<string, number>();
+    for (const item of estadisticas.cirugiasPorTipoMes) {
+      if (item.tipo !== tipoSeleccionado) continue;
+      porMes.set(item.etiqueta, (porMes.get(item.etiqueta) ?? 0) + item.valor);
+    }
+
+    const porLugar = new Map<string, number>();
+    for (const item of estadisticas.cirugiasPorTipoLugar) {
+      if (item.tipo !== tipoSeleccionado) continue;
+      porLugar.set(item.etiqueta, (porLugar.get(item.etiqueta) ?? 0) + item.valor);
+    }
+
+    const meses = estadisticas.cirugiasPorMes.map((mes) => ({
+      etiqueta: mes.etiqueta,
+      valor: porMes.get(mes.etiqueta) ?? 0,
+    }));
+
+    const lugares = [...porLugar.entries()]
+      .map(([etiqueta, valor]) => ({ etiqueta, valor }))
+      .sort((a, b) => b.valor - a.valor)
+      .slice(0, 8);
+
+    return { porMes: meses, porLugar: lugares };
+  }, [estadisticas, tipoSeleccionado]);
+
+  const totalCirugiasMes = useMemo(
+    () =>
+      estadisticas?.cirugiasPorMes.reduce((suma, dato) => suma + dato.valor, 0) ?? 0,
+    [estadisticas],
+  );
+
+  /** Pulsar una barra del histograma selecciona ese tipo de cirugía. */
+  const seleccionarTipo = useCallback((tipo: string) => {
+    setTipoSeleccionado((actual) => (actual === tipo ? null : tipo));
+  }, []);
 
   return (
     <section className="inicio">
@@ -160,19 +226,96 @@ export default function Inicio() {
               />
             </article>
 
-            <article className="inicio-panel">
-              <h2 className="inicio-panel-titulo">
-                <HiScissors className="inicio-panel-icono" aria-hidden="true" />
-                Cirugías por tipo
-              </h2>
-              <p className="inicio-panel-subtitulo">
-                Procedimientos más realizados.
-              </p>
-              <GraficaBarras
+            <article className="inicio-panel inicio-panel-ancho">
+              <div className="inicio-panel-cabecera">
+                <div>
+                  <h2 className="inicio-panel-titulo">
+                    <HiScissors className="inicio-panel-icono" aria-hidden="true" />
+                    Cirugías por tipo
+                  </h2>
+                  <p className="inicio-panel-subtitulo">
+                    Distribución de procedimientos registrados. Pulsa una barra
+                    para ver el detalle de esa cirugía.
+                  </p>
+                </div>
+
+                <label className="inicio-selector">
+                  <span className="inicio-selector-etiqueta">
+                    Ver histograma por cirugía
+                  </span>
+                  <select
+                    className="inicio-selector-select"
+                    value={tipoSeleccionado ?? ""}
+                    onChange={(evento) =>
+                      setTipoSeleccionado(evento.target.value || null)
+                    }
+                  >
+                    <option value="">Todas las cirugías</option>
+                    {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
+                      <option key={dato.etiqueta} value={dato.etiqueta}>
+                        {dato.etiqueta} ({dato.valor})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <GraficaHistograma
                 datos={estadisticas?.cirugiasPorTipo ?? []}
                 etiquetaVacia="Todavía no hay tipos de cirugía registrados."
+                seleccionada={tipoSeleccionado}
+                onSeleccionar={seleccionarTipo}
               />
             </article>
+
+            {tipoSeleccionado && (
+              <article className="inicio-panel inicio-panel-ancho">
+                <div className="inicio-panel-cabecera">
+                  <div>
+                    <h2 className="inicio-panel-titulo">
+                      <HiChartBar className="inicio-panel-icono" aria-hidden="true" />
+                      Histograma de {tipoSeleccionado}
+                    </h2>
+                    <p className="inicio-panel-subtitulo">
+                      Reparto de este tipo de cirugía por sede y evolución
+                      mensual.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="inicio-limpiar"
+                    onClick={() => setTipoSeleccionado(null)}
+                  >
+                    <HiXMark aria-hidden="true" />
+                    <span>Quitar selección</span>
+                  </button>
+                </div>
+
+                <div className="inicio-subgrilla">
+                  <section className="inicio-subpanel">
+                    <h3 className="inicio-subpanel-titulo">
+                      Por sede quirúrgica
+                    </h3>
+                    <GraficaHistograma
+                      datos={detallePorTipo.porLugar}
+                      color="#00A05A"
+                      etiquetaVacia="Este tipo de cirugía no tiene registros por sede."
+                    />
+                  </section>
+
+                  <section className="inicio-subpanel">
+                    <h3 className="inicio-subpanel-titulo">
+                      Por mes (últimos 12 meses)
+                    </h3>
+                    <GraficaArea
+                      datos={detallePorTipo.porMes}
+                      etiquetaVacia="Sin cirugías de este tipo en los últimos 12 meses."
+                    />
+                  </section>
+                </div>
+              </article>
+            )}
 
             <article className="inicio-panel">
               <h2 className="inicio-panel-titulo">
