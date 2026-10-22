@@ -24,6 +24,12 @@ interface DesglosePorTipo {
   valor: number;
 }
 
+interface DesglosePorLugar {
+  lugar: string;
+  etiqueta: string;
+  valor: number;
+}
+
 interface Estadisticas {
   totalExpedientes: number;
   totalCirugias: number;
@@ -32,6 +38,7 @@ interface Estadisticas {
   porSexo: DatoGrafica[];
   cirugiasPorMes: DatoGrafica[];
   cirugiasPorTipoMes: DesglosePorTipo[];
+  cirugiasPorLugarMes: DesglosePorLugar[];
 }
 
 const ETIQUETA_SEXO: Record<string, string> = {
@@ -44,6 +51,7 @@ export default function Inicio() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tipoSeleccionado, setTipoSeleccionado] = useState<string | null>(null);
+  const [lugarSeleccionado, setLugarSeleccionado] = useState<string | null>(null);
 
   const cargar = async () => {
     setCargando(true);
@@ -84,6 +92,17 @@ export default function Inicio() {
     if (!sigueExistiendo) setTipoSeleccionado(null);
   }, [estadisticas, tipoSeleccionado]);
 
+  /** Si el lugar elegido deja de existir (por ejemplo tras recargar), se limpia. */
+  useEffect(() => {
+    if (!lugarSeleccionado || !estadisticas) return;
+
+    const sigueExistiendo = estadisticas.lugaresMasComunes.some(
+      (dato) => dato.etiqueta === lugarSeleccionado,
+    );
+
+    if (!sigueExistiendo) setLugarSeleccionado(null);
+  }, [estadisticas, lugarSeleccionado]);
+
   const porSexo = useMemo(
     () =>
       (estadisticas?.porSexo ?? []).map((dato) => ({
@@ -116,6 +135,26 @@ export default function Inicio() {
     return { porMes: meses };
   }, [estadisticas, tipoSeleccionado]);
 
+  /** Al elegir un lugar se arma su evolución mensual (ventana de 12 meses). */
+  const detallePorLugar = useMemo(() => {
+    if (!estadisticas || !lugarSeleccionado) {
+      return { porMes: [] as DatoGrafica[] };
+    }
+
+    const porMes = new Map<string, number>();
+    for (const item of estadisticas.cirugiasPorLugarMes) {
+      if (item.lugar !== lugarSeleccionado) continue;
+      porMes.set(item.etiqueta, (porMes.get(item.etiqueta) ?? 0) + item.valor);
+    }
+
+    const meses = estadisticas.cirugiasPorMes.map((mes) => ({
+      etiqueta: mes.etiqueta,
+      valor: porMes.get(mes.etiqueta) ?? 0,
+    }));
+
+    return { porMes: meses };
+  }, [estadisticas, lugarSeleccionado]);
+
   const totalCirugiasMes = useMemo(
     () =>
       estadisticas?.cirugiasPorMes.reduce((suma, dato) => suma + dato.valor, 0) ?? 0,
@@ -125,6 +164,11 @@ export default function Inicio() {
   /** Pulsar una barra del histograma selecciona ese tipo de cirugía. */
   const seleccionarTipo = useCallback((tipo: string) => {
     setTipoSeleccionado((actual) => (actual === tipo ? null : tipo));
+  }, []);
+
+  /** Pulsar una barra de lugares selecciona esa sede. */
+  const seleccionarLugar = useCallback((lugar: string) => {
+    setLugarSeleccionado((actual) => (actual === lugar ? null : lugar));
   }, []);
 
   return (
@@ -277,17 +321,66 @@ export default function Inicio() {
               )}
             </article>
             <article className="inicio-panel">
-              <h2 className="inicio-panel-titulo">
-                <HiMapPin className="inicio-panel-icono" aria-hidden="true" />
-                Lugares más frecuentes
-              </h2>
-              <p className="inicio-panel-subtitulo">
-                Sedes donde se realizaron las cirugías.
-              </p>
-              <GraficaBarras
-                datos={estadisticas?.lugaresMasComunes ?? []}
-                etiquetaVacia="Todavía no hay lugares registrados."
-              />
+              <div className="inicio-panel-cabecera">
+                <div>
+                  <h2 className="inicio-panel-titulo">
+                    <HiMapPin className="inicio-panel-icono" aria-hidden="true" />
+                    {lugarSeleccionado
+                      ? `Lugares más frecuentes: ${lugarSeleccionado}`
+                      : "Lugares más frecuentes"}
+                  </h2>
+                  <p className="inicio-panel-subtitulo">
+                    {lugarSeleccionado
+                      ? "Evolución mensual de cirugías en esta sede."
+                      : "Selecciona una sede para ver su evolución mensual."}
+                  </p>
+                </div>
+
+                {lugarSeleccionado ? (
+                  <button
+                    type="button"
+                    className="inicio-limpiar"
+                    onClick={() => setLugarSeleccionado(null)}
+                  >
+                    <HiXMark aria-hidden="true" />
+                    <span>Ver todas</span>
+                  </button>
+                ) : (
+                  <label className="inicio-selector">
+                    <span className="inicio-selector-etiqueta">
+                      Ver por sede
+                    </span>
+                    <select
+                      className="inicio-selector-select"
+                      value={lugarSeleccionado ?? ""}
+                      onChange={(evento) =>
+                        setLugarSeleccionado(evento.target.value || null)
+                      }
+                    >
+                      <option value="">Seleccionar...</option>
+                      {(estadisticas?.lugaresMasComunes ?? []).map((dato) => (
+                        <option key={dato.etiqueta} value={dato.etiqueta}>
+                          {dato.etiqueta} ({dato.valor})
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+              </div>
+
+              {lugarSeleccionado ? (
+                <GraficaArea
+                  datos={detallePorLugar.porMes}
+                  etiquetaVacia="Sin cirugías en esta sede en los últimos 12 meses."
+                />
+              ) : (
+                <GraficaBarras
+                  datos={estadisticas?.lugaresMasComunes ?? []}
+                  etiquetaVacia="Todavía no hay lugares registrados."
+                  seleccionada={lugarSeleccionado}
+                  onSeleccionar={seleccionarLugar}
+                />
+              )}
             </article>
 
             <article className="inicio-panel">

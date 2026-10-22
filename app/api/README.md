@@ -45,6 +45,9 @@ cirugía agrega la clave `tipo`:
     "cirugiasPorMes": [{ "etiqueta": "2026-10", "valor": 1 }],
     "cirugiasPorTipoMes": [
       { "tipo": "Apendicectomía", "etiqueta": "2026-10", "valor": 2 }
+    ],
+    "cirugiasPorLugarMes": [
+      { "lugar": "Hospital Diamante", "etiqueta": "2026-10", "valor": 3 }
     ]
   }
 }
@@ -53,9 +56,10 @@ cirugía agrega la clave `tipo`:
 - `cirugiasPorMes` devuelve siempre los últimos 12 meses (incluidos los que
   tienen valor `0`), para que la gráfica de área mantenga una línea de tiempo
   continua.
-- `cirugiasPorTipoMes` alimenta el histograma por cirugía: al elegir un tipo en
-  el selector, la vista muestra su evolución mensual (acotada a la misma
-  ventana de 12 meses).
+- `cirugiasPorTipoMes` alimenta la vista al elegir un tipo de cirugía: muestra
+  su evolución mensual (acotada a la misma ventana de 12 meses).
+- `cirugiasPorLugarMes` alimenta la vista al elegir una sede quirúrgica:
+  muestra su evolución mensual (acotada a la misma ventana de 12 meses).
 
 ## Cómo agregar un endpoint
 

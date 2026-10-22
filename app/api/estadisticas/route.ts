@@ -25,6 +25,14 @@ interface DesglosePorTipo {
   total: number;
 }
 
+interface DesglosePorLugar {
+  _id: {
+    lugar: string | null;
+    periodo: string | null;
+  };
+  total: number;
+}
+
 /** Genera los últimos N meses en formato "YYYY-MM", del más antiguo al más reciente. */
 function ultimosMeses(cantidad: number): string[] {
   const hoy = new Date();
@@ -64,6 +72,15 @@ function aDesglosePorTipo(agregados: DesglosePorTipo[]) {
   }));
 }
 
+/** Normaliza un desglose `lugar` + `periodo` al formato `{ lugar, etiqueta, valor }`. */
+function aDesglosePorLugar(agregados: DesglosePorLugar[]) {
+  return agregados.map(({ _id, total }) => ({
+    lugar: _id.lugar ?? "Sin especificar",
+    etiqueta: _id.periodo ?? "Sin especificar",
+    valor: total,
+  }));
+}
+
 export async function GET() {
   const session = await getSessionUser();
   if (!session) return fail("No autorizado", 401);
@@ -81,6 +98,7 @@ export async function GET() {
     porSexo,
     cirugiasPorMes,
     cirugiasPorTipoMes,
+    cirugiasPorLugarMes,
   ] = await Promise.all([
     NotaOperatoria.aggregate<ConteoAgrupado>([
       { $match: { cirugiaProgramada: { $nin: [null, ""] } } },
@@ -131,6 +149,26 @@ export async function GET() {
       },
       { $sort: { "_id.periodo": 1 } },
     ]),
+    NotaOperatoria.aggregate<DesglosePorLugar>([
+      {
+        $match: {
+          lugarCirugia: { $nin: [null, ""] },
+          fechaCirugia: { $gte: inicioDeVentana(MESES_EN_VENTANA) },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            lugar: "$lugarCirugia",
+            periodo: {
+              $dateToString: { format: "%Y-%m", date: "$fechaCirugia" },
+            },
+          },
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.periodo": 1 } },
+    ]),
   ]);
 
   const conteoPorMes = new Map(cirugiasPorMes.map(({ _id, total }) => [_id, total]));
@@ -148,5 +186,6 @@ export async function GET() {
     porSexo: aDatosGrafica(porSexo),
     cirugiasPorMes: cirugiasPorMesCompletos,
     cirugiasPorTipoMes: aDesglosePorTipo(cirugiasPorTipoMes),
+    cirugiasPorLugarMes: aDesglosePorLugar(cirugiasPorLugarMes),
   });
 }
