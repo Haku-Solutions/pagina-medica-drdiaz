@@ -18,9 +18,9 @@ interface GraficaHistogramaProps {
   onSeleccionar?: (etiqueta: string) => void;
 }
 
-const MARGEN = { superior: 18, izquierda: 40, derecha: 14 };
-const ALTO_MINIMO = 250;
-const ALTO_MAXIMO = 340;
+const MARGEN = { superior: 12, izquierda: 36, derecha: 10 };
+const ALTO_MINIMO = 180;
+const ALTO_MAXIMO = 230;
 /** Ancho máximo de una barra, para que una sola categoría no ocupe todo. */
 const ANCHO_MAXIMO_BARRA = 90;
 /** Ancho aproximado en píxeles de un carácter a 10.5px. */
@@ -46,10 +46,10 @@ export default function GraficaHistograma({
   const { ref, ancho } = useAnchoContenedor<HTMLDivElement>(640);
 
   const alto = Math.round(
-    Math.min(ALTO_MAXIMO, Math.max(ALTO_MINIMO, ancho * 0.82)),
+    Math.min(ALTO_MAXIMO, Math.max(ALTO_MINIMO, ancho * 0.58)),
   );
   const margenInferior = Math.round(
-    Math.min(alto * 0.42, Math.max(66, ancho * 0.32)),
+    Math.min(alto * 0.42, Math.max(52, ancho * 0.26)),
   );
 
   const areaAncho = Math.max(ancho - MARGEN.izquierda - MARGEN.derecha, 40);
