@@ -13,7 +13,6 @@ import {
 } from "react-icons/hi2";
 import GraficaAnillo from "./graficas/GraficaAnillo";
 import GraficaArea from "./graficas/GraficaArea";
-import GraficaBarras from "./graficas/GraficaBarras";
 import GraficaHistograma from "./graficas/GraficaHistograma";
 import type { DatoGrafica } from "./graficas/utils";
 import "./inicio.css";
@@ -374,7 +373,7 @@ export default function Inicio() {
                   etiquetaVacia="Sin cirugías en esta sede en los últimos 12 meses."
                 />
               ) : (
-                <GraficaBarras
+                <GraficaHistograma
                   datos={estadisticas?.lugaresMasComunes ?? []}
                   etiquetaVacia="Todavía no hay lugares registrados."
                   seleccionada={lugarSeleccionado}
