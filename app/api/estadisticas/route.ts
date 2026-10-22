@@ -81,7 +81,6 @@ export async function GET() {
     porSexo,
     cirugiasPorMes,
     cirugiasPorTipoMes,
-    cirugiasPorTipoLugar,
   ] = await Promise.all([
     NotaOperatoria.aggregate<ConteoAgrupado>([
       { $match: { cirugiaProgramada: { $nin: [null, ""] } } },
@@ -132,19 +131,6 @@ export async function GET() {
       },
       { $sort: { "_id.periodo": 1 } },
     ]),
-    NotaOperatoria.aggregate<DesglosePorTipo>([
-      { $match: { cirugiaProgramada: { $nin: [null, ""] } } },
-      {
-        $group: {
-          _id: {
-            tipo: "$cirugiaProgramada",
-            periodo: "$lugarCirugia",
-          },
-          total: { $sum: 1 },
-        },
-      },
-      { $sort: { total: -1 } },
-    ]),
   ]);
 
   const conteoPorMes = new Map(cirugiasPorMes.map(({ _id, total }) => [_id, total]));
@@ -162,6 +148,5 @@ export async function GET() {
     porSexo: aDatosGrafica(porSexo),
     cirugiasPorMes: cirugiasPorMesCompletos,
     cirugiasPorTipoMes: aDesglosePorTipo(cirugiasPorTipoMes),
-    cirugiasPorTipoLugar: aDesglosePorTipo(cirugiasPorTipoLugar),
   });
 }

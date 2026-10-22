@@ -30,8 +30,8 @@ Todos los endpoints viven bajo `app/api/`. Son Route Handlers de Next.js y se ex
 ### `/api/estadisticas`
 
 Devuelve los agregados que consume la vista `/admin/inicio`. Las series simples
-usan la forma `{ etiqueta: string, valor: number }` y los desgloses por tipo de
-cirugía agregan la clave `tipo`:
+usan la forma `{ etiqueta: string, valor: number }` y el desglose por tipo de
+cirugía agrega la clave `tipo`:
 
 ```json
 {
@@ -45,9 +45,6 @@ cirugía agregan la clave `tipo`:
     "cirugiasPorMes": [{ "etiqueta": "2026-10", "valor": 1 }],
     "cirugiasPorTipoMes": [
       { "tipo": "Apendicectomía", "etiqueta": "2026-10", "valor": 2 }
-    ],
-    "cirugiasPorTipoLugar": [
-      { "tipo": "Apendicectomía", "etiqueta": "Hospital Diamante", "valor": 1 }
     ]
   }
 }
@@ -56,10 +53,9 @@ cirugía agregan la clave `tipo`:
 - `cirugiasPorMes` devuelve siempre los últimos 12 meses (incluidos los que
   tienen valor `0`), para que la gráfica de área mantenga una línea de tiempo
   continua.
-- `cirugiasPorTipoMes` y `cirugiasPorTipoLugar` alimentan el histograma por
-  cirugía: al elegir un tipo en el selector, la vista muestra su reparto por
-  sede (`cirugiasPorTipoLugar`) y su evolución mensual
-  (`cirugiasPorTipoMes`, acotada a la misma ventana de 12 meses).
+- `cirugiasPorTipoMes` alimenta el histograma por cirugía: al elegir un tipo en
+  el selector, la vista muestra su evolución mensual (acotada a la misma
+  ventana de 12 meses).
 
 ## Cómo agregar un endpoint
 

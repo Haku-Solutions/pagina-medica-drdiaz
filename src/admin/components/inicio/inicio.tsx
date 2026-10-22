@@ -32,7 +32,6 @@ interface Estadisticas {
   porSexo: DatoGrafica[];
   cirugiasPorMes: DatoGrafica[];
   cirugiasPorTipoMes: DesglosePorTipo[];
-  cirugiasPorTipoLugar: DesglosePorTipo[];
 }
 
 const ETIQUETA_SEXO: Record<string, string> = {
@@ -95,12 +94,12 @@ export default function Inicio() {
   );
 
   /**
-   * Al elegir un tipo de cirugía se arma el histograma de ese tipo:
-   * distribución por mes (ventana de 12 meses) y por lugar de cirugía.
+   * Al elegir un tipo de cirugía se arma su evolución mensual
+   * (ventana de 12 meses).
    */
   const detallePorTipo = useMemo(() => {
     if (!estadisticas || !tipoSeleccionado) {
-      return { porMes: [] as DatoGrafica[], porLugar: [] as DatoGrafica[] };
+      return { porMes: [] as DatoGrafica[] };
     }
 
     const porMes = new Map<string, number>();
@@ -109,23 +108,12 @@ export default function Inicio() {
       porMes.set(item.etiqueta, (porMes.get(item.etiqueta) ?? 0) + item.valor);
     }
 
-    const porLugar = new Map<string, number>();
-    for (const item of estadisticas.cirugiasPorTipoLugar) {
-      if (item.tipo !== tipoSeleccionado) continue;
-      porLugar.set(item.etiqueta, (porLugar.get(item.etiqueta) ?? 0) + item.valor);
-    }
-
     const meses = estadisticas.cirugiasPorMes.map((mes) => ({
       etiqueta: mes.etiqueta,
       valor: porMes.get(mes.etiqueta) ?? 0,
     }));
 
-    const lugares = [...porLugar.entries()]
-      .map(([etiqueta, valor]) => ({ etiqueta, valor }))
-      .sort((a, b) => b.valor - a.valor)
-      .slice(0, 8);
-
-    return { porMes: meses, porLugar: lugares };
+    return { porMes: meses };
   }, [estadisticas, tipoSeleccionado]);
 
   const totalCirugiasMes = useMemo(
@@ -276,8 +264,8 @@ export default function Inicio() {
                       Histograma de {tipoSeleccionado}
                     </h2>
                     <p className="inicio-panel-subtitulo">
-                      Reparto de este tipo de cirugía por sede y evolución
-                      mensual.
+                      Evolución mensual de este tipo de cirugía en los últimos 12
+                      meses.
                     </p>
                   </div>
 
@@ -291,28 +279,10 @@ export default function Inicio() {
                   </button>
                 </div>
 
-                <div className="inicio-subgrilla">
-                  <section className="inicio-subpanel">
-                    <h3 className="inicio-subpanel-titulo">
-                      Por sede quirúrgica
-                    </h3>
-                    <GraficaHistograma
-                      datos={detallePorTipo.porLugar}
-                      color="#00A05A"
-                      etiquetaVacia="Este tipo de cirugía no tiene registros por sede."
-                    />
-                  </section>
-
-                  <section className="inicio-subpanel">
-                    <h3 className="inicio-subpanel-titulo">
-                      Por mes (últimos 12 meses)
-                    </h3>
-                    <GraficaArea
-                      datos={detallePorTipo.porMes}
-                      etiquetaVacia="Sin cirugías de este tipo en los últimos 12 meses."
-                    />
-                  </section>
-                </div>
+                <GraficaArea
+                  datos={detallePorTipo.porMes}
+                  etiquetaVacia="Sin cirugías de este tipo en los últimos 12 meses."
+                />
               </article>
             )}
 

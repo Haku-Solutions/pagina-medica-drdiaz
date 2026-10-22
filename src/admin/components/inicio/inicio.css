@@ -312,30 +312,10 @@
   border-color: #a7c7e7;
 }
 
-/* Sub-grilla del detalle por cirugía */
-
-.inicio-subgrilla {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.25rem;
-}
-
-.inicio-subpanel {
-  min-width: 0;
-}
-
-.inicio-subpanel-titulo {
-  margin: 0 0 0.75rem;
-  color: #1C2B48;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
 /* Separación entre la cabecera del panel y la gráfica que sigue */
 
 .inicio-panel-cabecera ~ .grafica-svg,
-.inicio-panel-cabecera ~ .inicio-subgrilla {
+.inicio-panel-cabecera ~ .grafica-lienzo {
   margin-top: 1.25rem;
 }
 
