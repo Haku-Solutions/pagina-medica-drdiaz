@@ -219,73 +219,63 @@ export default function Inicio() {
                 <div>
                   <h2 className="inicio-panel-titulo">
                     <HiScissors className="inicio-panel-icono" aria-hidden="true" />
-                    Cirugías por tipo
+                    {tipoSeleccionado
+                      ? `Cirugías por tipo: ${tipoSeleccionado}`
+                      : "Cirugías por tipo"}
                   </h2>
                   <p className="inicio-panel-subtitulo">
-                    Pulsa una barra para ver el detalle de esa cirugía.
+                    {tipoSeleccionado
+                      ? "Evolución mensual de este tipo de cirugía en los últimos 12 meses."
+                      : "Selecciona un tipo de cirugía para ver su evolución mensual."}
                   </p>
                 </div>
 
-                <label className="inicio-selector">
-                  <span className="inicio-selector-etiqueta">
-                    Ver histograma por cirugía
-                  </span>
-                  <select
-                    className="inicio-selector-select"
-                    value={tipoSeleccionado ?? ""}
-                    onChange={(evento) =>
-                      setTipoSeleccionado(evento.target.value || null)
-                    }
-                  >
-                    <option value="">Todas las cirugías</option>
-                    {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
-                      <option key={dato.etiqueta} value={dato.etiqueta}>
-                        {dato.etiqueta} ({dato.valor})
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <GraficaHistograma
-                datos={estadisticas?.cirugiasPorTipo ?? []}
-                etiquetaVacia="Todavía no hay tipos de cirugía registrados."
-                seleccionada={tipoSeleccionado}
-                onSeleccionar={seleccionarTipo}
-              />
-            </article>
-
-            {tipoSeleccionado && (
-              <article className="inicio-panel inicio-panel-ancho">
-                <div className="inicio-panel-cabecera">
-                  <div>
-                    <h2 className="inicio-panel-titulo">
-                      <HiChartBar className="inicio-panel-icono" aria-hidden="true" />
-                      Histograma de {tipoSeleccionado}
-                    </h2>
-                    <p className="inicio-panel-subtitulo">
-                      Evolución mensual de este tipo de cirugía en los últimos 12
-                      meses.
-                    </p>
-                  </div>
-
+                {tipoSeleccionado ? (
                   <button
                     type="button"
                     className="inicio-limpiar"
                     onClick={() => setTipoSeleccionado(null)}
                   >
                     <HiXMark aria-hidden="true" />
-                    <span>Quitar selección</span>
+                    <span>Ver todas</span>
                   </button>
-                </div>
+                ) : (
+                  <label className="inicio-selector">
+                    <span className="inicio-selector-etiqueta">
+                      Ver histograma por cirugía
+                    </span>
+                    <select
+                      className="inicio-selector-select"
+                      value={tipoSeleccionado ?? ""}
+                      onChange={(evento) =>
+                        setTipoSeleccionado(evento.target.value || null)
+                      }
+                    >
+                      <option value="">Seleccionar...</option>
+                      {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
+                        <option key={dato.etiqueta} value={dato.etiqueta}>
+                          {dato.etiqueta} ({dato.valor})
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+              </div>
 
+              {tipoSeleccionado ? (
                 <GraficaArea
                   datos={detallePorTipo.porMes}
                   etiquetaVacia="Sin cirugías de este tipo en los últimos 12 meses."
                 />
-              </article>
-            )}
-
+              ) : (
+                <GraficaHistograma
+                  datos={estadisticas?.cirugiasPorTipo ?? []}
+                  etiquetaVacia="Todavía no hay tipos de cirugía registrados."
+                  seleccionada={tipoSeleccionado}
+                  onSeleccionar={seleccionarTipo}
+                />
+              )}
+            </article>
             <article className="inicio-panel">
               <h2 className="inicio-panel-titulo">
                 <HiMapPin className="inicio-panel-icono" aria-hidden="true" />
