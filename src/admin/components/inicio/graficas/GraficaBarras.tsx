@@ -1,5 +1,8 @@
-import { colorPorIndice, recortar } from "./utils";
+"use client";
+
+import { colorPorIndice, recortarPorPalabra } from "./utils";
 import type { DatoGrafica } from "./utils";
+import { useAnchoContenedor } from "./useAnchoContenedor";
 import "./graficas.css";
 
 interface GraficaBarrasProps {
@@ -7,12 +10,12 @@ interface GraficaBarrasProps {
   etiquetaVacia?: string;
 }
 
-/** Altura de cada barra (label + barra). */
+/** Altura de cada banda (label + barra). */
 const ALTO_BANDA = 46;
-/** Espacio reservado a la etiqueta antes de la barra. */
-const ANCHO_ETIQUETA = 210;
-/** Ancho total del área de barras. */
-const ANCHO_BARRA = 470;
+/** Espacio reservado al valor numérico que va tras la barra. */
+const ESPACIO_VALOR = 46;
+/** Ancho aproximado en píxeles de un carácter a 11.5px. */
+const ANCHO_CARACTER = 6.4;
 
 /**
  * Gráfica de barras horizontales en SVG puro.
@@ -22,63 +25,77 @@ export default function GraficaBarras({
   datos,
   etiquetaVacia = "Sin datos para mostrar.",
 }: GraficaBarrasProps) {
-  if (datos.length === 0) {
-    return <p className="grafica-vacia">{etiquetaVacia}</p>;
-  }
+  const { ref, ancho } = useAnchoContenedor<HTMLDivElement>(640);
 
-  const maximo = Math.max(...datos.map((dato) => dato.valor), 1);
+  // La etiqueta toma la parte que necesita; el resto es para la barra.
+  const anchoEtiqueta = Math.round(
+    Math.min(200, Math.max(96, ancho * 0.42)),
+  );
+  const anchoBarra = Math.max(ancho - anchoEtiqueta - ESPACIO_VALOR, 50);
+  const maximoCaracteres = Math.max(8, Math.floor(anchoEtiqueta / ANCHO_CARACTER));
+
+  const maximo = datos.length > 0 ? Math.max(...datos.map((dato) => dato.valor), 1) : 1;
   const alto = datos.length * ALTO_BANDA;
 
   return (
-    <svg
-      className="grafica-svg"
-      viewBox={`0 0 ${ANCHO_ETIQUETA + ANCHO_BARRA + 60} ${alto}`}
-      role="img"
-      aria-label="Gráfica de barras"
-    >
-      {datos.map((dato, indice) => {
-        const y = indice * ALTO_BANDA;
-        const ancho = Math.max((dato.valor / maximo) * ANCHO_BARRA, 2);
+    <div className="grafica-lienzo" ref={ref}>
+      {datos.length === 0 ? (
+        <p className="grafica-vacia">{etiquetaVacia}</p>
+      ) : (
+        <svg
+          className="grafica-svg"
+          viewBox={`0 0 ${ancho} ${alto}`}
+          role="img"
+          aria-label="Gráfica de barras"
+        >
+          {datos.map((dato, indice) => {
+            const y = indice * ALTO_BANDA;
+            const anchoProporcional = Math.max(
+              (dato.valor / maximo) * anchoBarra,
+              2,
+            );
 
-        return (
-          <g key={dato.etiqueta}>
-            <text
-              className="grafica-texto grafica-etiqueta"
-              x={ANCHO_ETIQUETA - 12}
-              y={y + 26}
-              textAnchor="end"
-            >
-              {recortar(dato.etiqueta, 26)}
-            </text>
+            return (
+              <g key={dato.etiqueta}>
+                <text
+                  className="grafica-texto grafica-etiqueta"
+                  x={anchoEtiqueta - 12}
+                  y={y + 26}
+                  textAnchor="end"
+                >
+                  {recortarPorPalabra(dato.etiqueta, maximoCaracteres)}
+                </text>
 
-            <rect
-              className="grafica-pista"
-              x={ANCHO_ETIQUETA}
-              y={y + 14}
-              width={ANCHO_BARRA}
-              height={20}
-              rx={6}
-            />
+                <rect
+                  className="grafica-pista"
+                  x={anchoEtiqueta}
+                  y={y + 14}
+                  width={anchoBarra}
+                  height={20}
+                  rx={6}
+                />
 
-            <rect
-              x={ANCHO_ETIQUETA}
-              y={y + 14}
-              width={ancho}
-              height={20}
-              rx={6}
-              fill={colorPorIndice(indice)}
-            />
+                <rect
+                  x={anchoEtiqueta}
+                  y={y + 14}
+                  width={anchoProporcional}
+                  height={20}
+                  rx={6}
+                  fill={colorPorIndice(indice)}
+                />
 
-            <text
-              className="grafica-texto grafica-valor"
-              x={ANCHO_ETIQUETA + ancho + 10}
-              y={y + 29}
-            >
-              {dato.valor}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
+                <text
+                  className="grafica-texto grafica-valor"
+                  x={anchoEtiqueta + anchoProporcional + 10}
+                  y={y + 29}
+                >
+                  {dato.valor}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      )}
+    </div>
   );
 }

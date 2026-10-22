@@ -5,6 +5,10 @@
   overflow: visible;
 }
 
+.grafica-lienzo {
+  width: 100%;
+}
+
 .grafica-vacia {
   padding: 2.5rem 1rem;
   text-align: center;

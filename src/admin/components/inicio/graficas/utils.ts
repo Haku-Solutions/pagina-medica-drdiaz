@@ -48,3 +48,23 @@ export function segmentosAnillo(
 export function recortar(texto: string, maximo: number): string {
   return texto.length > maximo ? `${texto.slice(0, maximo - 1)}…` : texto;
 }
+
+/**
+ * Igual que `recortar`, pero corta en un límite de palabra.
+ * Así "Colecistectomía laparoscópica" se muestra como "Colecistectomía…"
+ * en lugar de dejar "Colecistectomía l…" a media palabra.
+ */
+export function recortarPorPalabra(texto: string, maximo: number): string {
+  if (texto.length <= maximo) return texto;
+
+  const limite = maximo - 1;
+  const corte = texto.slice(0, limite);
+
+  // Si el corte cae justo entre dos palabras, se respeta tal cual.
+  if (texto[limite] === " ") return `${corte.trimEnd()}…`;
+
+  const ultimoEspacio = corte.lastIndexOf(" ");
+  if (ultimoEspacio > 0) return `${corte.slice(0, ultimoEspacio)}…`;
+
+  return `${corte}…`;
+}

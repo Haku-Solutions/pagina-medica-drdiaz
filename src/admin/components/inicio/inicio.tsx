@@ -226,7 +226,7 @@ export default function Inicio() {
               />
             </article>
 
-            <article className="inicio-panel inicio-panel-ancho">
+            <article className="inicio-panel">
               <div className="inicio-panel-cabecera">
                 <div>
                   <h2 className="inicio-panel-titulo">
@@ -234,8 +234,7 @@ export default function Inicio() {
                     Cirugías por tipo
                   </h2>
                   <p className="inicio-panel-subtitulo">
-                    Distribución de procedimientos registrados. Pulsa una barra
-                    para ver el detalle de esa cirugía.
+                    Pulsa una barra para ver el detalle de esa cirugía.
                   </p>
                 </div>
 
