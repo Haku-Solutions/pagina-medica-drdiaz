@@ -25,7 +25,7 @@ const defaultItems: SidebarItem[] = [
   },
   {
     label: "Pacientes",
-    href: "/admin/pacientes",
+    href: "/admin/mispacientes",
     icon: "/assets/icons/usuario.svg",
   },
 ];
