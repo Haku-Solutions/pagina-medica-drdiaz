@@ -45,20 +45,6 @@ export default function MisPacientes() {
   return (
     <section className="mis-pacientes">
       <header className="mis-pacientes-header">
-        <button
-          type="button"
-          className="mis-pacientes-logo-btn"
-          aria-label="Abrir menú lateral"
-        >
-          <Image
-            src="/assets/logos/logo_drdiaz.svg"
-            alt="Dr. José Díaz"
-            width={56}
-            height={56}
-            className="mis-pacientes-logo"
-          />
-        </button>
-
         <h1 className="mis-pacientes-title">MIS PACIENTES</h1>
       </header>
 

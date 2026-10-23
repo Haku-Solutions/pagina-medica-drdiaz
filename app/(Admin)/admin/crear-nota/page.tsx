@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CrearNota from "@/src/admin/crearNota/crearNota";
+import CrearNota from "@/src/admin/components/CrearNota/CrearNota";
 
 export const metadata: Metadata = {
   title: "Nueva Nota Operatoria",
