@@ -5,6 +5,15 @@ const LOGIN_PATH = "/admin/login";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // El manifiesto y el service worker deben poder cargarse antes del login.
+  if (
+    pathname === "/admin/manifest.webmanifest" ||
+    pathname === "/admin/sw.js"
+  ) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = token ? await verifySessionToken(token) : null;
 
