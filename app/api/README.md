@@ -39,6 +39,8 @@ cirugía agrega la clave `tipo`:
   "data": {
     "totalExpedientes": 0,
     "totalCirugias": 0,
+    "reportesLlenados": 0,
+    "reportesTotales": 0,
     "cirugiasPorTipo": [{ "etiqueta": "Apendicectomía", "valor": 4 }],
     "lugaresMasComunes": [{ "etiqueta": "Hospital Diamante", "valor": 4 }],
     "porSexo": [{ "etiqueta": "M", "valor": 3 }],
@@ -60,6 +62,9 @@ cirugía agrega la clave `tipo`:
   su evolución mensual (acotada a la misma ventana de 12 meses).
 - `cirugiasPorLugarMes` alimenta la vista al elegir una sede quirúrgica:
   muestra su evolución mensual (acotada a la misma ventana de 12 meses).
+- `reportesLlenados` cuenta las notas operatorias con todos los campos clínicos
+  completos (texto no vacío) y fecha válida. El total de reportes es
+  `totalCirugias`, así que los pendientes son `totalCirugias - reportesLlenados`.
 
 ## Cómo agregar un endpoint
 

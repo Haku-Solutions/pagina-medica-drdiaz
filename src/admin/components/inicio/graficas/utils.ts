@@ -3,6 +3,12 @@ export interface DatoGrafica {
   valor: number;
 }
 
+/**
+ * Alto común de todas las gráficas del dashboard, en píxeles.
+ * Debe coincidir con la variable `--alto-grafica` de `graficas.css`.
+ */
+export const ALTO_GRAFICA = 280;
+
 /** Paleta de colores institucional, alineada con el CSS de las vistas admin. */
 export const PALETA = [
   "#1C2B48",

@@ -1,19 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import {
-  HiArrowPath,
-  HiChartBar,
-  HiDocumentText,
-  HiMapPin,
-  HiScissors,
-  HiUserGroup,
-  HiXMark,
-} from "react-icons/hi2";
+import { useRouter } from "next/navigation";
+import { HiUsers, HiXMark } from "react-icons/hi2";
 import GraficaAnillo from "./graficas/GraficaAnillo";
 import GraficaArea from "./graficas/GraficaArea";
+import GraficaBarrasVertical from "./graficas/GraficaBarrasVertical";
 import GraficaHistograma from "./graficas/GraficaHistograma";
+import GraficaPastelReportes from "./graficas/GraficaPastelReportes";
 import type { DatoGrafica } from "./graficas/utils";
 import "./inicio.css";
 
@@ -29,23 +23,28 @@ interface DesglosePorLugar {
   valor: number;
 }
 
+const ETIQUETA_SEXO: Record<string, string> = {
+  M: "Hombres",
+  F: "Mujeres",
+};
+
 interface Estadisticas {
   totalExpedientes: number;
   totalCirugias: number;
+  reportesLlenados: number;
+  reportesTotales: number;
+  cirugiasMesActual?: number;
   cirugiasPorTipo: DatoGrafica[];
   lugaresMasComunes: DatoGrafica[];
   porSexo: DatoGrafica[];
   cirugiasPorMes: DatoGrafica[];
   cirugiasPorTipoMes: DesglosePorTipo[];
   cirugiasPorLugarMes: DesglosePorLugar[];
+  porEdad: DatoGrafica[];
 }
 
-const ETIQUETA_SEXO: Record<string, string> = {
-  M: "Hombres",
-  F: "Mujeres",
-};
-
 export default function Inicio() {
+  const router = useRouter();
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,15 +101,6 @@ export default function Inicio() {
     if (!sigueExistiendo) setLugarSeleccionado(null);
   }, [estadisticas, lugarSeleccionado]);
 
-  const porSexo = useMemo(
-    () =>
-      (estadisticas?.porSexo ?? []).map((dato) => ({
-        ...dato,
-        etiqueta: ETIQUETA_SEXO[dato.etiqueta] ?? dato.etiqueta,
-      })),
-    [estadisticas],
-  );
-
   /**
    * Al elegir un tipo de cirugía se arma su evolución mensual
    * (ventana de 12 meses).
@@ -154,6 +144,15 @@ export default function Inicio() {
     return { porMes: meses };
   }, [estadisticas, lugarSeleccionado]);
 
+  const porSexo = useMemo(
+    () =>
+      (estadisticas?.porSexo ?? []).map((dato) => ({
+        ...dato,
+        etiqueta: ETIQUETA_SEXO[dato.etiqueta] ?? dato.etiqueta,
+      })),
+    [estadisticas],
+  );
+
   const totalCirugiasMes = useMemo(
     () =>
       estadisticas?.cirugiasPorMes.reduce((suma, dato) => suma + dato.valor, 0) ?? 0,
@@ -173,30 +172,18 @@ export default function Inicio() {
   return (
     <section className="inicio">
       <header className="inicio-header">
-        <Image
-          className="inicio-logo"
-          src="/assets/logos/logo_drdiaz.svg"
-          alt="Dr. José Díaz"
-          width={56}
-          height={56}
-          priority
-        />
-
         <div className="inicio-titulos">
-          <h1 className="inicio-titulo">INICIO</h1>
-          <p className="inicio-subtitulo">
-            Resumen de la actividad quirúrgica y los expedientes registrados.
-          </p>
+          <h1 className="inicio-titulo" style={{ color: "#306DBB", lineHeight: 1 }}>BIENVENIDO</h1>
+          <p className="inicio-subtitulo" style={{ color: "#000000", fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: "clamp(1.6rem, 4vw, 2.6rem)", marginTop: "-0.1rem" }}>Dr. José Díaz</p>
         </div>
 
         <button
           type="button"
           className="inicio-actualizar"
-          onClick={() => void cargar()}
-          disabled={cargando}
+          onClick={() => router.push("/admin/mispacientes")}
         >
-          <HiArrowPath aria-hidden="true" className={cargando ? "girando" : ""} />
-          <span>Actualizar</span>
+          <HiUsers aria-hidden="true" />
+          <span style={{ textTransform: "uppercase" }}>Mis pacientes</span>
         </button>
       </header>
 
@@ -215,7 +202,6 @@ export default function Inicio() {
         <>
           <div className="inicio-tarjetas">
             <article className="inicio-tarjeta">
-              <HiDocumentText className="inicio-tarjeta-icono" aria-hidden="true" />
               <p className="inicio-tarjeta-valor">
                 {estadisticas?.totalExpedientes ?? 0}
               </p>
@@ -223,7 +209,13 @@ export default function Inicio() {
             </article>
 
             <article className="inicio-tarjeta">
-              <HiScissors className="inicio-tarjeta-icono" aria-hidden="true" />
+              <p className="inicio-tarjeta-valor">
+                {estadisticas?.cirugiasMesActual ?? 0}
+              </p>
+              <p className="inicio-tarjeta-etiqueta">Cirugías del mes actual</p>
+            </article>
+
+            <article className="inicio-tarjeta">
               <p className="inicio-tarjeta-valor">
                 {estadisticas?.totalCirugias ?? 0}
               </p>
@@ -231,13 +223,6 @@ export default function Inicio() {
             </article>
 
             <article className="inicio-tarjeta">
-              <HiChartBar className="inicio-tarjeta-icono" aria-hidden="true" />
-              <p className="inicio-tarjeta-valor">{totalCirugiasMes}</p>
-              <p className="inicio-tarjeta-etiqueta">Cirugías (12 meses)</p>
-            </article>
-
-            <article className="inicio-tarjeta">
-              <HiMapPin className="inicio-tarjeta-icono" aria-hidden="true" />
               <p className="inicio-tarjeta-valor">
                 {estadisticas?.lugaresMasComunes.length ?? 0}
               </p>
@@ -246,8 +231,27 @@ export default function Inicio() {
           </div>
 
           <div className="inicio-grilla">
-            <article className="inicio-panel inicio-panel-ancho">
-              <h2 className="inicio-panel-titulo">Cirugías por mes</h2>
+            <article className="inicio-panel">
+              <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                <span>REPORTES</span>
+                <span>LLENADOS</span>
+              </h2>
+              <p className="inicio-panel-subtitulo">
+                Notas operatorias con todos los campos completos vs. las que
+                aún tienen campos pendientes.
+              </p>
+              <GraficaPastelReportes
+                llenados={estadisticas?.reportesLlenados ?? 0}
+                total={estadisticas?.reportesTotales ?? estadisticas?.totalExpedientes ?? 0}
+                etiquetaVacia="Sin reportes registrados."
+              />
+            </article>
+
+            <article className="inicio-panel">
+              <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                <span>CIRUGÍAS POR</span>
+                <span>MES</span>
+              </h2>
               <p className="inicio-panel-subtitulo">
                 Evolución mensual de las notas operatorias registradas.
               </p>
@@ -260,11 +264,18 @@ export default function Inicio() {
             <article className="inicio-panel">
               <div className="inicio-panel-cabecera">
                 <div>
-                  <h2 className="inicio-panel-titulo">
-                    <HiScissors className="inicio-panel-icono" aria-hidden="true" />
-                    {tipoSeleccionado
-                      ? `Cirugías por tipo: ${tipoSeleccionado}`
-                      : "Cirugías por tipo"}
+                  <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                    {tipoSeleccionado ? (
+                      <>
+                        <span>CIRUGÍAS POR</span>
+                        <span>TIPO: {tipoSeleccionado}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>CIRUGÍAS POR</span>
+                        <span>TIPO</span>
+                      </>
+                    )}
                   </h2>
                   <p className="inicio-panel-subtitulo">
                     {tipoSeleccionado
@@ -276,32 +287,28 @@ export default function Inicio() {
                 {tipoSeleccionado ? (
                   <button
                     type="button"
-                    className="inicio-limpiar"
+                    className="inicio-selector-select"
+                    style={{ padding: "0 0.7rem", gap: "0.25rem" }}
                     onClick={() => setTipoSeleccionado(null)}
                   >
                     <HiXMark aria-hidden="true" />
                     <span>Ver todas</span>
                   </button>
                 ) : (
-                  <label className="inicio-selector">
-                    <span className="inicio-selector-etiqueta">
-                      Ver histograma por cirugía
-                    </span>
-                    <select
-                      className="inicio-selector-select"
-                      value={tipoSeleccionado ?? ""}
-                      onChange={(evento) =>
-                        setTipoSeleccionado(evento.target.value || null)
-                      }
-                    >
-                      <option value="">Seleccionar...</option>
-                      {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
-                        <option key={dato.etiqueta} value={dato.etiqueta}>
-                          {dato.etiqueta} ({dato.valor})
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <select
+                    className="inicio-selector-select"
+                    value={tipoSeleccionado ?? ""}
+                    onChange={(evento) =>
+                      setTipoSeleccionado(evento.target.value || null)
+                    }
+                  >
+                    <option value="">Seleccionar...</option>
+                    {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
+                      <option key={dato.etiqueta} value={dato.etiqueta}>
+                        {dato.etiqueta} ({dato.valor})
+                      </option>
+                    ))}
+                  </select>
                 )}
               </div>
 
@@ -322,11 +329,18 @@ export default function Inicio() {
             <article className="inicio-panel">
               <div className="inicio-panel-cabecera">
                 <div>
-                  <h2 className="inicio-panel-titulo">
-                    <HiMapPin className="inicio-panel-icono" aria-hidden="true" />
-                    {lugarSeleccionado
-                      ? `Lugares más frecuentes: ${lugarSeleccionado}`
-                      : "Lugares más frecuentes"}
+                  <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                    {lugarSeleccionado ? (
+                      <>
+                        <span>LUGARES MÁS</span>
+                        <span>FRECUENTES: {lugarSeleccionado}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>LUGARES MÁS</span>
+                        <span>FRECUENTES</span>
+                      </>
+                    )}
                   </h2>
                   <p className="inicio-panel-subtitulo">
                     {lugarSeleccionado
@@ -338,32 +352,28 @@ export default function Inicio() {
                 {lugarSeleccionado ? (
                   <button
                     type="button"
-                    className="inicio-limpiar"
+                    className="inicio-selector-select"
+                    style={{ padding: "0 0.7rem", gap: "0.25rem" }}
                     onClick={() => setLugarSeleccionado(null)}
                   >
                     <HiXMark aria-hidden="true" />
                     <span>Ver todas</span>
                   </button>
                 ) : (
-                  <label className="inicio-selector">
-                    <span className="inicio-selector-etiqueta">
-                      Ver por sede
-                    </span>
-                    <select
-                      className="inicio-selector-select"
-                      value={lugarSeleccionado ?? ""}
-                      onChange={(evento) =>
-                        setLugarSeleccionado(evento.target.value || null)
-                      }
-                    >
-                      <option value="">Seleccionar...</option>
-                      {(estadisticas?.lugaresMasComunes ?? []).map((dato) => (
-                        <option key={dato.etiqueta} value={dato.etiqueta}>
-                          {dato.etiqueta} ({dato.valor})
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <select
+                    className="inicio-selector-select"
+                    value={lugarSeleccionado ?? ""}
+                    onChange={(evento) =>
+                      setLugarSeleccionado(evento.target.value || null)
+                    }
+                  >
+                    <option value="">Seleccionar...</option>
+                    {(estadisticas?.lugaresMasComunes ?? []).map((dato) => (
+                      <option key={dato.etiqueta} value={dato.etiqueta}>
+                        {dato.etiqueta} ({dato.valor})
+                      </option>
+                    ))}
+                  </select>
                 )}
               </div>
 
@@ -383,9 +393,9 @@ export default function Inicio() {
             </article>
 
             <article className="inicio-panel">
-              <h2 className="inicio-panel-titulo">
-                <HiUserGroup className="inicio-panel-icono" aria-hidden="true" />
-                Distribución por sexo
+              <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                <span>DISTRIBUCIÓN POR</span>
+                <span>SEXO</span>
               </h2>
               <p className="inicio-panel-subtitulo">
                 Pacientes registrados según su sexo.
@@ -395,6 +405,20 @@ export default function Inicio() {
                 centro={String(estadisticas?.totalExpedientes ?? 0)}
                 centroSub="Pacientes"
                 etiquetaVacia="Todavía no hay pacientes con sexo registrado."
+              />
+            </article>
+
+            <article className="inicio-panel inicio-panel-ancho">
+              <h2 className="inicio-panel-titulo" style={{ flexDirection: "column", alignItems: "flex-start", lineHeight: 1.1 }}>
+                <span>DISTRIBUCIÓN POR</span>
+                <span>EDAD</span>
+              </h2>
+              <p className="inicio-panel-subtitulo">
+                Pacientes según rango de edad.
+              </p>
+              <GraficaBarrasVertical
+                datos={estadisticas?.porEdad ?? []}
+                etiquetaVacia="Todavía no hay pacientes con edad registrada."
               />
             </article>
           </div>

@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import type { DatoGrafica } from "./utils";
+import { ALTO_GRAFICA } from "./utils";
 import { escalaEje } from "./escala";
 import { useAnchoContenedor } from "./useAnchoContenedor";
 import "./graficas.css";
@@ -11,9 +12,9 @@ interface GraficaAreaProps {
   etiquetaVacia?: string;
 }
 
-const MARGEN = { superior: 20, inferior: 34, izquierda: 44, derecha: 16 };
-const ALTO_MINIMO = 200;
-const ALTO_MAXIMO = 340;
+const MARGEN = { superior: 20, inferior: 46, izquierda: 44, derecha: 16 };
+// Distancia desde la base del área hasta la línea de las etiquetas de mes.
+const SEPARACION_MESES = 16;
 
 const MESES = [
   "ene",
@@ -51,9 +52,7 @@ export default function GraficaArea({
   const idDegradado = `area-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const { ref, ancho } = useAnchoContenedor<HTMLDivElement>(720);
 
-  const alto = Math.round(
-    Math.min(ALTO_MAXIMO, Math.max(ALTO_MINIMO, ancho * 0.3)),
-  );
+  const alto = ALTO_GRAFICA;
   const areaAncho = Math.max(ancho - MARGEN.izquierda - MARGEN.derecha, 40);
   const areaAlto = alto - MARGEN.superior - MARGEN.inferior;
   const baseY = MARGEN.superior + areaAlto;
@@ -124,6 +123,25 @@ export default function GraficaArea({
             );
           })}
 
+          <text
+            className="grafica-texto grafica-eje"
+            x={MARGEN.izquierda - 22}
+            y={MARGEN.superior + areaAlto / 2}
+            textAnchor="middle"
+            transform={`rotate(-90, ${MARGEN.izquierda - 22}, ${MARGEN.superior + areaAlto / 2})`}
+          >
+            Número de cirugías
+          </text>
+
+          <text
+            className="grafica-texto grafica-eje"
+            x={ancho / 2}
+            y={alto - 4}
+            textAnchor="middle"
+          >
+            Mes
+          </text>
+
           <path d={area} fill={`url(#${idDegradado})`} />
 
           <path
@@ -150,7 +168,7 @@ export default function GraficaArea({
               key={`etiqueta-${punto.x}-${punto.dato.etiqueta}`}
               className="grafica-texto grafica-eje"
               x={punto.x}
-              y={baseY + 22}
+              y={baseY + SEPARACION_MESES}
               textAnchor="middle"
             >
               {etiquetaCorta(punto.dato.etiqueta)}

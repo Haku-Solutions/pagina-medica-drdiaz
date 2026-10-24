@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import type { DatoGrafica } from "./utils";
-import { recortarPorPalabra } from "./utils";
+import { ALTO_GRAFICA, recortarPorPalabra } from "./utils";
 import { escalaEje } from "./escala";
 import { useAnchoContenedor } from "./useAnchoContenedor";
 import "./graficas.css";
@@ -19,8 +19,8 @@ interface GraficaHistogramaProps {
 }
 
 const MARGEN = { superior: 12, izquierda: 36, derecha: 10 };
-const ALTO_MINIMO = 180;
-const ALTO_MAXIMO = 230;
+/** Espacio bajo el eje reservado para las etiquetas rotadas -45°. */
+const MARGEN_INFERIOR = 96;
 /** Ancho máximo de una barra, para que una sola categoría no ocupe todo. */
 const ANCHO_MAXIMO_BARRA = 90;
 /** Ancho aproximado en píxeles de un carácter a 10.5px. */
@@ -45,12 +45,8 @@ export default function GraficaHistograma({
   const idDegradado = `histo-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const { ref, ancho } = useAnchoContenedor<HTMLDivElement>(640);
 
-  const alto = Math.round(
-    Math.min(ALTO_MAXIMO, Math.max(ALTO_MINIMO, ancho * 0.58)),
-  );
-  const margenInferior = Math.round(
-    Math.min(alto * 0.42, Math.max(52, ancho * 0.26)),
-  );
+  const alto = ALTO_GRAFICA;
+  const margenInferior = MARGEN_INFERIOR;
 
   const areaAncho = Math.max(ancho - MARGEN.izquierda - MARGEN.derecha, 40);
   const areaAlto = Math.max(alto - MARGEN.superior - margenInferior, 40);
@@ -121,6 +117,16 @@ export default function GraficaHistograma({
               </g>
             );
           })}
+
+          <text
+            className="grafica-texto grafica-eje"
+            x={MARGEN.izquierda - 22}
+            y={MARGEN.superior + areaAlto / 2}
+            textAnchor="middle"
+            transform={`rotate(-90, ${MARGEN.izquierda - 22}, ${MARGEN.superior + areaAlto / 2})`}
+          >
+            Número de cirugías
+          </text>
 
           {datos.map((dato, indice) => {
             const centroBanda =

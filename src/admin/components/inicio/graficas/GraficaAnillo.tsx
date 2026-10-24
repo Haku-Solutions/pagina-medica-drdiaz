@@ -1,5 +1,6 @@
 import { segmentosAnillo } from "./utils";
 import type { DatoGrafica } from "./utils";
+import { ALTO_GRAFICA } from "./utils";
 import "./graficas.css";
 
 interface GraficaAnilloProps {
@@ -9,9 +10,9 @@ interface GraficaAnilloProps {
   centroSub?: string;
 }
 
-const TAMANO = 220;
-const RADIO = 80;
-const GROSOR = 34;
+const TAMANO = ALTO_GRAFICA;
+const RADIO = Math.round(TAMANO * 0.36);
+const GROSOR = Math.round(TAMANO * 0.15);
 
 /**
  * Gráfica de anillo (donut) en SVG puro.
@@ -60,6 +61,7 @@ export default function GraficaAnillo({
             fill="none"
             stroke={segmento.color}
             strokeWidth={GROSOR}
+            strokeLinecap="round"
             strokeDasharray={`${largo} ${circunferencia - largo}`}
             strokeDashoffset={-offset}
             transform={`rotate(-90 ${centroX} ${centroY})`}
