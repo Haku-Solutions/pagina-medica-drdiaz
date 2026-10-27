@@ -384,11 +384,20 @@
   height: 100%;
 }
 
+/* Deja espacio para el botón de menú fijo cuando el contenido llega al borde */
+
+@media (max-width: 1280px) {
+  .inicio {
+    padding-top: 4.75rem;
+  }
+}
+
 /* Tablet */
 
 @media (max-width: 900px) {
+  /* Deja espacio para el botón de menú fijo (arriba a la izquierda). */
   .inicio {
-    padding: 1.5rem 1.25rem 3rem;
+    padding: 4.75rem 1.25rem 3rem;
   }
 
   .inicio-header {
@@ -416,12 +425,31 @@
 }
 
 @media (max-width: 640px) {
+  .inicio {
+    padding: 4.75rem 1rem 3rem;
+  }
+
+  .inicio-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .inicio-titulos {
+    width: 100%;
+  }
+
   .inicio-titulo {
     font-size: 1.5rem;
   }
 
   .inicio-subtitulo {
     font-size: 0.875rem;
+  }
+
+  .inicio-actualizar {
+    width: 100%;
+    height: 44px;
   }
 
   .inicio-grilla {
