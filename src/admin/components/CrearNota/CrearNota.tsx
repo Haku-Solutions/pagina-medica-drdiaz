@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { HiDocumentText } from "react-icons/hi2";
 import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
 import FileDropzone from "../fileDropzone/fileDropzone";
@@ -65,6 +66,9 @@ const initialForm: NotaOperatoriaForm = {
 type FormField = keyof NotaOperatoriaForm;
 type Errores = Partial<Record<FormField, string>>;
 
+// ID temporal hasta que el flujo de pacientes proporcione el expediente real.
+const DUMMY_EXPEDIENTE_ID = "000000000000000000000001";
+
 type CampoProps = {
   id: string;
   label: string;
@@ -99,9 +103,17 @@ function Campo({
 }
 
 export default function CrearNota() {
+  const router = useRouter();
   const [form, setForm] = useState<NotaOperatoriaForm>(initialForm);
   const [files, setFiles] = useState<File[]>([]);
   const [errores, setErrores] = useState<Errores>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [createdNoteId, setCreatedNoteId] = useState("");
+  const [uploadedFileIndexes, setUploadedFileIndexes] = useState<Set<number>>(
+    () => new Set()
+  );
+  const [fileSelectionError, setFileSelectionError] = useState("");
 
   const updateField = (name: FormField, value: string) => {
     setForm((current) => ({ ...current, [name]: value }));
@@ -110,7 +122,32 @@ export default function CrearNota() {
 
   const addFiles = (selected: FileList | null) => {
     if (selected) {
-      setFiles((current) => [...current, ...Array.from(selected)]);
+      const mimeByExtension: Record<string, string> = {
+        png: "image/png",
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        webp: "image/webp",
+        pdf: "application/pdf",
+      };
+      const accepted: File[] = [];
+      const rejected: string[] = [];
+
+      for (const file of Array.from(selected)) {
+        const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+        const expectedMime = mimeByExtension[extension];
+        if (expectedMime && (!file.type || file.type === expectedMime)) {
+          accepted.push(file);
+        } else {
+          rejected.push(file.name);
+        }
+      }
+
+      if (accepted.length) setFiles((current) => [...current, ...accepted]);
+      setFileSelectionError(
+        rejected.length
+          ? `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.`
+          : ""
+      );
     }
   };
 
@@ -129,9 +166,64 @@ export default function CrearNota() {
     return Object.keys(nuevos).length === 0;
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    validate();
+    setSubmitError("");
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    let noteWasCreated = Boolean(createdNoteId);
+    try {
+      let noteId = createdNoteId;
+      if (!noteId) {
+        const response = await fetch("/api/notas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...form, idExpediente: DUMMY_EXPEDIENTE_ID }),
+        });
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || result?.ok === false) {
+          throw new Error(result?.error || "No se pudo guardar la nota operatoria.");
+        }
+        noteId = result?.data?._id;
+        if (typeof noteId !== "string") {
+          throw new Error("La nota se guardó, pero el servidor no devolvió su identificador.");
+        }
+        setCreatedNoteId(noteId);
+        noteWasCreated = true;
+      }
+
+      for (const [index, file] of files.entries()) {
+        if (uploadedFileIndexes.has(index)) continue;
+        const uploadData = new FormData();
+        uploadData.append("archivo", file);
+        uploadData.append("idNota", noteId);
+        const uploadResponse = await fetch("/api/archivos", {
+          method: "POST",
+          body: uploadData,
+        });
+        const uploadResult = await uploadResponse.json().catch(() => null);
+        if (!uploadResponse.ok || uploadResult?.ok === false) {
+          throw new Error(
+            uploadResult?.error || `No se pudo subir el archivo ${file.name}.`
+          );
+        }
+        setUploadedFileIndexes((current) => new Set(current).add(index));
+      }
+
+      router.push("/admin/mispacientes");
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? noteWasCreated
+            ? `La nota ya se guardó, pero falló la subida de un archivo. ${error.message} Puedes volver a pulsar para reintentar sin duplicar la nota.`
+            : error.message
+          : "Ocurrió un error al guardar la nota operatoria."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -487,6 +579,9 @@ export default function CrearNota() {
           </div>
 
           <FileDropzone onFilesSelected={addFiles} />
+          {fileSelectionError && (
+            <p className="nota-field-error" role="alert">{fileSelectionError}</p>
+          )}
           {files.length > 0 && (
             <ul className="nota-file-list">
               {files.map((file, index) => (
@@ -500,6 +595,10 @@ export default function CrearNota() {
           )}
         </section>
 
+        {submitError && (
+          <p className="nota-field-error" role="alert">{submitError}</p>
+        )}
+
         <footer className="nota-form-actions">
           <button
             className="nota-back-button"
@@ -511,8 +610,13 @@ export default function CrearNota() {
           <button
             className="nota-create-button"
             type="submit"
+            disabled={isSubmitting}
           >
-            Crear Nota Operatoria
+            {isSubmitting
+              ? "Guardando..."
+              : createdNoteId
+                ? "Reintentar y volver a Mis pacientes"
+                : "Crear Nota Operatoria"}
           </button>
         </footer>
       </form>
