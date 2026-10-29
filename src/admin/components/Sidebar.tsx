@@ -20,13 +20,23 @@ interface SidebarProps {
 const defaultItems: SidebarItem[] = [
   {
     label: "Inicio",
-    href: "/admin/dashboard",
+    href: "/admin/inicio",
     icon: "/assets/icons/Home.svg",
   },
   {
     label: "Pacientes",
     href: "/admin/mispacientes",
     icon: "/assets/icons/usuario.svg",
+  },
+  {
+    label: "Crear expediente",
+    href: "/admin/crear-expediente",
+    icon: "/assets/icons/expediente.svg",
+  },
+  {
+    label: "Nueva nota",
+    href: "/admin/crear-nota",
+    icon: "/assets/icons/nota.svg",
   },
 ];
 

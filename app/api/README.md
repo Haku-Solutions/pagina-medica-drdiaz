@@ -27,6 +27,45 @@ Todos los endpoints viven bajo `app/api/`. Son Route Handlers de Next.js y se ex
 | `/api/archivos`          | `POST` (multipart)          | Subida de adjuntos (aun sin Firebase)    |
 | `/api/estadisticas`      | `GET`                       | Resumen para el dashboard                |
 
+### `/api/estadisticas`
+
+Devuelve los agregados que consume la vista `/admin/inicio`. Las series simples
+usan la forma `{ etiqueta: string, valor: number }` y el desglose por tipo de
+cirugía agrega la clave `tipo`:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "totalExpedientes": 0,
+    "totalCirugias": 0,
+    "reportesLlenados": 0,
+    "reportesTotales": 0,
+    "cirugiasPorTipo": [{ "etiqueta": "Apendicectomía", "valor": 4 }],
+    "lugaresMasComunes": [{ "etiqueta": "Hospital Diamante", "valor": 4 }],
+    "porSexo": [{ "etiqueta": "M", "valor": 3 }],
+    "cirugiasPorMes": [{ "etiqueta": "2026-10", "valor": 1 }],
+    "cirugiasPorTipoMes": [
+      { "tipo": "Apendicectomía", "etiqueta": "2026-10", "valor": 2 }
+    ],
+    "cirugiasPorLugarMes": [
+      { "lugar": "Hospital Diamante", "etiqueta": "2026-10", "valor": 3 }
+    ]
+  }
+}
+```
+
+- `cirugiasPorMes` devuelve siempre los últimos 12 meses (incluidos los que
+  tienen valor `0`), para que la gráfica de área mantenga una línea de tiempo
+  continua.
+- `cirugiasPorTipoMes` alimenta la vista al elegir un tipo de cirugía: muestra
+  su evolución mensual (acotada a la misma ventana de 12 meses).
+- `cirugiasPorLugarMes` alimenta la vista al elegir una sede quirúrgica:
+  muestra su evolución mensual (acotada a la misma ventana de 12 meses).
+- `reportesLlenados` cuenta las notas operatorias con todos los campos clínicos
+  completos (texto no vacío) y fecha válida. El total de reportes es
+  `totalCirugias`, así que los pendientes son `totalCirugias - reportesLlenados`.
+
 ## Cómo agregar un endpoint
 
 1. Crea `app/api/<recurso>/route.ts` (o `[id]/route.ts` si es por recurso).
