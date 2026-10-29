@@ -35,7 +35,7 @@ const defaultItems: SidebarItem[] = [
   },
   {
     label: "Nueva nota",
-    href: "/admin/crearNota",
+    href: "/admin/crear-nota",
     icon: "/assets/icons/nota.svg",
   },
 ];
