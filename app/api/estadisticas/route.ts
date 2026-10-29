@@ -5,7 +5,6 @@ import { fail, ok } from "@/src/server/utils/apiResponse";
 
 const MESES_EN_VENTANA = 12;
 const MAX_TIPOS_CIRUGIA = 12;
-const MAX_LUGARES = 5;
 
 /**
  * Campos de texto que debe tener una nota operatoria para considerarse
@@ -179,7 +178,6 @@ export async function GET() {
       { $match: { lugarCirugia: { $nin: [null, ""] } } },
       { $group: { _id: "$lugarCirugia", total: { $sum: 1 } } },
       { $sort: { total: -1 } },
-      { $limit: MAX_LUGARES },
     ]),
     ExpedienteMedico.aggregate<ConteoAgrupado>([
       { $match: { sexo: { $nin: [null, ""] } } },
