@@ -1,0 +1,138 @@
+.ver-expediente .crear-expediente-input[readonly],
+.ver-expediente .crear-expediente-textarea[readonly] {
+  background: #f5f6f7;
+  cursor: default;
+}
+
+.ver-expediente .crear-expediente-input[readonly]:focus-visible {
+  outline: none;
+}
+
+.ver-expediente-sexo-opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  font-size: 0.8rem;
+  color: #111;
+}
+
+.ver-expediente-sexo-punto {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+
+  background-color: #00c853;
+  border-radius: 50%;
+}
+
+.ver-expediente-sexo-vacio {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.ver-expediente .crear-expediente-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.ver-expediente-acciones {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.ver-expediente-btn-editar {
+  background: #00d26a;
+  color: #ffffff;
+}
+
+.ver-expediente-btn-imprimir {
+  background: #0e518e;
+  color: #ffffff;
+}
+
+.ver-expediente-bitacoras {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.ver-expediente-bitacoras-titulo {
+  margin: 0 0 1rem;
+  color: #111;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ver-expediente-btn-bitacora {
+  background: #f0a500;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .ver-expediente-acciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .ver-expediente-acciones .crear-expediente-btn,
+  .ver-expediente-btn-bitacora {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.5rem clamp(0.5rem, 2.5vw, 1rem);
+    font-size: clamp(0.62rem, 3.2vw, 0.8rem);
+  }
+
+  .ver-expediente-acciones .crear-expediente-btn {
+    white-space: nowrap;
+  }
+
+  .ver-expediente-acciones .ver-expediente-btn-editar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .ver-expediente-acciones .ver-expediente-btn-imprimir {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ver-expediente-acciones .crear-expediente-btn-back {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+.ver-expediente-estado {
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+}
+
+.ver-expediente-estado p {
+  margin: 0;
+  color: #111;
+  font-size: 0.95rem;
+}
+
+.ver-expediente-error {
+  color: #c0272d !important;
+}
+
+.ver-expediente-estado .crear-expediente-btn {
+  margin-top: 1.5rem;
+}

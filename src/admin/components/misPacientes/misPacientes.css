@@ -156,6 +156,37 @@
   color: #4b5563;
 }
 
+.mis-pacientes-error {
+  padding: 2rem 0;
+  text-align: center;
+  color: #c0272d;
+}
+
+.mis-pacientes-error p {
+  margin: 0 0 1rem;
+}
+
+.mis-pacientes-retry {
+  height: 40px;
+  padding: 0 1.25rem;
+
+  background-color: #01000b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.mis-pacientes-retry:hover {
+  opacity: 0.85;
+}
+
 .mis-pacientes-list {
   list-style: none;
   margin: 0;
