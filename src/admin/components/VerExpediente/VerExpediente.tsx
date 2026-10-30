@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "../CrearExpediente/CrearExpediente.css";
 import "./VerExpediente.css";
 
@@ -84,6 +85,7 @@ const formatearIngreso = (valor?: string) => {
 };
 
 export default function VerExpediente({ id }: VerExpedienteProps) {
+  const router = useRouter();
   const [expediente, setExpediente] = useState<Expediente | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
@@ -160,6 +162,13 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
   }
 
   const ingreso = formatearIngreso(expediente.createdAt);
+  const irACrearNota = () => {
+    sessionStorage.setItem(
+      "crear-nota-expediente",
+      JSON.stringify({ id, expiresAt: Date.now() + 60_000 }),
+    );
+    router.push(`/admin/crear-nota?expedienteId=${encodeURIComponent(id)}`);
+  };
   const sexoSeleccionado =
     expediente.sexo === "M"
       ? "Hombre"
@@ -344,6 +353,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
           <button
             type="button"
+            onClick={irACrearNota}
             className="crear-expediente-btn ver-expediente-btn-nota-operatoria"
           >
             Crear Nota Operatoria
