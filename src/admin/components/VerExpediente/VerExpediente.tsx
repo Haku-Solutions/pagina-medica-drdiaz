@@ -335,25 +335,18 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
           >
             Editar Expediente
           </button>
-
-          <button
-            type="button"
-            className="crear-expediente-btn ver-expediente-btn-imprimir"
-          >
-            Imprimir Expediente
-          </button>
         </div>
 
-        <div className="ver-expediente-bitacoras">
-          <h2 className="ver-expediente-bitacoras-titulo">
-            Bitácoras Registradas
+        <div className="ver-expediente-notas-operatorias">
+          <h2 className="ver-expediente-notas-operatorias-titulo">
+            Notas Operatorias Registradas
           </h2>
 
           <button
             type="button"
-            className="crear-expediente-btn ver-expediente-btn-bitacora"
+            className="crear-expediente-btn ver-expediente-btn-nota-operatoria"
           >
-            Crear Bitácora
+            Crear Nota Operatoria
           </button>
         </div>
       </div>
