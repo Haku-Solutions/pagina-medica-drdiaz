@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { HiDocumentText } from "react-icons/hi2";
 import "../CrearExpediente/CrearExpediente.css";
 import "./VerExpediente.css";
 
@@ -23,10 +24,41 @@ interface Expediente {
   createdAt?: string;
 }
 
+interface NotaOperatoria {
+  _id?: string;
+  fechaCirugia?: string;
+  lugarCirugia?: string;
+  notaPreoperatoria?: string;
+  notaPostoperatoria?: string;
+  diagnosticoPreoperatorio?: string;
+  diagnosticoPostoperatorio?: string;
+  cirugiaProgramada?: string;
+  cirugiaRealizada?: string;
+  hallazgos?: string;
+  tecnica?: string;
+  sangrado?: string;
+  drenajes?: string;
+  materialesTextiles?: string;
+  complicaciones?: string;
+  anestesiologo?: string;
+  tipoAnestesia?: string;
+  enfermeraInstrumentista?: string;
+  enfermeraCirculante?: string;
+  ayudantes?: string;
+  plan?: string;
+  pronostico?: string;
+  dieta?: string;
+  soluciones?: string;
+  medicamentos?: string;
+  cuidadosGenerales?: string;
+  createdAt?: string;
+}
+
 interface RespuestaExpediente {
   ok: boolean;
   data?: {
     expediente?: Expediente;
+    notas?: NotaOperatoria[];
   };
   error?: string;
 }
@@ -84,9 +116,74 @@ const formatearIngreso = (valor?: string) => {
   };
 };
 
+const formatearFechaNota = (valor?: string) => {
+  if (!valor) return "Sin fecha";
+
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return "Sin fecha";
+
+  return fecha.toLocaleDateString("es-MX", {
+    timeZone: "America/Mexico_City",
+  });
+};
+
+const resumenNota = (nota: NotaOperatoria) =>
+  nota.cirugiaRealizada?.trim() ||
+  nota.cirugiaProgramada?.trim() ||
+  "Nota operatoria";
+
+const diagnosticoNota = (nota: NotaOperatoria) =>
+  nota.diagnosticoPostoperatorio?.trim() ||
+  nota.diagnosticoPreoperatorio?.trim() ||
+  "";
+
+const CAMPOS_NOTA = [
+  "fechaCirugia",
+  "lugarCirugia",
+  "notaPreoperatoria",
+  "notaPostoperatoria",
+  "diagnosticoPreoperatorio",
+  "diagnosticoPostoperatorio",
+  "cirugiaProgramada",
+  "cirugiaRealizada",
+  "hallazgos",
+  "tecnica",
+  "sangrado",
+  "drenajes",
+  "materialesTextiles",
+  "complicaciones",
+  "ayudantes",
+  "tipoAnestesia",
+  "anestesiologo",
+  "enfermeraInstrumentista",
+  "enfermeraCirculante",
+  "pronostico",
+  "plan",
+  "dieta",
+  "soluciones",
+  "medicamentos",
+  "cuidadosGenerales",
+] as const;
+
+const progresoNota = (nota: NotaOperatoria) => {
+  const total = CAMPOS_NOTA.length;
+  const completados = CAMPOS_NOTA.filter((campo) => {
+    const valor = nota[campo];
+    return typeof valor === "string" && valor.trim().length > 0;
+  }).length;
+
+  return {
+    completados,
+    faltantes: total - completados,
+    total,
+    porcentaje: Math.round((completados / total) * 100),
+  };
+};
+
 export default function VerExpediente({ id }: VerExpedienteProps) {
   const router = useRouter();
   const [expediente, setExpediente] = useState<Expediente | null>(null);
+  const [notas, setNotas] = useState<NotaOperatoria[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
@@ -96,6 +193,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
     const cargar = async () => {
       setCargando(true);
       setError("");
+      setNotas([]);
 
       try {
         const res = await fetch(`/api/expedientes/${encodeURIComponent(id)}`, {
@@ -114,6 +212,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
         }
 
         setExpediente(payload.data.expediente);
+        setNotas(payload.data.notas ?? []);
       } catch (fallo) {
         if (controller.signal.aborted) return;
 
@@ -358,6 +457,105 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
           >
             Crear Nota Operatoria
           </button>
+
+          {notas.length === 0 ? (
+            <p className="ver-expediente-notas-vacio">
+              Todavía no hay notas operatorias registradas.
+            </p>
+          ) : (
+            <ul className="ver-expediente-notas-lista">
+              {notas.map((nota, index) => {
+                const diagnostico = diagnosticoNota(nota);
+                const referencia = resumenNota(nota);
+                const fechaCreacion = nota.createdAt
+                  ? formatearFechaNota(nota.createdAt)
+                  : "";
+                const titulo = fechaCreacion
+                  ? `Creada el ${fechaCreacion}`
+                  : "Sin fecha de creación";
+                const progreso = progresoNota(nota);
+
+                return (
+                  <li
+                    className="ver-expediente-nota"
+                    key={nota._id ?? index}
+                  >
+                    <div className="ver-expediente-nota-principal">
+                      <HiDocumentText
+                        className="ver-expediente-nota-icono"
+                        aria-hidden="true"
+                      />
+
+                      <div className="ver-expediente-nota-info">
+                        <p className="ver-expediente-nota-titulo">
+                          {titulo}
+                        </p>
+
+                        <p className="ver-expediente-nota-meta">
+                          Cirugía: {formatearFechaNota(nota.fechaCirugia)}
+                        </p>
+
+                        {diagnostico && (
+                          <p className="ver-expediente-nota-diagnostico">
+                            {diagnostico}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="ver-expediente-nota-progreso">
+                      <div className="ver-expediente-nota-progreso-cabecera">
+                        <span className="ver-expediente-nota-progreso-texto">
+                          Progreso {progreso.completados}/{progreso.total}
+                        </span>
+                      </div>
+
+                      <div
+                        className="ver-expediente-nota-progreso-barra"
+                        role="progressbar"
+                        aria-valuemin={0}
+                        aria-valuemax={progreso.total}
+                        aria-valuenow={progreso.completados}
+                        aria-valuetext={`Progreso ${progreso.completados} de ${progreso.total} campos completados, ${progreso.faltantes} faltantes`}
+                      >
+                        <span
+                          className={
+                            progreso.faltantes === 0 ? "is-complete" : ""
+                          }
+                          style={{ width: `${progreso.porcentaje}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="ver-expediente-nota-acciones">
+                      <button
+                        type="button"
+                        className="ver-expediente-nota-ver"
+                        aria-label={`Ver nota operatoria de ${referencia}`}
+                        onClick={() => {
+                          if (nota._id) {
+                            router.push(
+                              `/admin/ver-nota/${encodeURIComponent(nota._id)}`,
+                            );
+                          }
+                        }}
+                      >
+                        Ver Nota Operatoria
+                      </button>
+
+                      <button
+                        type="button"
+                        className="ver-expediente-nota-editar"
+                        aria-label={`Editar nota operatoria de ${referencia}`}
+                      >
+                        Editar Nota Operatoria
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </div>
     </section>
