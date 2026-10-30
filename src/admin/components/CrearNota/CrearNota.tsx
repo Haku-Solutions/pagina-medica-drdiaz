@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { HiDocumentText } from "react-icons/hi2";
 import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
@@ -66,8 +66,9 @@ const initialForm: NotaOperatoriaForm = {
 type FormField = keyof NotaOperatoriaForm;
 type Errores = Partial<Record<FormField, string>>;
 
-// ID temporal hasta que el flujo de pacientes proporcione el expediente real.
-const DUMMY_EXPEDIENTE_ID = "000000000000000000000001";
+interface CrearNotaProps {
+  expedienteId: string;
+}
 
 type CampoProps = {
   id: string;
@@ -102,7 +103,7 @@ function Campo({
   );
 }
 
-export default function CrearNota() {
+export default function CrearNota({ expedienteId }: CrearNotaProps) {
   const router = useRouter();
   const [form, setForm] = useState<NotaOperatoriaForm>(initialForm);
   const [files, setFiles] = useState<File[]>([]);
@@ -114,6 +115,45 @@ export default function CrearNota() {
     () => new Set()
   );
   const [fileSelectionError, setFileSelectionError] = useState("");
+  const [accesoValidado, setAccesoValidado] = useState(false);
+  const accesoComprobado = useRef(false);
+
+  useEffect(() => {
+    if (accesoComprobado.current) return;
+    accesoComprobado.current = true;
+
+    try {
+      const permiso = sessionStorage.getItem("crear-nota-expediente");
+      const datos = permiso ? (JSON.parse(permiso) as { id?: string; expiresAt?: number }) : null;
+      if (
+        datos?.id === expedienteId &&
+        typeof datos.expiresAt === "number" &&
+        datos.expiresAt >= Date.now()
+      ) {
+        sessionStorage.removeItem("crear-nota-expediente");
+        sessionStorage.setItem("nota-expediente-activo", expedienteId);
+        setAccesoValidado(true);
+        return;
+      }
+
+      const navegacion = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming | undefined;
+      const esRecargaORegreso =
+        navegacion?.type === "reload" || navegacion?.type === "back_forward";
+      if (
+        esRecargaORegreso &&
+        sessionStorage.getItem("nota-expediente-activo") === expedienteId
+      ) {
+        setAccesoValidado(true);
+        return;
+      }
+    } catch {
+      // Un permiso inválido se trata como acceso directo a la ruta.
+    }
+
+    router.replace("/admin/mispacientes");
+  }, [expedienteId, router]);
 
   const updateField = (name: FormField, value: string) => {
     setForm((current) => ({ ...current, [name]: value }));
@@ -163,6 +203,12 @@ export default function CrearNota() {
     }
 
     setErrores(nuevos);
+    const primerCampoInvalido = Object.keys(nuevos)[0];
+    if (primerCampoInvalido) {
+      const elemento = document.getElementById(primerCampoInvalido);
+      elemento?.scrollIntoView({ behavior: "smooth", block: "center" });
+      elemento?.focus({ preventScroll: true });
+    }
     return Object.keys(nuevos).length === 0;
   };
 
@@ -179,7 +225,7 @@ export default function CrearNota() {
         const response = await fetch("/api/notas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, idExpediente: DUMMY_EXPEDIENTE_ID }),
+          body: JSON.stringify({ ...form, idExpediente: expedienteId }),
         });
         const result = await response.json().catch(() => null);
 
@@ -212,7 +258,8 @@ export default function CrearNota() {
         setUploadedFileIndexes((current) => new Set(current).add(index));
       }
 
-      router.push("/admin/mispacientes");
+      sessionStorage.removeItem("nota-expediente-activo");
+      router.push(`/admin/ver-expediente/${encodeURIComponent(expedienteId)}`);
     } catch (error) {
       setSubmitError(
         error instanceof Error
@@ -225,6 +272,14 @@ export default function CrearNota() {
       setIsSubmitting(false);
     }
   };
+
+  if (!accesoValidado) {
+    return (
+      <div className="crear-nota-shell" aria-busy="true">
+        <p>Verificando acceso…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="crear-nota-shell">

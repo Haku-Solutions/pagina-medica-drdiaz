@@ -33,11 +33,6 @@ const defaultItems: SidebarItem[] = [
     href: "/admin/crear-expediente",
     icon: "/assets/icons/expediente.svg",
   },
-  {
-    label: "Nueva nota",
-    href: "/admin/crear-nota",
-    icon: "/assets/icons/nota.svg",
-  },
 ];
 
 export default function Sidebar({
