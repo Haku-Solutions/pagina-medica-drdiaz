@@ -1,0 +1,12 @@
+/* Solo lo que cambia respecto a Crear Expediente; el resto viene de CrearExpediente.css */
+
+.editar-expediente-btn-cancel {
+  background: #f00;
+  color: #fff;
+}
+
+.editar-expediente-estado {
+  margin: 2rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+}
