@@ -1,0 +1,91 @@
+.paciente-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+
+  background-color: #f2f2f2;
+  border-radius: 8px;
+
+  transition: background-color 0.2s ease;
+}
+
+.paciente-row:hover {
+  background-color: #b8c4ec;
+}
+
+.paciente-row-icon {
+  font-size: 2.25rem;
+  color: #4b5563;
+  flex-shrink: 0;
+}
+
+.paciente-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.paciente-row-nombre {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.paciente-row-ver {
+  height: 44px;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+
+  background-color: #f0a500;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.paciente-row-ver:hover {
+  background-color: #d89400;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .paciente-row {
+    padding: 1rem 1.25rem;
+  }
+
+  .paciente-row-icon {
+    font-size: 1.75rem;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .paciente-row {
+    gap: 0.6rem;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .paciente-row-nombre {
+    font-size: 0.95rem;
+  }
+
+  .paciente-row-icon {
+    font-size: 1.5rem;
+  }
+
+  .paciente-row-ver {
+    height: 34px;
+    padding: 0 0.9rem;
+    font-size: 0.78rem;
+  }
+}

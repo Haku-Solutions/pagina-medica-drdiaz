@@ -1,0 +1,476 @@
+.inicio {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  box-sizing: border-box;
+
+  color: #01000B;
+
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.inicio-page {
+  min-height: 100vh;
+
+  background: linear-gradient(180deg, #f1f4fc 0%, #b8c4ec 100%);
+}
+
+/* Header */
+
+.inicio-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.inicio-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.inicio-titulos {
+  flex: 1;
+  min-width: 0;
+}
+
+.inicio-titulo {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.inicio-subtitulo {
+  margin: 0.35rem 0 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.inicio-actualizar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.1rem;
+  flex-shrink: 0;
+
+  background-color: #1C2B48;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-actualizar:hover:not(:disabled) {
+  background-color: #16233a;
+}
+
+.inicio-actualizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inicio-actualizar .girando {
+  animation: inicio-giro 1s linear infinite;
+}
+
+@keyframes inicio-giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estados */
+
+.inicio-cargando {
+  padding: 3rem 0;
+  text-align: center;
+  color: #4b5563;
+}
+
+.inicio-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+
+  background-color: #fdecec;
+  border-left: 4px solid #dc2626;
+  border-radius: 8px;
+
+  color: #991b1b;
+}
+
+.inicio-error p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.inicio-error button {
+  padding: 0.5rem 1rem;
+
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-error button:hover {
+  background-color: #b91c1c;
+}
+
+/* Tarjetas de totales */
+
+.inicio-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inicio-tarjeta {
+  padding: 1rem 1.25rem;
+
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(28, 43, 72, 0.12);
+}
+
+.inicio-tarjeta-icono {
+  font-size: 1.5rem;
+  color: #1C2B48;
+}
+
+.inicio-tarjeta-valor {
+  margin: 0.4rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.inicio-tarjeta-etiqueta {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Grilla de gráficas */
+
+.inicio-grilla {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.inicio-grilla > .inicio-panel {
+  grid-column: span 6;
+}
+
+.inicio-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(28, 43, 72, 0.12);
+}
+
+/* Asegura que las gráficas ocupen un alto uniforme */
+.inicio-panel > .grafica-lienzo,
+.inicio-panel > .grafica-anillo-contenedor {
+  flex: 1 1 auto;
+  min-height: var(--alto-grafica, 280px);
+}
+
+.inicio-panel-ancho {
+  grid-column: 1 / -1;
+}
+
+.inicio-panel-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.inicio-panel-icono {
+  font-size: 1.25rem;
+  color: #1C2B48;
+}
+
+.inicio-panel-subtitulo {
+  margin: 0.35rem 0 0.9rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Cabecera de panel con selector */
+
+.inicio-panel-cabecera {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inicio-panel-cabecera > :first-child {
+  min-width: 0;
+}
+
+.inicio-panel-cabecera > :last-child {
+  justify-self: end;
+}
+
+@media (max-width: 640px) {
+  .inicio-panel-cabecera {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .inicio-panel-cabecera > :last-child {
+    justify-self: start;
+  }
+}
+
+.inicio-panel-cabecera .inicio-panel-subtitulo {
+  margin-bottom: 0;
+}
+
+.inicio-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inicio-selector-etiqueta {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inicio-selector-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: auto;
+  max-width: 100%;
+  height: 44px;
+  padding: 0 0.9rem;
+  box-sizing: border-box;
+
+  background-color: #1C2B48;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 16px 16px;
+
+  border: none;
+  border-radius: 999px;
+
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-selector-select:hover:not(:disabled) {
+  background-color: #16233a;
+}
+
+.inicio-selector-select:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
+.inicio-panel-cabecera .inicio-selector,
+.inicio-panel-cabecera .inicio-limpiar,
+.inicio-panel-cabecera .inicio-selector-select {
+  height: 38px;
+  line-height: 1;
+  padding: 0 1.8rem 0 0.7rem;
+  min-width: 0;
+  width: auto;
+  max-width: 200px;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* Botón para quitar la selección de cirugía */
+
+.inicio-limpiar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.1rem;
+  flex-shrink: 0;
+
+  background-color: #1C2B48;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.inicio-limpiar:hover {
+  background-color: #16233a;
+}
+
+/* Separación entre la cabecera del panel y la gráfica que sigue */
+
+.inicio-panel-cabecera ~ .grafica-svg,
+.inicio-panel-cabecera ~ .grafica-lienzo,
+.inicio-panel-cabecera ~ .grafica-anillo-contenedor {
+  margin-top: 0.9rem;
+}
+
+/* Anillo */
+
+.grafica-anillo-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.grafica-anillo-contenedor .grafica-svg {
+  max-width: var(--alto-grafica, 280px);
+  width: 100%;
+  height: 100%;
+}
+
+/* Deja espacio para el botón de menú fijo cuando el contenido llega al borde */
+
+@media (max-width: 1280px) {
+  .inicio {
+    padding-top: 4.75rem;
+  }
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  /* Deja espacio para el botón de menú fijo (arriba a la izquierda). */
+  .inicio {
+    padding: 4.75rem 1.25rem 3rem;
+  }
+
+  .inicio-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .inicio-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .inicio-actualizar {
+    height: 40px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 1100px) {
+  .inicio-grilla > .inicio-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .inicio {
+    padding: 4.75rem 1rem 3rem;
+  }
+
+  .inicio-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .inicio-titulos {
+    width: 100%;
+  }
+
+  .inicio-titulo {
+    font-size: 1.5rem;
+  }
+
+  .inicio-subtitulo {
+    font-size: 0.875rem;
+  }
+
+  .inicio-actualizar {
+    width: 100%;
+    height: 44px;
+  }
+
+  .inicio-grilla {
+    grid-template-columns: 1fr;
+  }
+
+  .inicio-grilla > .inicio-panel {
+    grid-column: 1 / -1;
+  }
+
+  .inicio-panel {
+    padding: 1.25rem;
+  }
+
+  .inicio-panel-cabecera {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inicio-selector-select {
+    width: 100%;
+    min-width: 0;
+  }
+}
