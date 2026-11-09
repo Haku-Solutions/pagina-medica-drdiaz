@@ -168,6 +168,10 @@
   background: #000;
 }
 
+.nota-cancel-button {
+  background: #FF0004;
+}
+
 .nota-back-button svg {
   width: 17px;
   height: 17px;

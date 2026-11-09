@@ -553,6 +553,13 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
                         type="button"
                         className="ver-expediente-nota-editar"
                         aria-label={`Editar nota operatoria de ${referencia}`}
+                        onClick={() => {
+                          if (nota._id) {
+                            router.push(
+                              `/admin/editar-nota/${encodeURIComponent(nota._id)}`,
+                            );
+                          }
+                        }}
                       >
                         Editar Nota Operatoria
                       </button>
