@@ -18,6 +18,10 @@
     border-color: #4d79c7; 
     background: #eef4ff; 
 }
+.nota-dropzone.is-disabled {
+    cursor: wait;
+    opacity: .65;
+}
 .nota-dropzone.is-dragging { 
     transform: scale(1.01); 
 }
@@ -49,4 +53,64 @@
 }
 .nota-file-input { 
     display: none; 
+}
+.nota-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: .75rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+.nota-file-list li {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: .55rem;
+    padding: .6rem .75rem;
+    border: 1px solid #dce3ef;
+    border-radius: 4px;
+    background: #fff;
+    color: #52627b;
+    font-size: .75rem;
+}
+.nota-file-list li > svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+}
+.nota-file-list li > span {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.nota-file-list li > small {
+    flex: 0 0 auto;
+    color: #777;
+}
+.nota-file-remove {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .5rem;
+    border: 0;
+    border-radius: 4px;
+    background: #fff0f0;
+    color: #b42318;
+    cursor: pointer;
+    font: inherit;
+}
+.nota-file-remove:hover:not(:disabled) {
+    background: #ffe0e0;
+}
+.nota-file-remove:disabled {
+    cursor: wait;
+    opacity: .6;
+}
+.nota-file-remove svg {
+    width: 16px;
+    height: 16px;
 }

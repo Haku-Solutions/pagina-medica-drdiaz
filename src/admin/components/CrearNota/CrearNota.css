@@ -135,46 +135,6 @@
   margin-top: 1.25rem;
 }
 
-.nota-file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 0.75rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.nota-file-list li {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid #dce3ef;
-  border-radius: 4px;
-  background: #fff;
-  color: #52627b;
-  font-size: 0.75rem;
-}
-
-.nota-file-list li svg {
-  width: 17px;
-  height: 17px;
-  flex: 0 0 auto;
-}
-
-.nota-file-list li span {
-  overflow: hidden;
-  flex: 1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.nota-file-list li small {
-  flex: 0 0 auto;
-  color: #777;
-}
-
 .nota-form-actions {
   display: flex;
   justify-content: center;

@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { HiDocumentText } from "react-icons/hi2";
 import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
-import FileDropzone from "../fileDropzone/fileDropzone";
+import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import "./CrearNota.css";
 
 export interface NotaOperatoriaForm {
@@ -70,6 +69,11 @@ interface CrearNotaProps {
   expedienteId: string;
 }
 
+interface ArchivoPendiente {
+  id: string;
+  file: File;
+}
+
 type CampoProps = {
   id: string;
   label: string;
@@ -106,14 +110,13 @@ function Campo({
 export default function CrearNota({ expedienteId }: CrearNotaProps) {
   const router = useRouter();
   const [form, setForm] = useState<NotaOperatoriaForm>(initialForm);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<ArchivoPendiente[]>([]);
   const [errores, setErrores] = useState<Errores>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [createdNoteId, setCreatedNoteId] = useState("");
-  const [uploadedFileIndexes, setUploadedFileIndexes] = useState<Set<number>>(
-    () => new Set()
-  );
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
+  const [deletingFiles, setDeletingFiles] = useState<Set<string>>(() => new Set());
   const [fileSelectionError, setFileSelectionError] = useState("");
   const [accesoValidado, setAccesoValidado] = useState(false);
   const accesoComprobado = useRef(false);
@@ -169,14 +172,14 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
         webp: "image/webp",
         pdf: "application/pdf",
       };
-      const accepted: File[] = [];
+      const accepted: ArchivoPendiente[] = [];
       const rejected: string[] = [];
 
       for (const file of Array.from(selected)) {
         const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
         const expectedMime = mimeByExtension[extension];
         if (expectedMime && (!file.type || file.type === expectedMime)) {
-          accepted.push(file);
+          accepted.push({ id: crypto.randomUUID(), file });
         } else {
           rejected.push(file.name);
         }
@@ -190,6 +193,52 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       );
     }
   };
+
+  const removeFile = async (fileId: string) => {
+    const uploadedId = uploadedFiles[fileId];
+    if (uploadedId) {
+      setDeletingFiles((current) => new Set(current).add(fileId));
+      try {
+        const response = await fetch(`/api/archivos/${encodeURIComponent(uploadedId)}`, {
+          method: "DELETE",
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.ok === false) {
+          throw new Error(result?.error || "No se pudo eliminar el archivo.");
+        }
+        setUploadedFiles((current) => {
+          const next = { ...current };
+          delete next[fileId];
+          return next;
+        });
+      } catch (error) {
+        setFileSelectionError(
+          error instanceof Error ? error.message : "No se pudo eliminar el archivo."
+        );
+        setDeletingFiles((current) => {
+          const next = new Set(current);
+          next.delete(fileId);
+          return next;
+        });
+        return;
+      }
+      setDeletingFiles((current) => {
+        const next = new Set(current);
+        next.delete(fileId);
+        return next;
+      });
+    }
+
+    setFiles((current) => current.filter((pending) => pending.id !== fileId));
+  };
+
+  const dropzoneFiles: DropzoneFile[] = files.map(({ id, file }) => ({
+    id,
+    name: file.name,
+    size: file.size,
+    uploaded: Boolean(uploadedFiles[id]),
+    deleting: deletingFiles.has(id),
+  }));
 
   const validate = () => {
     const nuevos: Errores = {};
@@ -215,6 +264,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitError("");
+    if (deletingFiles.size > 0) return;
     if (!validate()) return;
 
     setIsSubmitting(true);
@@ -240,10 +290,10 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
         noteWasCreated = true;
       }
 
-      for (const [index, file] of files.entries()) {
-        if (uploadedFileIndexes.has(index)) continue;
+      for (const pending of files) {
+        if (uploadedFiles[pending.id]) continue;
         const uploadData = new FormData();
-        uploadData.append("archivo", file);
+        uploadData.append("archivo", pending.file);
         uploadData.append("idNota", noteId);
         const uploadResponse = await fetch("/api/archivos", {
           method: "POST",
@@ -252,10 +302,14 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
         const uploadResult = await uploadResponse.json().catch(() => null);
         if (!uploadResponse.ok || uploadResult?.ok === false) {
           throw new Error(
-            uploadResult?.error || `No se pudo subir el archivo ${file.name}.`
+            uploadResult?.error || `No se pudo subir el archivo ${pending.file.name}.`
           );
         }
-        setUploadedFileIndexes((current) => new Set(current).add(index));
+        const uploadedId = uploadResult?.data?._id;
+        if (typeof uploadedId !== "string") {
+          throw new Error(`No se recibió el identificador del archivo ${pending.file.name}.`);
+        }
+        setUploadedFiles((current) => ({ ...current, [pending.id]: uploadedId }));
       }
 
       sessionStorage.removeItem("nota-expediente-activo");
@@ -633,20 +687,14 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <h2>Cargar Archivos</h2>
           </div>
 
-          <FileDropzone onFilesSelected={addFiles} />
+          <FileDropzone
+            files={dropzoneFiles}
+            onFilesSelected={addFiles}
+            onRemoveFile={removeFile}
+            disabled={isSubmitting}
+          />
           {fileSelectionError && (
             <p className="nota-field-error" role="alert">{fileSelectionError}</p>
-          )}
-          {files.length > 0 && (
-            <ul className="nota-file-list">
-              {files.map((file, index) => (
-                <li key={`${file.name}-${index}`}>
-                  <HiDocumentText aria-hidden="true" />
-                  <span>{file.name}</span>
-                  <small>{(file.size / 1024).toFixed(0)} KB</small>
-                </li>
-              ))}
-            </ul>
           )}
         </section>
 
@@ -665,7 +713,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
           <button
             className="nota-create-button"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || deletingFiles.size > 0}
           >
             {isSubmitting
               ? "Guardando..."

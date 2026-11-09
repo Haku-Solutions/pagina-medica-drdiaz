@@ -65,6 +65,7 @@ export const archivoSchema = new Schema(
     nombreArchivo: { type: String, required: true },
     formatoArchivo: { type: String, required: true },
     url: { type: String, required: true },
+    storagePath: String,
   },
   { timestamps: true }
 );
