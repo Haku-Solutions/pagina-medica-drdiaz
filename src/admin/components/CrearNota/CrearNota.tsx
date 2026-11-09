@@ -74,6 +74,9 @@ interface ArchivoPendiente {
   file: File;
 }
 
+const huellaArchivo = (file: File) =>
+  [file.name.toLowerCase(), file.size, file.type.toLowerCase(), file.lastModified].join(":");
+
 type CampoProps = {
   id: string;
   label: string;
@@ -120,6 +123,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
   const [fileSelectionError, setFileSelectionError] = useState("");
   const [accesoValidado, setAccesoValidado] = useState(false);
   const accesoComprobado = useRef(false);
+  const huellasArchivos = useRef(new Set<string>());
 
   useEffect(() => {
     if (accesoComprobado.current) return;
@@ -174,11 +178,18 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       };
       const accepted: ArchivoPendiente[] = [];
       const rejected: string[] = [];
+      const duplicates: string[] = [];
 
       for (const file of Array.from(selected)) {
         const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
         const expectedMime = mimeByExtension[extension];
         if (expectedMime && (!file.type || file.type === expectedMime)) {
+          const fingerprint = huellaArchivo(file);
+          if (huellasArchivos.current.has(fingerprint)) {
+            duplicates.push(file.name);
+            continue;
+          }
+          huellasArchivos.current.add(fingerprint);
           accepted.push({ id: crypto.randomUUID(), file });
         } else {
           rejected.push(file.name);
@@ -186,15 +197,21 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       }
 
       if (accepted.length) setFiles((current) => [...current, ...accepted]);
-      setFileSelectionError(
-        rejected.length
-          ? `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.`
-          : ""
-      );
+      const messages = [];
+      if (rejected.length) {
+        messages.push(
+          `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.`,
+        );
+      }
+      if (duplicates.length) {
+        messages.push(`Ya estaban agregados y se omitieron: ${duplicates.join(", ")}.`);
+      }
+      setFileSelectionError(messages.join(" "));
     }
   };
 
   const removeFile = async (fileId: string) => {
+    const pendingFile = files.find((pending) => pending.id === fileId);
     const uploadedId = uploadedFiles[fileId];
     if (uploadedId) {
       setDeletingFiles((current) => new Set(current).add(fileId));
@@ -229,6 +246,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       });
     }
 
+    if (pendingFile) huellasArchivos.current.delete(huellaArchivo(pendingFile.file));
     setFiles((current) => current.filter((pending) => pending.id !== fileId));
   };
 
