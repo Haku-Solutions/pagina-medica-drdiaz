@@ -3,7 +3,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { HiDocumentText } from "react-icons/hi2";
+import { HiArrowDownTray } from "react-icons/hi2";
+import CrearPDF from "@/src/admin/components/CrearPDF";
 import "../CrearExpediente/CrearExpediente.css";
 import "./VerExpediente.css";
 
@@ -481,10 +482,15 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
                     key={nota._id ?? index}
                   >
                     <div className="ver-expediente-nota-principal">
-                      <HiDocumentText
-                        className="ver-expediente-nota-icono"
-                        aria-hidden="true"
-                      />
+                      <CrearPDF
+                        expediente={expediente}
+                        nota={nota}
+                        className="ver-expediente-nota-descarga"
+                        buttonClassName="ver-expediente-nota-icono"
+                        ariaLabel={`Descargar PDF de la nota operatoria`}
+                      >
+                        <HiArrowDownTray aria-hidden="true" />
+                      </CrearPDF>
 
                       <div className="ver-expediente-nota-info">
                         <p className="ver-expediente-nota-titulo">

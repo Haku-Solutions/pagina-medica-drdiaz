@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { generateNotaPostoperatoriaPdf } from "@/lib/pdf/generateNotaPostoperatoriaPdf";
 import { mapNotaToPdfData } from "@/lib/pdf/mapNotaToPdfData";
 import type { ExpedientePdfSource, NotaOperatoriaPdfSource } from "@/lib/pdf/notaPostoperatoriaPdf.types";
@@ -9,9 +9,19 @@ interface CrearPDFProps {
   expediente: ExpedientePdfSource;
   nota: NotaOperatoriaPdfSource;
   className?: string;
+  buttonClassName?: string;
+  ariaLabel?: string;
+  children?: ReactNode;
 }
 
-export default function CrearPDF({ expediente, nota, className = "" }: CrearPDFProps) {
+export default function CrearPDF({
+  expediente,
+  nota,
+  className = "",
+  buttonClassName = "",
+  ariaLabel = "Crear PDF",
+  children,
+}: CrearPDFProps) {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,8 +41,15 @@ export default function CrearPDF({ expediente, nota, className = "" }: CrearPDFP
 
   return (
     <div className={className}>
-      <button type="button" onClick={crear} disabled={cargando}>
-        {cargando ? "Generando PDF..." : "Crear PDF"}
+      <button
+        type="button"
+        onClick={crear}
+        disabled={cargando}
+        className={buttonClassName}
+        aria-label={cargando ? "Generando PDF" : ariaLabel}
+        title={cargando ? "Generando PDF..." : ariaLabel}
+      >
+        {children ?? (cargando ? "Generando PDF..." : "Crear PDF")}
       </button>
       {error && <p role="alert">{error}</p>}
     </div>
