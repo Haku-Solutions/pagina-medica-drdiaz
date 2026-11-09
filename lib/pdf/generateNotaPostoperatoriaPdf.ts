@@ -94,16 +94,21 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
     const width = doc.getTextWidth(labelText);
     if (align === "left") {
       doc.text(labelText, x, baseline);
-      doc.setFont("helvetica", "normal"); doc.text(value, x + width, baseline, { maxWidth: 265 - width });
+      doc.setFont("helvetica", "normal");
+      doc.text(value, x + width, baseline, { maxWidth: Math.max(1, 265 - width) });
     } else {
       doc.setFont("helvetica", "normal");
-      const valueWidth = doc.getTextWidth(value);
       doc.setFont("helvetica", "bold");
       const labelWidth = doc.getTextWidth(labelText);
+      const maxValueWidth = Math.max(1, x - LEFT - labelWidth);
+      doc.setFont("helvetica", "normal");
+      const wrappedValue = doc.splitTextToSize(value, maxValueWidth);
+      const valueWidth = Math.min(doc.getTextWidth(wrappedValue[0] ?? ""), maxValueWidth);
       const start = x - labelWidth - valueWidth;
+      doc.setFont("helvetica", "bold");
       doc.text(labelText, start, baseline);
       doc.setFont("helvetica", "normal");
-      doc.text(value, start + labelWidth, baseline);
+      doc.text(wrappedValue, start + labelWidth, baseline, { maxWidth: maxValueWidth });
     }
   }
   patientLeft.forEach(([label, value], index) => patientRow(label, value, 33, 96 + index * 23, "left"));
@@ -118,6 +123,24 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
   }
   function ensure(height: number) {
     if (y + height > BOTTOM) newPage();
+  }
+  function ensureBaseline() {
+    if (y + 12 > BOTTOM) newPage();
+  }
+  function setBodyTextStyle(bold = false) {
+    doc.setFont("helvetica", bold ? "bold" : "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(17, 17, 17);
+  }
+  function setFieldLabelStyle() {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(17, 17, 17);
+  }
+  function setSectionTitleStyle() {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10.5);
+    doc.setTextColor(47, 109, 181);
   }
   const noteFields: Array<[string, string]> = [
     ["DIAGNÓSTICO PREOPERATORIO", data.nota.diagnosticoPreoperatorio],
@@ -143,34 +166,28 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
     const fieldsExist = title === "NOTA POSTOPERATORIA" ? noteFields.length > 0 : instructionFields.length > 0;
     if (!fieldsExist) return;
     ensure(35);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(47, 109, 181);
+    setSectionTitleStyle();
     doc.text(title, x, y); y += 22;
     doc.setTextColor(17, 17, 17);
   }
 
   sectionTitle("NOTA POSTOPERATORIA", LEFT);
   for (const [label, value] of noteFields) {
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    const valueX = LEFT + doc.getTextWidth(`${label}: `);
-    doc.setFont("helvetica", "normal");
-    const wrappedLines = value.split(/\r?\n/).flatMap((line, index) =>
-      doc.splitTextToSize(line, index === 0 ? RIGHT - valueX : RIGHT - LEFT),
+    setBodyTextStyle();
+    const wrappedLines = value.split(/\r?\n/).flatMap((line) =>
+      doc.splitTextToSize(line, RIGHT - LEFT),
     );
-    const firstText = wrappedLines.shift() ?? "";
     ensure(30);
-    doc.setFont("helvetica", "bold"); doc.text(`${label}:`, LEFT, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(firstText, valueX, y);
-    let nextY = y + 12;
-    let lastBaseline = y;
+    setFieldLabelStyle();
+    doc.text(`${label}:`, LEFT, y);
+    y += 12;
     for (const line of wrappedLines) {
-      if (nextY > BOTTOM) { newPage(); nextY = y; }
-      doc.text(line, LEFT, nextY);
-      lastBaseline = nextY;
-      nextY += 12;
+      ensureBaseline();
+      setBodyTextStyle();
+      doc.text(line, LEFT, y);
+      y += 12;
     }
-    y = Math.max(y + 30, lastBaseline + 18);
+    y += 18;
   }
 
   sectionTitle("INDICACIONES POSTOPERATORIAS", LEFT);
@@ -182,18 +199,21 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
         : clean(original);
     const lines = value.split(/\r?\n/).flatMap((line) => doc.splitTextToSize(line, RIGHT - LEFT));
     ensure(23 + lines.length * 11.5);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text(`${label}:`, LEFT, y); y += 12;
-    doc.setFont("helvetica", "normal");
+    setFieldLabelStyle();
+    doc.text(`${label}:`, LEFT, y); y += 12;
+    setBodyTextStyle();
     for (const line of lines) {
-      if (y + 12 > BOTTOM) newPage();
+      ensureBaseline();
+      setBodyTextStyle();
       doc.text(line, LEFT, y); y += 11.5;
     }
     y += 23;
   }
 
   const signatureHeight = 140;
-  ensure(signatureHeight + 80);
-  y += 80;
+  const signatureGap = 20;
+  ensure(signatureHeight + signatureGap);
+  y += signatureGap;
   doc.setTextColor(17, 17, 17);
   // La fuente manuscrita no está disponible; Times italic sirve como respaldo provisional.
   doc.setFont("times", "italic"); doc.setFontSize(20);
