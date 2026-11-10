@@ -99,7 +99,7 @@ export async function PUT(
   }
  
   if (Object.keys(errores).length > 0) {
-    return NextResponse.json(
+    return Response.json(
       { ok: false, error: "Revisa los campos marcados.", campos: errores },
       { status: 422 },
     );
@@ -110,7 +110,7 @@ export async function PUT(
  
     // El CURP no puede repetirse en OTRO expediente (el propio sí puede conservarlo).
     if (curp && (await ExpedienteMedico.exists({ curp, _id: { $ne: id } }))) {
-      return NextResponse.json(
+      return Response.json(
         {
           ok: false,
           error: "Ya existe un expediente con ese CURP.",
