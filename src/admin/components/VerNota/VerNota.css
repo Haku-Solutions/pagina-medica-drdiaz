@@ -43,6 +43,14 @@
   text-decoration: underline;
 }
 
+.ver-nota-file-link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
 .ver-nota-sin-archivos {
   margin: 0.75rem 0 0;
   color: #52627b;
@@ -114,7 +122,7 @@
   background: #fff;
 }
 
-.ver-nota-carousel-image-link,
+.ver-nota-carousel-image-button,
 .ver-nota-carousel-placeholder {
   display: flex;
   width: 100%;
@@ -125,12 +133,19 @@
   background: #eef2f8;
 }
 
-.ver-nota-carousel-image-link:focus-visible {
+.ver-nota-carousel-image-button {
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+  font: inherit;
+}
+
+.ver-nota-carousel-image-button:focus-visible {
   outline: 2px solid #3b4cca;
   outline-offset: -2px;
 }
 
-.ver-nota-carousel-image-link img {
+.ver-nota-carousel-image-button img {
   display: block;
   width: 100%;
   height: 100%;
@@ -138,7 +153,7 @@
   transition: transform 0.2s ease;
 }
 
-.ver-nota-carousel-image-link:hover img {
+.ver-nota-carousel-image-button:hover img {
   transform: scale(1.03);
 }
 
@@ -235,6 +250,94 @@
   margin-top: 0.35rem;
 }
 
+.ver-nota-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(1, 0, 11, 0.86);
+  backdrop-filter: blur(2px);
+}
+
+.ver-nota-modal-contenido {
+  display: flex;
+  max-width: min(1100px, 100%);
+  max-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(1, 0, 11, 0.45);
+}
+
+.ver-nota-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.65rem 0.65rem 1rem;
+  border-bottom: 1px solid #dce3ef;
+}
+
+.ver-nota-modal-titulo {
+  overflow: hidden;
+  flex: 1;
+  color: #111;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ver-nota-modal-cerrar {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #01000b;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ver-nota-modal-cerrar:hover {
+  opacity: 0.85;
+}
+
+.ver-nota-modal-cerrar:focus-visible {
+  outline: 2px solid #3b4cca;
+  outline-offset: 2px;
+}
+
+.ver-nota-modal-cerrar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ver-nota-modal-imagen {
+  display: flex;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 0.75rem;
+  background: #f5f6f7;
+}
+
+.ver-nota-modal-imagen img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 8rem);
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .ver-nota-estado {
   align-items: center;
   box-sizing: border-box;
@@ -289,6 +392,26 @@
 }
 
 @media (max-width: 640px) {
+  .ver-nota-modal {
+    padding: 0.5rem;
+  }
+
+  .ver-nota-modal-contenido {
+    max-width: 100%;
+  }
+
+  .ver-nota-modal-header {
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  }
+
+  .ver-nota-modal-imagen {
+    padding: 0.5rem;
+  }
+
+  .ver-nota-modal-imagen img {
+    max-height: calc(100vh - 7rem);
+  }
+
   .ver-nota-carousel-item {
     flex-basis: 100%;
   }

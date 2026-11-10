@@ -12,6 +12,7 @@ import {
   HiChevronLeft,
   HiChevronRight,
   HiDocumentText,
+  HiXMark,
 } from "react-icons/hi2";
 import "../CrearNota/CrearNota.css";
 import "./VerNota.css";
@@ -116,6 +117,10 @@ export default function VerNota({ id }: VerNotaProps) {
   const carruselRef = useRef<HTMLDivElement>(null);
   const [puedeAnterior, setPuedeAnterior] = useState(false);
   const [puedeSiguiente, setPuedeSiguiente] = useState(false);
+  const [imagenAmpliada, setImagenAmpliada] = useState<{
+    url: string;
+    nombre: string;
+  } | null>(null);
 
   const actualizarFlechas = useCallback(() => {
     const carrusel = carruselRef.current;
@@ -132,6 +137,23 @@ export default function VerNota({ id }: VerNotaProps) {
 
     return () => window.removeEventListener("resize", actualizarFlechas);
   }, [actualizarFlechas, archivos]);
+
+  useEffect(() => {
+    if (!imagenAmpliada) return;
+
+    const cerrarConEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setImagenAmpliada(null);
+    };
+
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [imagenAmpliada]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -561,12 +583,14 @@ export default function VerNota({ id }: VerNotaProps) {
                             key={archivo._id ?? index}
                           >
                             {url ? (
-                              <a
-                                className="ver-nota-carousel-image-link"
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`Abrir ${nombre} en una pestaña nueva`}
+                              <button
+                                type="button"
+                                className="ver-nota-carousel-image-button"
+                                onClick={() =>
+                                  setImagenAmpliada({ url, nombre })
+                                }
+                                aria-label={`Ampliar ${nombre}`}
+                                aria-haspopup="dialog"
                               >
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
@@ -575,7 +599,7 @@ export default function VerNota({ id }: VerNotaProps) {
                                   loading="lazy"
                                   decoding="async"
                                 />
-                              </a>
+                              </button>
                             ) : (
                               <div className="ver-nota-carousel-placeholder">
                                 <HiDocumentText aria-hidden="true" />
@@ -587,14 +611,16 @@ export default function VerNota({ id }: VerNotaProps) {
                               <span title={nombre}>{nombre}</span>
 
                               {url && (
-                                <a
-                                  className="ver-nota-file-link"
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <button
+                                  type="button"
+                                  className="ver-nota-file-link ver-nota-file-link-button"
+                                  onClick={() =>
+                                    setImagenAmpliada({ url, nombre })
+                                  }
+                                  aria-haspopup="dialog"
                                 >
-                                  Abrir
-                                </a>
+                                  Ampliar
+                                </button>
                               )}
                             </figcaption>
                           </figure>
@@ -675,6 +701,50 @@ export default function VerNota({ id }: VerNotaProps) {
           </Link>
         </footer>
       </div>
+
+      {imagenAmpliada && (
+        <div
+          className="ver-nota-modal"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setImagenAmpliada(null);
+            }
+          }}
+        >
+          <div
+            className="ver-nota-modal-contenido"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Imagen ampliada: ${imagenAmpliada.nombre}`}
+          >
+            <div className="ver-nota-modal-header">
+              <span className="ver-nota-modal-titulo">
+                {imagenAmpliada.nombre}
+              </span>
+
+              <button
+                type="button"
+                className="ver-nota-modal-cerrar"
+                onClick={() => setImagenAmpliada(null)}
+                aria-label="Cerrar imagen"
+                autoFocus
+              >
+                <HiXMark aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="ver-nota-modal-imagen">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imagenAmpliada.url}
+                alt={imagenAmpliada.nombre}
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
