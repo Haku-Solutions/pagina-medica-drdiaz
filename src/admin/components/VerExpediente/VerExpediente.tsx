@@ -439,10 +439,13 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
           </Link>
 
           <button
-            type="button"
-            className="crear-expediente-btn ver-expediente-btn-editar"
+              type="button"
+              className="crear-expediente-btn ver-expediente-btn-editar"
+              onClick={() =>
+                router.push(`/admin/editar-expediente/${encodeURIComponent(id)}`)
+              }   
           >
-            Editar Expediente
+          Editar Expediente
           </button>
         </div>
 
