@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-// Reutiliza los estilos del formulario de crear. Ajusta la ruta si tu carpeta se llama distinto.
 import "../crearExpediente/CrearExpediente.css";
 import "./EditarExpediente.css";
 
@@ -70,10 +69,11 @@ type CampoProps = {
   label: string;
   requerido?: boolean;
   error?: string;
+  guardado?: string;
   children: ReactNode;
 };
 
-function Campo({ id, label, requerido, error, children }: CampoProps) {
+function Campo({ id, label, requerido, error, guardado, children }: CampoProps) {
   return (
     <div className="crear-expediente-field">
       <label htmlFor={id} className="crear-expediente-label">
@@ -82,6 +82,12 @@ function Campo({ id, label, requerido, error, children }: CampoProps) {
       </label>
 
       {children}
+
+      {guardado !== undefined && (
+        <p className="editar-expediente-anterior">
+          <span>Guardado:</span> {guardado}
+        </p>
+      )}
 
       {error && (
         <p className="crear-expediente-error" role="alert">
@@ -95,6 +101,8 @@ function Campo({ id, label, requerido, error, children }: CampoProps) {
 export default function EditarExpediente({ id }: { id: string }) {
   const router = useRouter();
   const [form, setForm] = useState<Formulario>(FORM_INICIAL);
+  // Copia de lo que está guardado en la base de datos, para mostrarlo mientras se edita.
+  const [original, setOriginal] = useState<Formulario | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const [ingreso, setIngreso] = useState<Date | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -121,10 +129,16 @@ export default function EditarExpediente({ id }: { id: string }) {
           return;
         }
 
-        // Acepta { ok, data: {...} } o el documento directo.
-        const doc = (json.data ?? json) as Record<string, unknown>;
+        // Acepta { ok, data: {...} }, { data: { expediente: {...} } } o el documento directo.
+        const data = (json.data ?? json) as Record<string, unknown>;
+        const doc = (data.expediente ?? data.expedienteMedico ?? data) as Record<
+          string,
+          unknown
+        >;
 
-        setForm(aFormulario(doc));
+        const inicial = aFormulario(doc);
+        setForm(inicial);
+        setOriginal(inicial);
 
         const creado = new Date(String(doc.createdAt ?? ""));
         setIngreso(Number.isNaN(creado.getTime()) ? null : creado);
@@ -143,6 +157,23 @@ export default function EditarExpediente({ id }: { id: string }) {
   }, [id]);
 
   const edad = calcularEdad(form.fechaNacimiento);
+
+  // Devuelve el valor guardado solo cuando el campo ya fue modificado.
+  const guardado = (campo: keyof Formulario): string | undefined => {
+    if (!original || form[campo] === original[campo]) return undefined;
+
+    const valor = original[campo];
+    if (!valor) return "(vacío)";
+
+    if (campo === "fechaNacimiento") {
+      const [anio, mes, dia] = valor.split("-");
+      return `${dia}/${mes}/${anio}`;
+    }
+
+    if (campo === "sexo") return valor === "hombre" ? "Hombre" : "Mujer";
+
+    return valor;
+  };
 
   const actualizar = <K extends keyof Formulario>(
     campo: K,
@@ -275,6 +306,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           label="Nombre Completo"
           requerido
           error={errores.nombre}
+          guardado={guardado("nombre")}
         >
           <input
             id="nombre"
@@ -291,6 +323,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="fechaNacimiento"
           label="Fecha de Nacimiento"
           error={errores.fechaNacimiento}
+          guardado={guardado("fechaNacimiento")}
         >
           <input
             id="fechaNacimiento"
@@ -337,9 +370,19 @@ export default function EditarExpediente({ id }: { id: string }) {
             />
             <span>Mujer</span>
           </label>
+
+          {guardado("sexo") !== undefined && (
+            <p className="editar-expediente-anterior">
+              <span>Guardado:</span> {guardado("sexo")}
+            </p>
+          )}
         </fieldset>
 
-        <Campo id="ciudadNacimiento" label="Ciudad (Lugar de Nacimiento)">
+        <Campo
+          id="ciudadNacimiento"
+          label="Ciudad (Lugar de Nacimiento)"
+          guardado={guardado("ciudadNacimiento")}
+        >
           <input
             id="ciudadNacimiento"
             type="text"
@@ -350,7 +393,11 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="estadoNacimiento" label="Estado (Lugar de Nacimiento)">
+        <Campo
+          id="estadoNacimiento"
+          label="Estado (Lugar de Nacimiento)"
+          guardado={guardado("estadoNacimiento")}
+        >
           <input
             id="estadoNacimiento"
             type="text"
@@ -361,7 +408,12 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="curp" label="CURP" error={errores.curp}>
+        <Campo
+          id="curp"
+          label="CURP"
+          error={errores.curp}
+          guardado={guardado("curp")}
+        >
           <input
             id="curp"
             type="text"
@@ -376,7 +428,11 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="residencia" label="Lugar de Residencia">
+        <Campo
+          id="residencia"
+          label="Lugar de Residencia"
+          guardado={guardado("residencia")}
+        >
           <input
             id="residencia"
             type="text"
@@ -387,7 +443,11 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="antecedentes" label="Antecedentes">
+        <Campo
+          id="antecedentes"
+          label="Antecedentes"
+          guardado={guardado("antecedentes")}
+        >
           <textarea
             id="antecedentes"
             value={form.antecedentes}
@@ -398,7 +458,12 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="telefono" label="Teléfono" error={errores.telefono}>
+        <Campo
+          id="telefono"
+          label="Teléfono"
+          error={errores.telefono}
+          guardado={guardado("telefono")}
+        >
           <input
             id="telefono"
             type="tel"
@@ -417,6 +482,7 @@ export default function EditarExpediente({ id }: { id: string }) {
         <Campo
           id="familiarNombre"
           label="Nombre Completo del Familiar Responsable"
+          guardado={guardado("familiarNombre")}
         >
           <input
             id="familiarNombre"
@@ -432,6 +498,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="familiarTelefono"
           label="Teléfono del Familiar Responsable"
           error={errores.familiarTelefono}
+          guardado={guardado("familiarTelefono")}
         >
           <input
             id="familiarTelefono"

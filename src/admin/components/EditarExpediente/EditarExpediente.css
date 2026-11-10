@@ -5,6 +5,26 @@
   color: #fff;
 }
 
+/* Línea con el valor guardado, visible solo cuando el campo fue modificado */
+.editar-expediente-anterior {
+  margin: 0;
+  max-height: 6rem;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  color: #555;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.editar-expediente-anterior span {
+  font-weight: 700;
+}
+
+/* Dentro del fieldset de sexo, ocupa toda la fila */
+.crear-expediente-sexo .editar-expediente-anterior {
+  flex-basis: 100%;
+}
+
 .editar-expediente-estado {
   margin: 2rem 0;
   text-align: center;
