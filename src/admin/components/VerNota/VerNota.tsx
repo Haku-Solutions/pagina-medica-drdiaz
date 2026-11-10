@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  HiChevronLeft,
-  HiChevronRight,
-  HiDocumentText,
-} from "react-icons/hi2";
+import { HiDocumentText } from "react-icons/hi2";
 import "../CrearNota/CrearNota.css";
 import "./VerNota.css";
 
@@ -97,41 +87,12 @@ const fechaParaInput = (valor?: string) => {
   return fecha.toISOString().slice(0, 10);
 };
 
-const esImagen = (archivo: ArchivoNota) => {
-  const formato = archivo.formatoArchivo?.toLowerCase() ?? "";
-  if (formato.startsWith("image/")) return true;
-
-  const nombre = (archivo.nombreArchivo ?? archivo.url ?? "").toLowerCase();
-  return /\.(png|jpe?g|webp|gif|avif|bmp|svg)$/.test(nombre);
-};
-
-const esUrlWeb = (url?: string) => Boolean(url && /^https?:\/\//i.test(url));
-
 export default function VerNota({ id }: VerNotaProps) {
   const [nota, setNota] = useState<NotaOperatoria | null>(null);
   const [archivos, setArchivos] = useState<ArchivoNota[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [intento, setIntento] = useState(0);
-  const carruselRef = useRef<HTMLDivElement>(null);
-  const [puedeAnterior, setPuedeAnterior] = useState(false);
-  const [puedeSiguiente, setPuedeSiguiente] = useState(false);
-
-  const actualizarFlechas = useCallback(() => {
-    const carrusel = carruselRef.current;
-    if (!carrusel) return;
-
-    const maxScroll = carrusel.scrollWidth - carrusel.clientWidth;
-    setPuedeAnterior(carrusel.scrollLeft > 4);
-    setPuedeSiguiente(carrusel.scrollLeft < maxScroll - 4);
-  }, []);
-
-  useEffect(() => {
-    actualizarFlechas();
-    window.addEventListener("resize", actualizarFlechas);
-
-    return () => window.removeEventListener("resize", actualizarFlechas);
-  }, [actualizarFlechas, archivos]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -201,23 +162,6 @@ export default function VerNota({ id }: VerNotaProps) {
       </div>
     );
   }
-
-  const imagenes = archivos.filter(esImagen);
-  const otrosArchivos = archivos.filter((archivo) => !esImagen(archivo));
-
-  const desplazarCarrusel = (direccion: -1 | 1) => {
-    const carrusel = carruselRef.current;
-    if (!carrusel) return;
-
-    const primerElemento = carrusel.querySelector<HTMLElement>(
-      ".ver-nota-carousel-item",
-    );
-    const ancho =
-      (primerElemento?.getBoundingClientRect().width ?? carrusel.clientWidth) +
-      16;
-
-    carrusel.scrollBy({ left: direccion * ancho, behavior: "smooth" });
-  };
 
   return (
     <div className="crear-nota-shell ver-nota-shell">
@@ -530,133 +474,25 @@ export default function VerNota({ id }: VerNotaProps) {
           </div>
 
           {archivos.length > 0 ? (
-            <>
-              {imagenes.length > 0 && (
-                <div className="ver-nota-carousel">
-                  <div className="ver-nota-carousel-header">
-                    <span>Imágenes</span>
-                    <span className="ver-nota-carousel-count">
-                      {imagenes.length}{" "}
-                      {imagenes.length === 1 ? "imagen" : "imágenes"}
-                    </span>
-                  </div>
+            <ul className="nota-file-list">
+              {archivos.map((archivo, index) => (
+                <li key={archivo._id ?? index}>
+                  <HiDocumentText aria-hidden="true" />
+                  <span>{archivo.nombreArchivo || "Archivo"}</span>
 
-                  <div className="ver-nota-carousel-viewport">
-                    <div
-                      ref={carruselRef}
-                      className="ver-nota-carousel-track"
-                      role="region"
-                      aria-label="Imágenes adjuntas a la nota operatoria"
-                      tabIndex={0}
-                      onScroll={actualizarFlechas}
+                  {archivo.url && (
+                    <a
+                      className="ver-nota-file-link"
+                      href={archivo.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      {imagenes.map((archivo, index) => {
-                        const nombre =
-                          archivo.nombreArchivo || `Imagen ${index + 1}`;
-                        const url = esUrlWeb(archivo.url) ? archivo.url : "";
-
-                        return (
-                          <figure
-                            className="ver-nota-carousel-item"
-                            key={archivo._id ?? index}
-                          >
-                            {url ? (
-                              <a
-                                className="ver-nota-carousel-image-link"
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`Abrir ${nombre} en una pestaña nueva`}
-                              >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={url}
-                                  alt={nombre}
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              </a>
-                            ) : (
-                              <div className="ver-nota-carousel-placeholder">
-                                <HiDocumentText aria-hidden="true" />
-                                <span>Sin vista previa</span>
-                              </div>
-                            )}
-
-                            <figcaption className="ver-nota-carousel-caption">
-                              <span title={nombre}>{nombre}</span>
-
-                              {url && (
-                                <a
-                                  className="ver-nota-file-link"
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  Abrir
-                                </a>
-                              )}
-                            </figcaption>
-                          </figure>
-                        );
-                      })}
-                    </div>
-
-                    {(puedeAnterior || puedeSiguiente) && (
-                      <>
-                        <button
-                          type="button"
-                          className="ver-nota-carousel-arrow ver-nota-carousel-arrow-prev"
-                          onClick={() => desplazarCarrusel(-1)}
-                          disabled={!puedeAnterior}
-                          aria-label="Ver imágenes anteriores"
-                        >
-                          <HiChevronLeft aria-hidden="true" />
-                        </button>
-
-                        <button
-                          type="button"
-                          className="ver-nota-carousel-arrow ver-nota-carousel-arrow-next"
-                          onClick={() => desplazarCarrusel(1)}
-                          disabled={!puedeSiguiente}
-                          aria-label="Ver imágenes siguientes"
-                        >
-                          <HiChevronRight aria-hidden="true" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {otrosArchivos.length > 0 && (
-                <div className="ver-nota-documentos">
-                  {imagenes.length > 0 && (
-                    <p className="ver-nota-subtitulo">Documentos</p>
+                      Abrir
+                    </a>
                   )}
-
-                  <ul className="nota-file-list">
-                    {otrosArchivos.map((archivo, index) => (
-                      <li key={archivo._id ?? index}>
-                        <HiDocumentText aria-hidden="true" />
-                        <span>{archivo.nombreArchivo || "Archivo"}</span>
-
-                        {archivo.url && (
-                          <a
-                            className="ver-nota-file-link"
-                            href={archivo.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Abrir
-                          </a>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </>
+                </li>
+              ))}
+            </ul>
           ) : (
             <p className="ver-nota-sin-archivos">Sin archivos adjuntos.</p>
           )}
