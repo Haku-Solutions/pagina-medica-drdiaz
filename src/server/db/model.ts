@@ -5,7 +5,7 @@ export const cirujanoSchema = new Schema(
     nombreUsuario: { type: String, required: true, unique: true },
     contraseña: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, strict: "throw" }
 );
 
 export const expedienteSchema = new Schema(
@@ -24,7 +24,7 @@ export const expedienteSchema = new Schema(
     familiarResponsable: String,
     telefonoFamiliar: Number,
   },
-  { timestamps: true }
+  { timestamps: true, strict: "throw" }
 );
 
 export const notaOperatoriaSchema = new Schema(
@@ -56,7 +56,7 @@ export const notaOperatoriaSchema = new Schema(
     medicamentos: String,
     cuidadosGenerales: String,
   },
-  { timestamps: true }
+  { timestamps: true, strict: "throw" }
 );
 
 export const archivoSchema = new Schema(
@@ -66,7 +66,7 @@ export const archivoSchema = new Schema(
     formatoArchivo: { type: String, required: true },
     url: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, strict: "throw" }
 );
 
 export const Cirujano = models.Cirujano || model("Cirujano", cirujanoSchema);

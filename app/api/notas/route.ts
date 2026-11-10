@@ -4,24 +4,26 @@ import { connectDB } from "@/src/server";
 import { ExpedienteMedico, NotaOperatoria } from "@/src/server/db/model";
 import { fail, ok } from "@/src/server/utils/apiResponse";
 import { isValidObjectId } from "mongoose";
+import { notaOperatoriaBodySchema } from "@/src/server/validation/requestSchemas";
 
 export async function POST(request: NextRequest) {
   const session = await getSessionUser();
   if (!session) return fail("No autorizado", 401);
 
+  const raw = await request.json().catch(() => null);
+  const parsed = notaOperatoriaBodySchema.safeParse(raw);
+  if (!parsed.success) return fail("Uno o mas datos son invalidos, revisar la información", 422);
+  const body = parsed.data;
+
   await connectDB();
-
-  const body = await request.json().catch(() => null);
-  if (!body) return fail("Cuerpo inválido", 400);
-
-  if (typeof body.idExpediente !== "string" || !isValidObjectId(body.idExpediente)) {
-    return fail("El ID del expediente no es válido", 400);
-  }
 
   const expedienteExiste = await ExpedienteMedico.exists({ _id: body.idExpediente });
   if (!expedienteExiste) return fail("Expediente no encontrado", 404);
 
-  const nota = await NotaOperatoria.create(body);
+  const nota = await NotaOperatoria.create({
+    ...body,
+    fechaCirugia: new Date(`${body.fechaCirugia}T00:00:00Z`),
+  });
 
   return ok(nota);
 }
