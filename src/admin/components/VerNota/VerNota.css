@@ -43,10 +43,299 @@
   text-decoration: underline;
 }
 
+.ver-nota-file-link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
 .ver-nota-sin-archivos {
   margin: 0.75rem 0 0;
   color: #52627b;
   font-size: 0.8rem;
+}
+
+.ver-nota-carousel {
+  margin-top: 0.75rem;
+}
+
+.ver-nota-carousel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ver-nota-carousel-count {
+  color: #52627b;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.ver-nota-carousel-viewport {
+  position: relative;
+}
+
+.ver-nota-carousel-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0 0 0.65rem;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: #b9c4d8 transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+}
+
+.ver-nota-carousel-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.ver-nota-carousel-track::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: #b9c4d8;
+}
+
+.ver-nota-carousel-track:focus-visible {
+  outline: 2px solid #3b4cca;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.ver-nota-carousel-item {
+  box-sizing: border-box;
+  flex: 0 0 calc((100% - 1rem) / 2);
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  scroll-snap-align: start;
+  border: 1px solid #dce3ef;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ver-nota-carousel-image-button,
+.ver-nota-carousel-placeholder {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #eef2f8;
+}
+
+.ver-nota-carousel-image-button {
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+  font: inherit;
+}
+
+.ver-nota-carousel-image-button:focus-visible {
+  outline: 2px solid #3b4cca;
+  outline-offset: -2px;
+}
+
+.ver-nota-carousel-image-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.ver-nota-carousel-image-button:hover img {
+  transform: scale(1.03);
+}
+
+.ver-nota-carousel-placeholder {
+  flex-direction: column;
+  gap: 0.35rem;
+  color: #52627b;
+  font-size: 0.72rem;
+}
+
+.ver-nota-carousel-placeholder svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.ver-nota-carousel-caption {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  color: #52627b;
+  font-size: 0.72rem;
+}
+
+.ver-nota-carousel-caption > span {
+  overflow: hidden;
+  flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ver-nota-carousel-arrow {
+  position: absolute;
+  top: 42%;
+  z-index: 2;
+  display: flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(1, 0, 11, 0.82);
+  box-shadow: 0 2px 8px rgba(1, 0, 11, 0.2);
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.ver-nota-carousel-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ver-nota-carousel-arrow:hover:not(:disabled) {
+  background: #01000b;
+}
+
+.ver-nota-carousel-arrow:focus-visible {
+  outline: 2px solid #3b4cca;
+  outline-offset: 2px;
+}
+
+.ver-nota-carousel-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ver-nota-carousel-arrow-prev {
+  left: -10px;
+}
+
+.ver-nota-carousel-arrow-next {
+  right: -10px;
+}
+
+.ver-nota-documentos {
+  margin-top: 0.75rem;
+}
+
+.ver-nota-subtitulo {
+  margin: 0 0 0.4rem;
+  color: #222;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ver-nota-documentos .nota-file-list {
+  margin-top: 0.35rem;
+}
+
+.ver-nota-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(1, 0, 11, 0.86);
+  backdrop-filter: blur(2px);
+}
+
+.ver-nota-modal-contenido {
+  display: flex;
+  max-width: min(1100px, 100%);
+  max-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(1, 0, 11, 0.45);
+}
+
+.ver-nota-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.65rem 0.65rem 1rem;
+  border-bottom: 1px solid #dce3ef;
+}
+
+.ver-nota-modal-titulo {
+  overflow: hidden;
+  flex: 1;
+  color: #111;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ver-nota-modal-cerrar {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #01000b;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ver-nota-modal-cerrar:hover {
+  opacity: 0.85;
+}
+
+.ver-nota-modal-cerrar:focus-visible {
+  outline: 2px solid #3b4cca;
+  outline-offset: 2px;
+}
+
+.ver-nota-modal-cerrar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ver-nota-modal-imagen {
+  display: flex;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 0.75rem;
+  background: #f5f6f7;
+}
+
+.ver-nota-modal-imagen img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 8rem);
+  object-fit: contain;
+  border-radius: 4px;
 }
 
 .ver-nota-estado {
@@ -100,4 +389,43 @@
 .ver-nota-estado-acciones button:hover,
 .ver-nota-estado-acciones a:hover {
   opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .ver-nota-modal {
+    padding: 0.5rem;
+  }
+
+  .ver-nota-modal-contenido {
+    max-width: 100%;
+  }
+
+  .ver-nota-modal-header {
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  }
+
+  .ver-nota-modal-imagen {
+    padding: 0.5rem;
+  }
+
+  .ver-nota-modal-imagen img {
+    max-height: calc(100vh - 7rem);
+  }
+
+  .ver-nota-carousel-item {
+    flex-basis: 100%;
+  }
+
+  .ver-nota-carousel-arrow {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ver-nota-carousel-arrow-prev {
+    left: -6px;
+  }
+
+  .ver-nota-carousel-arrow-next {
+    right: -6px;
+  }
 }
