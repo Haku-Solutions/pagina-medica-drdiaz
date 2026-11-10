@@ -85,7 +85,7 @@ function Campo({ id, label, requerido, error, guardado, children }: CampoProps) 
 
       {guardado !== undefined && (
         <p className="editar-expediente-anterior">
-          <span>Guardado:</span> {guardado}
+          <span>Dato original:</span> {guardado}
         </p>
       )}
 
@@ -101,7 +101,6 @@ function Campo({ id, label, requerido, error, guardado, children }: CampoProps) 
 export default function EditarExpediente({ id }: { id: string }) {
   const router = useRouter();
   const [form, setForm] = useState<Formulario>(FORM_INICIAL);
-  // Copia de lo que está guardado en la base de datos, para mostrarlo mientras se edita.
   const [original, setOriginal] = useState<Formulario | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const [ingreso, setIngreso] = useState<Date | null>(null);
