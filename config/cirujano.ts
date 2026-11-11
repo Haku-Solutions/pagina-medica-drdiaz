@@ -3,6 +3,7 @@ export const cirujano = {
   campo: "José Díaz Zacarías",
   especialidad: "CIRUJANO GENERAL",
   cedula: "2391817",
+  firmaImagen: "/assets/signature/firma.jpeg",
   firma: "Dr. José Díaz Zacarías, Cirujano General",
   logo: "/assets/logos/logo_drdiaz.svg",
 } as const;

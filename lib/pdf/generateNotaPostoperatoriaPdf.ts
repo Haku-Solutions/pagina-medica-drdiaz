@@ -48,6 +48,7 @@ function formatFileDate(value: string): string {
 export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfData, Pdf: PdfConstructor): Promise<void> {
   const doc = new Pdf({ orientation: "portrait", unit: "pt", format: "letter" });
   let logo: string | null = null;
+  let signatureImage: string | null = null;
   try {
     const response = await fetch(cirujano.logo);
     if (response.ok) {
@@ -75,6 +76,60 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
       }
     }
   } catch { /* El PDF funciona sin logo */ }
+
+  try {
+    const response = await fetch(cirujano.firmaImagen);
+    if (!response.ok) throw new Error("No se pudo cargar la firma");
+    const imageUrl = URL.createObjectURL(await response.blob());
+    try {
+      const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const element = new Image();
+        element.onload = () => resolve(element);
+        element.onerror = () => reject(new Error("No se pudo leer la firma"));
+        element.src = imageUrl;
+      });
+      const sourceCanvas = document.createElement("canvas");
+      sourceCanvas.width = image.naturalWidth;
+      sourceCanvas.height = image.naturalHeight;
+      const sourceContext = sourceCanvas.getContext("2d", { willReadFrequently: true });
+      if (!sourceContext) throw new Error("No se pudo preparar la firma");
+      sourceContext.drawImage(image, 0, 0);
+      const pixels = sourceContext.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+      let minX = sourceCanvas.width;
+      let minY = sourceCanvas.height;
+      let maxX = 0;
+      let maxY = 0;
+      for (let index = 0; index < pixels.data.length; index += 4) {
+        const brightness = (pixels.data[index] + pixels.data[index + 1] + pixels.data[index + 2]) / 3;
+        const alpha = brightness >= 245 ? 0 : Math.min(255, Math.round((245 - brightness) * 5.1));
+        pixels.data[index] = 0;
+        pixels.data[index + 1] = 0;
+        pixels.data[index + 2] = 0;
+        pixels.data[index + 3] = alpha;
+        if (alpha > 150) {
+          const pixel = index / 4;
+          const x = pixel % sourceCanvas.width;
+          const y = Math.floor(pixel / sourceCanvas.width);
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
+        }
+      }
+      if (maxX > minX && maxY > minY) {
+        sourceContext.putImageData(pixels, 0, 0);
+        const croppedCanvas = document.createElement("canvas");
+        croppedCanvas.width = maxX - minX + 1;
+        croppedCanvas.height = maxY - minY + 1;
+        const croppedContext = croppedCanvas.getContext("2d");
+        if (!croppedContext) throw new Error("No se pudo recortar la firma");
+        croppedContext.drawImage(sourceCanvas, minX, minY, croppedCanvas.width, croppedCanvas.height, 0, 0, croppedCanvas.width, croppedCanvas.height);
+        signatureImage = croppedCanvas.toDataURL("image/png");
+      }
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+    }
+  } catch { /* Si la imagen no carga, se conserva la firma en texto */ }
 
   drawPageBase(doc, logo);
   let y = 96;
@@ -215,13 +270,15 @@ export async function generateNotaPostoperatoriaPdf(data: NotaPostoperatoriaPdfD
   ensure(signatureHeight + signatureGap);
   y += signatureGap;
   doc.setTextColor(17, 17, 17);
-  // La fuente manuscrita no está disponible; Times italic sirve como respaldo provisional.
-  doc.setFont("times", "italic"); doc.setFontSize(20);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(14);
   doc.text(cirujano.firma, WIDTH / 2, y, { align: "center" });
-  y += 100;
+  if (signatureImage) {
+    doc.addImage(signatureImage, "PNG", (WIDTH - 180) / 2, y + 13, 180, 48);
+  }
+  y += 70;
   doc.setDrawColor(51, 51, 51); doc.setLineWidth(1.5); doc.line((WIDTH - 290) / 2, y, (WIDTH + 290) / 2, y);
   y += 26;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(12);
   doc.text(`Ced Prof. ${cirujano.cedula}`, WIDTH / 2, y, { align: "center" });
 
   const filenameName = data.paciente.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_|_$/g, "") || "Paciente";

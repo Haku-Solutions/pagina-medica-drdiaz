@@ -62,7 +62,7 @@ export default function FileDropzone({
           ref={fileInputRef}
           className="nota-file-input"
           type="file"
-          accept=".png,.jpg,.jpeg,.webp,.pdf,image/png,image/jpeg,image/webp,application/pdf"
+          accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
           multiple
           disabled={disabled}
           onChange={handleFileChange}
@@ -71,7 +71,7 @@ export default function FileDropzone({
           <HiArrowUpTray aria-hidden="true" />
         </span>
         <strong>Sube Archivos</strong>
-        <span>Formatos permitidos: PNG, JPEG, WEBP y PDF</span>
+        <span>Formatos permitidos: PNG, JPEG y WEBP</span>
         <small>Haz clic para elegir o arrastra tus archivos aquí</small>
       </div>
 
