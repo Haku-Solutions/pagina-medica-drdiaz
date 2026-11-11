@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import "../crearExpediente/CrearExpediente.css";
 import "./EditarExpediente.css";
 
 type Sexo = "hombre" | "mujer" | "";
