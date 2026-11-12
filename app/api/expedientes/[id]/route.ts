@@ -4,21 +4,9 @@ import { connectDB } from "@/src/server";
 import { ExpedienteMedico, NotaOperatoria } from "@/src/server/db/model";
 import { fail, ok } from "@/src/server/utils/apiResponse";
 import { isValidObjectId } from "mongoose";
+import { NextResponse } from "next/server";
+import { expedienteBodySchema } from "@/src/server/validation/requestSchemas";
 
-const textoPut = (valor: unknown, max: number) =>
-  typeof valor === "string" ? valor.trim().slice(0, max) : "";
- 
-function fechaValidaPut(valor: string) {
-  const fecha = new Date(`${valor}T00:00:00Z`);
- 
-  return (
-    /^\d{4}-\d{2}-\d{2}$/.test(valor) &&
-    !Number.isNaN(fecha.getTime()) &&
-    fecha.toISOString().startsWith(valor) &&
-    fecha.getTime() <= Date.now()
-  );
-}
-  
 function calcularEdadPut(fechaNacimiento: string): number | undefined {
   if (!fechaNacimiento) return undefined;
  
@@ -68,43 +56,33 @@ export async function PUT(
   if (!isValidObjectId(id)) return fail("Expediente no encontrado", 404);
  
   const raw = await request.json().catch(() => null);
-  if (!raw || typeof raw !== "object") return fail("Cuerpo inválido", 400);
- 
-  const body = raw as Record<string, unknown>;
- 
-  const nombre = textoPut(body.nombre, 200);
-  const fechaNacimiento = textoPut(body.fechaNacimiento, 10);
-  const sexo = textoPut(body.sexo, 10);
-  const curp = textoPut(body.curp, 40).toUpperCase();
-  const telefono = textoPut(body.telefono, 20);
-  const familiarTelefono = textoPut(body.familiarTelefono, 20);
- 
-  const errores: Record<string, string> = {};
- 
-  if (!nombre) errores.nombre = "Escribe el nombre completo del paciente.";
-  if (fechaNacimiento && !fechaValidaPut(fechaNacimiento)) {
-    errores.fechaNacimiento = "La fecha de nacimiento no es válida.";
-  }
-  if (!["", "hombre", "mujer"].includes(sexo)) {
-    errores.sexo = "Selecciona una opción válida.";
-  }
-  if (curp && !/^[A-Z0-9]{18}$/.test(curp)) {
-    errores.curp = "El CURP debe tener 18 caracteres.";
-  }
-  if (telefono && !/^\d{10}$/.test(telefono)) {
-    errores.telefono = "El teléfono debe tener 10 dígitos.";
-  }
-  if (familiarTelefono && !/^\d{10}$/.test(familiarTelefono)) {
-    errores.familiarTelefono = "El teléfono debe tener 10 dígitos.";
-  }
- 
-  if (Object.keys(errores).length > 0) {
-    return Response.json(
-      { ok: false, error: "Revisa los campos marcados.", campos: errores },
+  const parsed = expedienteBodySchema.safeParse(raw);
+  if (!parsed.success) {
+    const campos: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const campo = String(issue.path[0] ?? "body");
+      const requerido = campo === "nombre" && issue.code === "too_small";
+      const mensaje = requerido
+        ? "Escribe el nombre completo del paciente."
+        : campo === "fechaNacimiento"
+          ? "La fecha de nacimiento no es válida; usa una fecha real que no sea futura."
+          : campo === "sexo"
+            ? "Selecciona Hombre o Mujer."
+            : campo === "curp"
+              ? "El CURP debe tener 18 letras o números, o dejarse vacío."
+              : campo === "telefono" || campo === "familiarTelefono"
+                ? "El teléfono debe tener exactamente 10 dígitos, o dejarse vacío."
+                : issue.message;
+      campos[campo] ??= mensaje;
+    }
+    return NextResponse.json(
+      { ok: false, error: "Revisa los campos marcados; cada campo indica cómo corregirlo.", campos },
       { status: 422 },
     );
   }
- 
+
+  const body = parsed.data;
+  const { nombre, fechaNacimiento, sexo, curp, telefono, familiarTelefono } = body;
   try {
     await connectDB();
  
@@ -128,13 +106,13 @@ export async function PUT(
         : undefined,
       edad: calcularEdadPut(fechaNacimiento),
       sexo: sexo === "hombre" ? "M" : sexo === "mujer" ? "F" : undefined,
-      antecedentes: textoPut(body.antecedentes, 5000) || undefined,
-      estado: textoPut(body.estadoNacimiento, 120) || undefined,
-      municipio: textoPut(body.ciudadNacimiento, 120) || undefined,
+      antecedentes: body.antecedentes || undefined,
+      estado: body.estadoNacimiento || undefined,
+      municipio: body.ciudadNacimiento || undefined,
       curp: curp || undefined,
-      lugarResidencia: textoPut(body.residencia, 160) || undefined,
+      lugarResidencia: body.residencia || undefined,
       telefono: telefono ? Number(telefono) : undefined,
-      familiarResponsable: textoPut(body.familiarNombre, 200) || undefined,
+      familiarResponsable: body.familiarNombre || undefined,
       telefonoFamiliar: familiarTelefono ? Number(familiarTelefono) : undefined,
     };
  

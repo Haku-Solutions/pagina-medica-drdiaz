@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import { HiChevronLeft, HiChevronRight, HiDocumentText, HiXMark } from "react-icons/hi2";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import type { NotaOperatoriaForm } from "../CrearNota/CrearNota";
@@ -90,8 +91,8 @@ const emptyForm: NotaOperatoriaForm = {
   pronostico: "", dieta: "", soluciones: "", medicamentos: "", cuidadosGenerales: "",
 };
 
-function Campo({ id, label, className = "", children }: { id: string; label: string; className?: string; children: ReactNode }) {
-  return <div className={`nota-field ${className}`.trim()}><label htmlFor={id}>{label}</label>{children}</div>;
+function Campo({ id, label, error, className = "", children }: { id: string; label: string; error?: string; className?: string; children: ReactNode }) {
+  return <div className={`nota-field ${className}`.trim()}><label htmlFor={id}>{label}</label>{error && <p className="nota-field-error" role="alert">{error}</p>}{children}</div>;
 }
 
 function inputDate(value?: string) {
@@ -120,6 +121,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
+  const [errores, setErrores] = useState<Partial<Record<FieldName, string>>>({});
   const [cargado, setCargado] = useState(false);
   const carruselRef = useRef<HTMLDivElement>(null);
   const [puedeAnterior, setPuedeAnterior] = useState(false);
@@ -193,7 +195,10 @@ export default function EditarNota({ id }: EditarNotaProps) {
     return () => controller.abort();
   }, [id]);
 
-  const update = (name: FieldName, value: string) => setForm((current) => ({ ...current, [name]: value }));
+  const update = (name: FieldName, value: string) => {
+    setForm((current) => ({ ...current, [name]: value }));
+    setErrores((current) => ({ ...current, [name]: undefined }));
+  };
 
   const addFiles = (list: FileList | null) => {
     if (!list) return;
@@ -256,8 +261,12 @@ export default function EditarNota({ id }: EditarNotaProps) {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
+    setErrores({});
     if (!form.fechaCirugia || !form.lugarCirugia) {
-      setError("La fecha y el lugar de la cirugía son obligatorios.");
+      const nuevos: Partial<Record<FieldName, string>> = {};
+      if (!form.fechaCirugia) nuevos.fechaCirugia = "Selecciona la fecha de la cirugía.";
+      if (!form.lugarCirugia) nuevos.lugarCirugia = "Selecciona el lugar de la cirugía.";
+      setErrores(nuevos);
       return;
     }
     setGuardando(true);
@@ -266,7 +275,20 @@ export default function EditarNota({ id }: EditarNotaProps) {
         method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form),
       });
       const result = await response.json().catch(() => null);
-      if (!response.ok || result?.ok === false) throw new Error(result?.error || "No se pudieron guardar los cambios.");
+      if (!response.ok || result?.ok === false) {
+        const resumen = resumenErroresCampos(result?.campos);
+        if (resumen) {
+          setErrores(result.campos);
+          const primerCampo = Object.keys(result.campos)[0];
+          if (primerCampo) {
+            const elemento = document.getElementById(primerCampo);
+            elemento?.scrollIntoView({ behavior: "smooth", block: "center" });
+            elemento?.focus({ preventScroll: true });
+          }
+          return;
+        }
+        throw new Error(result?.error || "No se pudieron guardar los cambios.");
+      }
 
       for (const pending of nuevosArchivos) {
         if (subidos[pending.id]) continue;
@@ -338,7 +360,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
             <div className="nota-section-heading"><span>{String(sectionIndex + 1).padStart(2, "0")}</span><h2>{section.title}</h2></div>
             <div className="nota-fields-grid">
               {section.items.map((field) => (
-                <Campo key={field.name} id={field.name} label={field.label} className={field.wide ? "nota-field-wide" : ""}>
+                <Campo key={field.name} id={field.name} label={field.label} error={errores[field.name]} className={field.wide ? "nota-field-wide" : ""}>
                   {field.kind === "textarea" ? (
                     <textarea id={field.name} rows={4} value={form[field.name]} onChange={(event) => update(field.name, event.target.value)} />
                   ) : field.kind === "place" || field.kind === "surgery" ? (

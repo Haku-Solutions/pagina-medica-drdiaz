@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import "./CrearNota.css";
@@ -100,12 +101,12 @@ function Campo({
         {label}
         {requerido && <span className="nota-required">*</span>}
       </label>
-      {children}
       {error && (
         <p className="nota-field-error" role="alert">
           {error}
         </p>
       )}
+      {children}
     </div>
   );
 }
@@ -298,6 +299,17 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
         const result = await response.json().catch(() => null);
 
         if (!response.ok || result?.ok === false) {
+          if (result?.campos) {
+            setErrores(result.campos);
+            setSubmitError(resumenErroresCampos(result.campos) ? "" : result?.error ?? "Revisa los datos de la nota.");
+            const primerCampo = Object.keys(result.campos)[0];
+            if (primerCampo) {
+              const elemento = document.getElementById(primerCampo);
+              elemento?.scrollIntoView({ behavior: "smooth", block: "center" });
+              elemento?.focus({ preventScroll: true });
+            }
+            return;
+          }
           throw new Error(result?.error || "No se pudo guardar la nota operatoria.");
         }
         noteId = result?.data?._id;
@@ -400,7 +412,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               </select>
             </Campo>
 
-            <Campo id="notaPreoperatoria" label="Nota Preoperatoria">
+            <Campo id="notaPreoperatoria" label="Nota Preoperatoria" error={errores.notaPreoperatoria}>
               <input
                 id="notaPreoperatoria"
                 placeholder="Escribe la nota preoperatoria"
@@ -411,7 +423,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="notaPostoperatoria" label="Nota Postoperatoria">
+            <Campo id="notaPostoperatoria" label="Nota Postoperatoria" error={errores.notaPostoperatoria}>
               <input
                 id="notaPostoperatoria"
                 placeholder="Escribe la nota postoperatoria"
@@ -425,7 +437,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <Campo
               id="diagnosticoPreoperatorio"
               label="Diagnóstico Preoperatorio"
-            >
+             error={errores.diagnosticoPreoperatorio}>
               <input
                 id="diagnosticoPreoperatorio"
                 placeholder="Escribe el diagnóstico preoperatorio"
@@ -439,7 +451,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <Campo
               id="diagnosticoPostoperatorio"
               label="Diagnóstico Postoperatorio"
-            >
+             error={errores.diagnosticoPostoperatorio}>
               <input
                 id="diagnosticoPostoperatorio"
                 placeholder="Escribe el diagnóstico postoperatorio"
@@ -450,7 +462,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="cirugiaProgramada" label="Cirugía Programada">
+            <Campo id="cirugiaProgramada" label="Cirugía Programada" error={errores.cirugiaProgramada}>
               <select
                 id="cirugiaProgramada"
                 value={form.cirugiaProgramada}
@@ -467,7 +479,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               </select>
             </Campo>
 
-            <Campo id="cirugiaRealizada" label="Cirugía Realizada">
+            <Campo id="cirugiaRealizada" label="Cirugía Realizada" error={errores.cirugiaRealizada}>
               <select
                 id="cirugiaRealizada"
                 value={form.cirugiaRealizada}
@@ -488,7 +500,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               id="hallazgos"
               label="Hallazgos"
               className="nota-field-wide"
-            >
+             error={errores.hallazgos}>
               <textarea
                 id="hallazgos"
                 placeholder="Describe los hallazgos"
@@ -500,7 +512,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="tecnica" label="Técnica">
+            <Campo id="tecnica" label="Técnica" error={errores.tecnica}>
               <input
                 id="tecnica"
                 placeholder="Describe la técnica utilizada"
@@ -509,7 +521,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="sangrado" label="Sangrado">
+            <Campo id="sangrado" label="Sangrado" error={errores.sangrado}>
               <input
                 id="sangrado"
                 placeholder="Indica el sangrado"
@@ -518,7 +530,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="drenajes" label="Drenajes">
+            <Campo id="drenajes" label="Drenajes" error={errores.drenajes}>
               <input
                 id="drenajes"
                 placeholder="Indica los drenajes"
@@ -530,7 +542,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <Campo
               id="materialesTextiles"
               label="Cuenta de Materiales y Textiles"
-            >
+             error={errores.materialesTextiles}>
               <input
                 id="materialesTextiles"
                 placeholder="Indica la cuenta de materiales y textiles"
@@ -541,7 +553,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="complicaciones" label="Complicaciones">
+            <Campo id="complicaciones" label="Complicaciones" error={errores.complicaciones}>
               <input
                 id="complicaciones"
                 placeholder="Describe las complicaciones"
@@ -561,7 +573,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
           </div>
 
           <div className="nota-fields-grid">
-            <Campo id="anestesiologo" label="Anestesiólogo">
+            <Campo id="anestesiologo" label="Anestesiólogo" error={errores.anestesiologo}>
               <input
                 id="anestesiologo"
                 placeholder="Nombre del anestesiólogo"
@@ -572,7 +584,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="tipoAnestesia" label="Tipo de Anestesia">
+            <Campo id="tipoAnestesia" label="Tipo de Anestesia" error={errores.tipoAnestesia}>
               <input
                 id="tipoAnestesia"
                 placeholder="Indica el tipo de anestesia"
@@ -586,7 +598,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <Campo
               id="enfermeraInstrumentista"
               label="Enfermera Instrumentista"
-            >
+             error={errores.enfermeraInstrumentista}>
               <input
                 id="enfermeraInstrumentista"
                 placeholder="Nombre de la enfermera instrumentista"
@@ -597,7 +609,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="enfermeraCirculante" label="Enfermera Circulante">
+            <Campo id="enfermeraCirculante" label="Enfermera Circulante" error={errores.enfermeraCirculante}>
               <input
                 id="enfermeraCirculante"
                 placeholder="Nombre de la enfermera circulante"
@@ -608,7 +620,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="ayudantes" label="Ayudantes">
+            <Campo id="ayudantes" label="Ayudantes" error={errores.ayudantes}>
               <input
                 id="ayudantes"
                 placeholder="Nombres de los ayudantes"
@@ -626,7 +638,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
           </div>
 
           <div className="nota-fields-grid nota-textarea-grid">
-            <Campo id="plan" label="Plan">
+            <Campo id="plan" label="Plan" error={errores.plan}>
               <textarea
                 id="plan"
                 placeholder="Escribe el plan postoperatorio"
@@ -636,7 +648,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="pronostico" label="Pronóstico">
+            <Campo id="pronostico" label="Pronóstico" error={errores.pronostico}>
               <textarea
                 id="pronostico"
                 placeholder="Escribe el pronóstico"
@@ -648,7 +660,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="dieta" label="Dieta">
+            <Campo id="dieta" label="Dieta" error={errores.dieta}>
               <textarea
                 id="dieta"
                 placeholder="Indica la dieta"
@@ -658,7 +670,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="soluciones" label="Soluciones">
+            <Campo id="soluciones" label="Soluciones" error={errores.soluciones}>
               <textarea
                 id="soluciones"
                 placeholder="Indica las soluciones"
@@ -670,7 +682,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               />
             </Campo>
 
-            <Campo id="medicamentos" label="Medicamentos">
+            <Campo id="medicamentos" label="Medicamentos" error={errores.medicamentos}>
               <textarea
                 id="medicamentos"
                 placeholder="Indica los medicamentos"
@@ -685,7 +697,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             <Campo
               id="cuidadosGenerales"
               label="Cuidados Generales de Enfermería"
-            >
+             error={errores.cuidadosGenerales}>
               <textarea
                 id="cuidadosGenerales"
                 placeholder="Describe los cuidados generales de enfermería"

@@ -12,7 +12,15 @@ export async function POST(request: NextRequest) {
 
   const raw = await request.json().catch(() => null);
   const parsed = notaOperatoriaBodySchema.safeParse(raw);
-  if (!parsed.success) return fail("Uno o mas datos son invalidos, revisar la información", 422);
+  if (!parsed.success) {
+    const campos = Object.fromEntries(
+      parsed.error.issues.map((issue) => [String(issue.path[0] ?? "body"), issue.message]),
+    );
+    return Response.json(
+      { ok: false, error: "Revisa los campos marcados.", campos },
+      { status: 422 },
+    );
+  }
   const body = parsed.data;
 
   await connectDB();

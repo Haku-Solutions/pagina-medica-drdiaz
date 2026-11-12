@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import "./CrearExpediente.css";
 
 type Sexo = "hombre" | "mujer" | "";
@@ -60,13 +61,13 @@ function Campo({ id, label, requerido, error, children }: CampoProps) {
         {requerido && <span className="crear-expediente-required">*</span>}
       </label>
 
-      {children}
-
       {error && (
         <p className="crear-expediente-error" role="alert">
           {error}
         </p>
       )}
+
+      {children}
     </div>
   );
 }
@@ -132,8 +133,12 @@ export default function CrearExpediente() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok || !data?.ok) {
-        if (data?.campos) setErrores(data.campos);
-        setErrorServidor(data?.error ?? "No se pudo crear el expediente.");
+        if (data?.campos) {
+          setErrores(data.campos);
+          setErrorServidor(resumenErroresCampos(data.campos) ? "" : data?.error ?? "Revisa los datos del expediente.");
+        } else {
+          setErrorServidor(data?.error ?? "No se pudo crear el expediente.");
+        }
         return;
       }
 
@@ -189,7 +194,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="fechaNacimiento" label="Fecha de Nacimiento">
+        <Campo id="fechaNacimiento" label="Fecha de Nacimiento" error={errores.fechaNacimiento}>
           <input
             id="fechaNacimiento"
             type="date"
@@ -213,6 +218,7 @@ export default function CrearExpediente() {
 
         <fieldset className="crear-expediente-field crear-expediente-sexo m-20">
           <legend className="crear-expediente-label">Sexo</legend>
+          {errores.sexo && <p className="crear-expediente-error" role="alert">{errores.sexo}</p>}
 
           <label className="crear-expediente-radio">
             <input
@@ -237,7 +243,7 @@ export default function CrearExpediente() {
           </label>
         </fieldset>
 
-        <Campo id="ciudadNacimiento" label="Ciudad (Lugar de Nacimiento)">
+        <Campo id="ciudadNacimiento" label="Ciudad (Lugar de Nacimiento)" error={errores.ciudadNacimiento}>
           <input
             id="ciudadNacimiento"
             type="text"
@@ -248,7 +254,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="estadoNacimiento" label="Estado (Lugar de Nacimiento)">
+        <Campo id="estadoNacimiento" label="Estado (Lugar de Nacimiento)" error={errores.estadoNacimiento}>
           <input
             id="estadoNacimiento"
             type="text"
@@ -274,7 +280,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="residencia" label="Lugar de Residencia">
+        <Campo id="residencia" label="Lugar de Residencia" error={errores.residencia}>
           <input
             id="residencia"
             type="text"
@@ -285,7 +291,7 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="antecedentes" label="Antecedentes">
+        <Campo id="antecedentes" label="Antecedentes" error={errores.antecedentes}>
           <textarea
             id="antecedentes"
             value={form.antecedentes}
@@ -312,7 +318,7 @@ export default function CrearExpediente() {
           2. Datos del Familiar responsable
         </h2>
 
-        <Campo id="familiarNombre" label="Nombre Completo del Familiar Responsable">
+        <Campo id="familiarNombre" label="Nombre Completo del Familiar Responsable" error={errores.familiarNombre}>
           <input
             id="familiarNombre"
             type="text"
