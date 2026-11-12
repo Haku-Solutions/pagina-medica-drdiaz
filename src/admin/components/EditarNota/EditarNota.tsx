@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { HiChevronLeft, HiChevronRight, HiDocumentText, HiXMark } from "react-icons/hi2";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import type { NotaOperatoriaForm } from "../CrearNota/CrearNota";
 import { cirugias, lugaresCirugia } from "../CrearNota/mocks/notaOperatoria.mock";
 import "../CrearNota/CrearNota.css";
+import "../VerNota/VerNota.css";
 
 type NotaGuardada = Partial<NotaOperatoriaForm> & {
   _id: string;
@@ -17,6 +19,19 @@ interface ArchivoNota {
   nombreArchivo: string;
   formatoArchivo: string;
   url: string;
+}
+
+interface ImagenCarrusel {
+  id: string;
+  nombre: string;
+  url: string;
+  deleting: boolean;
+}
+
+interface ArchivoNuevo {
+  id: string;
+  file: File;
+  previewUrl?: string;
 }
 
 interface RespuestaNota {
@@ -89,18 +104,64 @@ function fingerprint(file: File) {
   return [file.name.toLowerCase(), file.size, file.type.toLowerCase(), file.lastModified].join(":");
 }
 
+function esImagen(archivo: { nombreArchivo: string; formatoArchivo: string }) {
+  return archivo.formatoArchivo.toLowerCase().startsWith("image/") ||
+    /\.(png|jpe?g|webp|gif|avif|bmp|svg)$/i.test(archivo.nombreArchivo);
+}
+
 export default function EditarNota({ id }: EditarNotaProps) {
   const router = useRouter();
   const [form, setForm] = useState<NotaOperatoriaForm>(emptyForm);
   const [expedienteId, setExpedienteId] = useState("");
   const [archivos, setArchivos] = useState<ArchivoNota[]>([]);
-  const [nuevosArchivos, setNuevosArchivos] = useState<{ id: string; file: File }[]>([]);
+  const [nuevosArchivos, setNuevosArchivos] = useState<ArchivoNuevo[]>([]);
   const [subidos, setSubidos] = useState<Record<string, string>>({});
   const [eliminando, setEliminando] = useState<Set<string>>(new Set());
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
   const [cargado, setCargado] = useState(false);
+  const carruselRef = useRef<HTMLDivElement>(null);
+  const [puedeAnterior, setPuedeAnterior] = useState(false);
+  const [puedeSiguiente, setPuedeSiguiente] = useState(false);
+  const [imagenAmpliada, setImagenAmpliada] = useState<{ url: string; nombre: string } | null>(null);
+  const urlsVistaPrevia = useRef(new Set<string>());
+
+  const actualizarFlechas = useCallback(() => {
+    const carrusel = carruselRef.current;
+    if (!carrusel) return;
+    const maxScroll = carrusel.scrollWidth - carrusel.clientWidth;
+    setPuedeAnterior(carrusel.scrollLeft > 4);
+    setPuedeSiguiente(carrusel.scrollLeft < maxScroll - 4);
+  }, []);
+
+  useEffect(() => {
+    actualizarFlechas();
+    window.addEventListener("resize", actualizarFlechas);
+    return () => window.removeEventListener("resize", actualizarFlechas);
+  }, [actualizarFlechas, archivos, nuevosArchivos]);
+
+  useEffect(() => {
+    if (!imagenAmpliada) return;
+    const cerrarConEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setImagenAmpliada(null);
+    };
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", cerrarConEscape);
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [imagenAmpliada]);
+
+  useEffect(
+    () => () => {
+      urlsVistaPrevia.current.forEach((url) => URL.revokeObjectURL(url));
+      urlsVistaPrevia.current.clear();
+    },
+    [],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -138,7 +199,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
     if (!list) return;
     const allowed: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", pdf: "application/pdf" };
     const known = new Set(nuevosArchivos.map(({ file }) => fingerprint(file)));
-    const accepted: { id: string; file: File }[] = [];
+    const accepted: ArchivoNuevo[] = [];
     const rejected: string[] = [];
     for (const file of Array.from(list)) {
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -146,7 +207,10 @@ export default function EditarNota({ id }: EditarNotaProps) {
       const key = fingerprint(file);
       if (known.has(key)) continue;
       known.add(key);
-      accepted.push({ id: crypto.randomUUID(), file });
+      const id = crypto.randomUUID();
+      const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+      if (previewUrl) urlsVistaPrevia.current.add(previewUrl);
+      accepted.push({ id, file, previewUrl });
     }
     setNuevosArchivos((current) => [...current, ...accepted]);
     setError(rejected.length ? `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.` : "");
@@ -181,6 +245,10 @@ export default function EditarNota({ id }: EditarNotaProps) {
       } finally {
         setEliminando((current) => { const next = new Set(current); next.delete(fileId); return next; });
       }
+    }
+    if (pending?.previewUrl) {
+      URL.revokeObjectURL(pending.previewUrl);
+      urlsVistaPrevia.current.delete(pending.previewUrl);
     }
     setNuevosArchivos((current) => current.filter((item) => item.id !== fileId));
   };
@@ -227,10 +295,39 @@ export default function EditarNota({ id }: EditarNotaProps) {
     return <div className="crear-nota-shell ver-nota-estado"><p className="ver-nota-error" role="alert">{error || "No se pudo cargar la nota operatoria."}</p><div className="ver-nota-estado-acciones"><button type="button" onClick={() => router.back()}>Volver</button></div></div>;
   }
 
-  const dropzoneFiles: DropzoneFile[] = [
-    ...archivos.map((archivo) => ({ id: archivo._id, name: archivo.nombreArchivo, uploaded: true, deleting: eliminando.has(archivo._id) })),
-    ...nuevosArchivos.map(({ id: fileId, file }) => ({ id: fileId, name: file.name, size: file.size, uploaded: Boolean(subidos[fileId]), deleting: eliminando.has(fileId) })),
+  const imagenes: ImagenCarrusel[] = [
+    ...archivos.filter(esImagen).map((archivo) => ({
+      id: archivo._id,
+      nombre: archivo.nombreArchivo,
+      url: /^https?:\/\//i.test(archivo.url) ? archivo.url : "",
+      deleting: eliminando.has(archivo._id),
+    })),
+    ...nuevosArchivos
+      .filter(({ file }) => file.type.startsWith("image/"))
+      .map(({ id: fileId, file, previewUrl }) => ({
+        id: fileId,
+        nombre: file.name,
+        url: previewUrl ?? "",
+        deleting: eliminando.has(fileId),
+      })),
   ];
+
+  const dropzoneFiles: DropzoneFile[] = [
+    ...archivos
+      .filter((archivo) => !esImagen(archivo))
+      .map((archivo) => ({ id: archivo._id, name: archivo.nombreArchivo, uploaded: true, deleting: eliminando.has(archivo._id) })),
+    ...nuevosArchivos
+      .filter(({ file }) => !file.type.startsWith("image/"))
+      .map(({ id: fileId, file }) => ({ id: fileId, name: file.name, size: file.size, uploaded: Boolean(subidos[fileId]), deleting: eliminando.has(fileId) })),
+  ];
+
+  const desplazarCarrusel = (direccion: -1 | 1) => {
+    const carrusel = carruselRef.current;
+    if (!carrusel) return;
+    const primerElemento = carrusel.querySelector<HTMLElement>(".ver-nota-carousel-item");
+    const ancho = (primerElemento?.getBoundingClientRect().width ?? carrusel.clientWidth) + 16;
+    carrusel.scrollBy({ left: direccion * ancho, behavior: "smooth" });
+  };
 
   return (
     <div className="crear-nota-shell">
@@ -260,6 +357,92 @@ export default function EditarNota({ id }: EditarNotaProps) {
         ))}
         <section className="nota-section nota-files-section">
           <div className="nota-section-heading"><span>04</span><h2>Archivos Adjuntos</h2></div>
+          {imagenes.length > 0 && (
+            <div className="ver-nota-carousel">
+              <div className="ver-nota-carousel-header">
+                <span>Imágenes</span>
+                <span className="ver-nota-carousel-count">
+                  {imagenes.length} {imagenes.length === 1 ? "imagen" : "imágenes"}
+                </span>
+              </div>
+              <div className="ver-nota-carousel-viewport">
+                <div
+                  ref={carruselRef}
+                  className="ver-nota-carousel-track"
+                  role="region"
+                  aria-label="Imágenes adjuntas a la nota operatoria"
+                  tabIndex={0}
+                  onScroll={actualizarFlechas}
+                >
+                  {imagenes.map((imagen) => (
+                    <figure className="ver-nota-carousel-item" key={imagen.id}>
+                      {imagen.url ? (
+                        <button
+                          type="button"
+                          className="ver-nota-carousel-image-button"
+                          onClick={() => setImagenAmpliada({ url: imagen.url, nombre: imagen.nombre })}
+                          aria-label={`Ampliar ${imagen.nombre}`}
+                          aria-haspopup="dialog"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={imagen.url} alt={imagen.nombre} loading="lazy" decoding="async" />
+                        </button>
+                      ) : (
+                        <div className="ver-nota-carousel-placeholder">
+                          <HiDocumentText aria-hidden="true" />
+                          <span>Sin vista previa</span>
+                        </div>
+                      )}
+                      <figcaption className="ver-nota-carousel-caption">
+                        <span title={imagen.nombre}>{imagen.nombre}</span>
+                        {imagen.url && (
+                          <button
+                            type="button"
+                            className="ver-nota-file-link ver-nota-file-link-button"
+                            onClick={() => setImagenAmpliada({ url: imagen.url, nombre: imagen.nombre })}
+                            aria-haspopup="dialog"
+                          >
+                            Ampliar
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="nota-file-remove"
+                          aria-label={`Eliminar ${imagen.nombre}`}
+                          disabled={guardando || imagen.deleting}
+                          onClick={() => void removeFile(imagen.id)}
+                        >
+                          <span>{imagen.deleting ? "Eliminando…" : "Eliminar"}</span>
+                        </button>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+                {(puedeAnterior || puedeSiguiente) && (
+                  <>
+                    <button
+                      type="button"
+                      className="ver-nota-carousel-arrow ver-nota-carousel-arrow-prev"
+                      onClick={() => desplazarCarrusel(-1)}
+                      disabled={!puedeAnterior}
+                      aria-label="Ver imágenes anteriores"
+                    >
+                      <HiChevronLeft aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      className="ver-nota-carousel-arrow ver-nota-carousel-arrow-next"
+                      onClick={() => desplazarCarrusel(1)}
+                      disabled={!puedeSiguiente}
+                      aria-label="Ver imágenes siguientes"
+                    >
+                      <HiChevronRight aria-hidden="true" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
           <FileDropzone files={dropzoneFiles} onFilesSelected={addFiles} onRemoveFile={(fileId) => void removeFile(fileId)} disabled={guardando || eliminando.size > 0} />
         </section>
         {error && <p className="nota-field-error" role="alert">{error}</p>}
@@ -268,6 +451,39 @@ export default function EditarNota({ id }: EditarNotaProps) {
           <button className="nota-create-button" type="submit" disabled={guardando || eliminando.size > 0}>{guardando ? "Guardando…" : "Guardar Cambios"}</button>
         </footer>
       </form>
+      {imagenAmpliada && (
+        <div
+          className="ver-nota-modal"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setImagenAmpliada(null);
+          }}
+        >
+          <div
+            className="ver-nota-modal-contenido"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Imagen ampliada: ${imagenAmpliada.nombre}`}
+          >
+            <div className="ver-nota-modal-header">
+              <span className="ver-nota-modal-titulo">{imagenAmpliada.nombre}</span>
+              <button
+                type="button"
+                className="ver-nota-modal-cerrar"
+                onClick={() => setImagenAmpliada(null)}
+                aria-label="Cerrar imagen"
+                autoFocus
+              >
+                <HiXMark aria-hidden="true" />
+              </button>
+            </div>
+            <div className="ver-nota-modal-imagen">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imagenAmpliada.url} alt={imagenAmpliada.nombre} decoding="async" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
