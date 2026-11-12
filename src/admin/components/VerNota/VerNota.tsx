@@ -86,6 +86,47 @@ function Campo({
   );
 }
 
+function TextoLectura({
+  id,
+  value,
+  rows = 1,
+  className = "",
+}: {
+  id: string;
+  value: string;
+  rows?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textarea = ref.current;
+    if (!textarea) return;
+
+    const ajustarAltura = () => {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight + 2}px`;
+    };
+
+    ajustarAltura();
+    window.addEventListener("resize", ajustarAltura);
+
+    return () => window.removeEventListener("resize", ajustarAltura);
+  }, [value]);
+
+  return (
+    <textarea
+      id={id}
+      ref={ref}
+      className={className}
+      rows={rows}
+      value={value}
+      readOnly
+      tabIndex={-1}
+    />
+  );
+}
+
 const texto = (valor?: string | number | null) =>
   valor === undefined || valor === null ? "" : String(valor);
 
@@ -267,79 +308,37 @@ export default function VerNota({ id }: VerNotaProps) {
             </Campo>
 
             <Campo id="lugarCirugia" label="Lugar de la Cirugía">
-              <input
-                id="lugarCirugia"
-                type="text"
-                value={texto(nota.lugarCirugia)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="lugarCirugia" value={texto(nota.lugarCirugia)} />
             </Campo>
 
             <Campo id="notaPreoperatoria" label="Nota Preoperatoria">
-              <input
-                id="notaPreoperatoria"
-                type="text"
-                value={texto(nota.notaPreoperatoria)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="notaPreoperatoria" value={texto(nota.notaPreoperatoria)} />
             </Campo>
 
             <Campo id="notaPostoperatoria" label="Nota Postoperatoria">
-              <input
-                id="notaPostoperatoria"
-                type="text"
-                value={texto(nota.notaPostoperatoria)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="notaPostoperatoria" value={texto(nota.notaPostoperatoria)} />
             </Campo>
 
             <Campo
               id="diagnosticoPreoperatorio"
               label="Diagnóstico Preoperatorio"
             >
-              <input
-                id="diagnosticoPreoperatorio"
-                type="text"
-                value={texto(nota.diagnosticoPreoperatorio)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="diagnosticoPreoperatorio" value={texto(nota.diagnosticoPreoperatorio)} />
             </Campo>
 
             <Campo
               id="diagnosticoPostoperatorio"
               label="Diagnóstico Postoperatorio"
             >
-              <input
-                id="diagnosticoPostoperatorio"
-                type="text"
-                value={texto(nota.diagnosticoPostoperatorio)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="diagnosticoPostoperatorio" value={texto(nota.diagnosticoPostoperatorio)} />
             </Campo>
 
             <Campo id="cirugiaProgramada" label="Cirugía Programada">
-              <input
-                id="cirugiaProgramada"
-                type="text"
-                value={texto(nota.cirugiaProgramada)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="cirugiaProgramada" value={texto(nota.cirugiaProgramada)} />
             </Campo>
 
             <Campo id="cirugiaRealizada" label="Cirugía Realizada">
-              <input
-                id="cirugiaRealizada"
-                type="text"
-                value={texto(nota.cirugiaRealizada)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="cirugiaRealizada" value={texto(nota.cirugiaRealizada)} />
             </Campo>
 
             <Campo
@@ -347,66 +346,30 @@ export default function VerNota({ id }: VerNotaProps) {
               label="Hallazgos"
               className="nota-field-wide"
             >
-              <textarea
-                id="hallazgos"
-                rows={4}
-                value={texto(nota.hallazgos)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="hallazgos" value={texto(nota.hallazgos)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo id="tecnica" label="Técnica">
-              <input
-                id="tecnica"
-                type="text"
-                value={texto(nota.tecnica)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="tecnica" value={texto(nota.tecnica)} />
             </Campo>
 
             <Campo id="sangrado" label="Sangrado">
-              <input
-                id="sangrado"
-                type="text"
-                value={texto(nota.sangrado)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="sangrado" value={texto(nota.sangrado)} />
             </Campo>
 
             <Campo id="drenajes" label="Drenajes">
-              <input
-                id="drenajes"
-                type="text"
-                value={texto(nota.drenajes)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="drenajes" value={texto(nota.drenajes)} />
             </Campo>
 
             <Campo
               id="materialesTextiles"
               label="Cuenta de Materiales y Textiles"
             >
-              <input
-                id="materialesTextiles"
-                type="text"
-                value={texto(nota.materialesTextiles)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="materialesTextiles" value={texto(nota.materialesTextiles)} />
             </Campo>
 
             <Campo id="complicaciones" label="Complicaciones">
-              <input
-                id="complicaciones"
-                type="text"
-                value={texto(nota.complicaciones)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="complicaciones" value={texto(nota.complicaciones)} />
             </Campo>
           </div>
         </section>
@@ -419,56 +382,26 @@ export default function VerNota({ id }: VerNotaProps) {
 
           <div className="nota-fields-grid">
             <Campo id="anestesiologo" label="Anestesiólogo">
-              <input
-                id="anestesiologo"
-                type="text"
-                value={texto(nota.anestesiologo)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="anestesiologo" value={texto(nota.anestesiologo)} />
             </Campo>
 
             <Campo id="tipoAnestesia" label="Tipo de Anestesia">
-              <input
-                id="tipoAnestesia"
-                type="text"
-                value={texto(nota.tipoAnestesia)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="tipoAnestesia" value={texto(nota.tipoAnestesia)} />
             </Campo>
 
             <Campo
               id="enfermeraInstrumentista"
               label="Enfermera Instrumentista"
             >
-              <input
-                id="enfermeraInstrumentista"
-                type="text"
-                value={texto(nota.enfermeraInstrumentista)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="enfermeraInstrumentista" value={texto(nota.enfermeraInstrumentista)} />
             </Campo>
 
             <Campo id="enfermeraCirculante" label="Enfermera Circulante">
-              <input
-                id="enfermeraCirculante"
-                type="text"
-                value={texto(nota.enfermeraCirculante)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="enfermeraCirculante" value={texto(nota.enfermeraCirculante)} />
             </Campo>
 
             <Campo id="ayudantes" label="Ayudantes">
-              <input
-                id="ayudantes"
-                type="text"
-                value={texto(nota.ayudantes)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="ayudantes" value={texto(nota.ayudantes)} />
             </Campo>
           </div>
         </section>
@@ -481,66 +414,30 @@ export default function VerNota({ id }: VerNotaProps) {
 
           <div className="nota-fields-grid">
             <Campo id="plan" label="Plan">
-              <textarea
-                id="plan"
-                rows={4}
-                value={texto(nota.plan)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="plan" value={texto(nota.plan)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo id="pronostico" label="Pronóstico">
-              <textarea
-                id="pronostico"
-                rows={4}
-                value={texto(nota.pronostico)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="pronostico" value={texto(nota.pronostico)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo id="dieta" label="Dieta">
-              <textarea
-                id="dieta"
-                rows={4}
-                value={texto(nota.dieta)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="dieta" value={texto(nota.dieta)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo id="soluciones" label="Soluciones">
-              <textarea
-                id="soluciones"
-                rows={4}
-                value={texto(nota.soluciones)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="soluciones" value={texto(nota.soluciones)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo id="medicamentos" label="Medicamentos">
-              <textarea
-                id="medicamentos"
-                rows={4}
-                value={texto(nota.medicamentos)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="medicamentos" value={texto(nota.medicamentos)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
 
             <Campo
               id="cuidadosGenerales"
               label="Cuidados Generales de Enfermería"
             >
-              <textarea
-                id="cuidadosGenerales"
-                rows={4}
-                value={texto(nota.cuidadosGenerales)}
-                readOnly
-                tabIndex={-1}
-              />
+              <TextoLectura id="cuidadosGenerales" value={texto(nota.cuidadosGenerales)} rows={4} className="ver-nota-texto-largo" />
             </Campo>
           </div>
         </section>
