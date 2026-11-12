@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       nombreArchivo: nombreOriginal,
       formatoArchivo: file.type,
       url,
+      storagePath: rutaStorage,
     });
 
     return ok(registro);
