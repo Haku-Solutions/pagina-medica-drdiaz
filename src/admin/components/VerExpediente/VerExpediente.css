@@ -100,11 +100,29 @@
   min-width: 0;
 }
 
-.ver-expediente-nota-icono {
+.ver-expediente-nota-descarga {
   flex-shrink: 0;
+}
 
+.ver-expediente-nota-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #4b5563;
   font-size: 2.25rem;
+  cursor: pointer;
+}
+
+.ver-expediente-nota-icono:hover {
+  color: #1f2937;
+}
+
+.ver-expediente-nota-icono:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .ver-expediente-nota-info {
