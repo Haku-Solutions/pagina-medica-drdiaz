@@ -10,6 +10,17 @@
   outline: none;
 }
 
+.ver-nota-shell .nota-field textarea {
+  min-height: 44px;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.4;
+}
+
+.ver-nota-shell .nota-field textarea.ver-nota-texto-largo {
+  min-height: 120px;
+}
+
 .ver-nota-shell .nota-form-actions .ver-nota-back {
   display: inline-flex;
   min-width: 120px;
