@@ -5,7 +5,9 @@ const strictObject = <T extends z.ZodRawShape>(shape: T) =>
   z.object(shape).strict();
 
 const textoLibre = (max: number) =>
-  z.string().trim().max(max).refine(
+  z.string().trim().max(max, {
+    error: `No debe exceder ${max} caracteres.`,
+  }).refine(
     (value) =>
       !/[<>\u0000-\u0008\u000B\u000C\u000E-\u001F\p{Extended_Pictographic}\uFE0F\u200D]/u.test(value),
     "No se permiten emojis ni caracteres especiales",
