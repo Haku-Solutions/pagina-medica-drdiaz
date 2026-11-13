@@ -117,6 +117,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
   const [archivos, setArchivos] = useState<ArchivoNota[]>([]);
   const [nuevosArchivos, setNuevosArchivos] = useState<ArchivoNuevo[]>([]);
   const [subidos, setSubidos] = useState<Record<string, string>>({});
+  const [archivosPorEliminar, setArchivosPorEliminar] = useState<Set<string>>(new Set());
   const [eliminando, setEliminando] = useState<Set<string>>(new Set());
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -221,41 +222,16 @@ export default function EditarNota({ id }: EditarNotaProps) {
     setError(rejected.length ? `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.` : "");
   };
 
-  const removeFile = async (fileId: string) => {
+  const removeFile = (fileId: string) => {
     const pending = nuevosArchivos.find((item) => item.id === fileId);
     const existing = archivos.find((item) => item._id === fileId);
-    const uploadedId = subidos[fileId];
-    if (pending && uploadedId) {
-      setEliminando((current) => new Set(current).add(fileId));
-      try {
-        const response = await fetch(`/api/archivos/${encodeURIComponent(uploadedId)}`, { method: "DELETE" });
-        const result = await response.json().catch(() => null);
-        if (!response.ok || result?.ok === false) throw new Error(result?.error || "No se pudo eliminar el archivo.");
-      } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "No se pudo eliminar el archivo.");
-        setEliminando((current) => { const next = new Set(current); next.delete(fileId); return next; });
-        return;
-      }
-      setSubidos((current) => { const next = { ...current }; delete next[fileId]; return next; });
-      setEliminando((current) => { const next = new Set(current); next.delete(fileId); return next; });
-    } else if (existing) {
-      setEliminando((current) => new Set(current).add(fileId));
-      try {
-        const response = await fetch(`/api/archivos/${encodeURIComponent(fileId)}`, { method: "DELETE" });
-        const result = await response.json().catch(() => null);
-        if (!response.ok || result?.ok === false) throw new Error(result?.error || "No se pudo eliminar el archivo.");
-        setArchivos((current) => current.filter((archivo) => archivo._id !== fileId));
-      } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "No se pudo eliminar el archivo.");
-      } finally {
-        setEliminando((current) => { const next = new Set(current); next.delete(fileId); return next; });
-      }
-    }
+    if (existing) setArchivosPorEliminar((current) => new Set(current).add(fileId));
     if (pending?.previewUrl) {
       URL.revokeObjectURL(pending.previewUrl);
       urlsVistaPrevia.current.delete(pending.previewUrl);
     }
     setNuevosArchivos((current) => current.filter((item) => item.id !== fileId));
+    setError("");
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -290,6 +266,12 @@ export default function EditarNota({ id }: EditarNotaProps) {
         throw new Error(result?.error || "No se pudieron guardar los cambios.");
       }
 
+      for (const fileId of archivosPorEliminar) {
+        const deleteResponse = await fetch(`/api/archivos/${encodeURIComponent(fileId)}`, { method: "DELETE" });
+        const deleted = await deleteResponse.json().catch(() => null);
+        if (!deleteResponse.ok || deleted?.ok === false) throw new Error(deleted?.error || "No se pudo eliminar el archivo.");
+      }
+
       for (const pending of nuevosArchivos) {
         if (subidos[pending.id]) continue;
         const body = new FormData();
@@ -318,7 +300,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
   }
 
   const imagenes: ImagenCarrusel[] = [
-    ...archivos.filter(esImagen).map((archivo) => ({
+    ...archivos.filter((archivo) => esImagen(archivo) && !archivosPorEliminar.has(archivo._id)).map((archivo) => ({
       id: archivo._id,
       nombre: archivo.nombreArchivo,
       url: /^https?:\/\//i.test(archivo.url) ? archivo.url : "",
@@ -336,7 +318,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
 
   const dropzoneFiles: DropzoneFile[] = [
     ...archivos
-      .filter((archivo) => !esImagen(archivo))
+      .filter((archivo) => !esImagen(archivo) && !archivosPorEliminar.has(archivo._id))
       .map((archivo) => ({ id: archivo._id, name: archivo.nombreArchivo, uploaded: true, deleting: eliminando.has(archivo._id) })),
     ...nuevosArchivos
       .filter(({ file }) => !file.type.startsWith("image/"))
@@ -432,7 +414,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
                           className="nota-file-remove"
                           aria-label={`Eliminar ${imagen.nombre}`}
                           disabled={guardando || imagen.deleting}
-                          onClick={() => void removeFile(imagen.id)}
+                          onClick={() => removeFile(imagen.id)}
                         >
                           <span>{imagen.deleting ? "Eliminando…" : "Eliminar"}</span>
                         </button>
@@ -465,7 +447,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
               </div>
             </div>
           )}
-          <FileDropzone files={dropzoneFiles} onFilesSelected={addFiles} onRemoveFile={(fileId) => void removeFile(fileId)} disabled={guardando || eliminando.size > 0} />
+          <FileDropzone files={dropzoneFiles} onFilesSelected={addFiles} onRemoveFile={removeFile} disabled={guardando || eliminando.size > 0} />
         </section>
         {error && <p className="nota-field-error" role="alert">{error}</p>}
         <footer className="nota-form-actions">
