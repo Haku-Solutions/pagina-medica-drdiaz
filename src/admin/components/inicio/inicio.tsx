@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HiUsers, HiXMark } from "react-icons/hi2";
+import { HiUsers } from "react-icons/hi2";
 import GraficaAnillo from "./graficas/GraficaAnillo";
 import GraficaArea from "./graficas/GraficaArea";
 import GraficaBarrasVertical from "./graficas/GraficaBarrasVertical";
@@ -284,32 +284,21 @@ export default function Inicio() {
                   </p>
                 </div>
 
-                {tipoSeleccionado ? (
-                  <button
-                    type="button"
-                    className="inicio-selector-select"
-                    style={{ padding: "0 0.7rem", gap: "0.25rem" }}
-                    onClick={() => setTipoSeleccionado(null)}
-                  >
-                    <HiXMark aria-hidden="true" />
-                    <span>Ver todas</span>
-                  </button>
-                ) : (
-                  <select
-                    className="inicio-selector-select"
-                    value={tipoSeleccionado ?? ""}
-                    onChange={(evento) =>
-                      setTipoSeleccionado(evento.target.value || null)
-                    }
-                  >
-                    <option value="">Seleccionar...</option>
-                    {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
-                      <option key={dato.etiqueta} value={dato.etiqueta}>
-                        {dato.etiqueta} ({dato.valor})
-                      </option>
-                    ))}
-                  </select>
-                )}
+                <select
+                  className="inicio-selector-select"
+                  value={tipoSeleccionado ?? ""}
+                  onChange={(evento) =>
+                    setTipoSeleccionado(evento.target.value || null)
+                  }
+                  aria-label="Seleccionar tipo de cirugía"
+                >
+                  <option value="">Ver todos</option>
+                  {(estadisticas?.cirugiasPorTipo ?? []).map((dato) => (
+                    <option key={dato.etiqueta} value={dato.etiqueta}>
+                      {dato.etiqueta} ({dato.valor})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {tipoSeleccionado ? (
@@ -349,32 +338,21 @@ export default function Inicio() {
                   </p>
                 </div>
 
-                {lugarSeleccionado ? (
-                  <button
-                    type="button"
-                    className="inicio-selector-select"
-                    style={{ padding: "0 0.7rem", gap: "0.25rem" }}
-                    onClick={() => setLugarSeleccionado(null)}
-                  >
-                    <HiXMark aria-hidden="true" />
-                    <span>Ver todas</span>
-                  </button>
-                ) : (
-                  <select
-                    className="inicio-selector-select"
-                    value={lugarSeleccionado ?? ""}
-                    onChange={(evento) =>
-                      setLugarSeleccionado(evento.target.value || null)
-                    }
-                  >
-                    <option value="">Seleccionar...</option>
-                    {(estadisticas?.lugaresMasComunes ?? []).map((dato) => (
-                      <option key={dato.etiqueta} value={dato.etiqueta}>
-                        {dato.etiqueta} ({dato.valor})
-                      </option>
-                    ))}
-                  </select>
-                )}
+                <select
+                  className="inicio-selector-select"
+                  value={lugarSeleccionado ?? ""}
+                  onChange={(evento) =>
+                    setLugarSeleccionado(evento.target.value || null)
+                  }
+                  aria-label="Seleccionar sede quirúrgica"
+                >
+                  <option value="">Ver todos</option>
+                  {(estadisticas?.lugaresMasComunes ?? []).map((dato) => (
+                    <option key={dato.etiqueta} value={dato.etiqueta}>
+                      {dato.etiqueta} ({dato.valor})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {lugarSeleccionado ? (
