@@ -67,7 +67,7 @@ const notaFields = {
   enfermeraCirculante: textoNombre(500),
   pronostico: textoLibre(5000),
   plan: textoLibre(3000),
-  dieta: textoLibre(10000),
+  dieta: textoLibre(5000),
   soluciones: textoLibre(2000),
   medicamentos: textoLibre(3000),
   cuidadosGenerales: textoLibre(3000),
