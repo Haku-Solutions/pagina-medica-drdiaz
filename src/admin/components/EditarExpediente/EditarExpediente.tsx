@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import "./EditarExpediente.css";
 
 type Sexo = "hombre" | "mujer" | "";
@@ -80,8 +81,6 @@ function Campo({ id, label, requerido, error, guardado, children }: CampoProps) 
         {requerido && <span className="crear-expediente-required">*</span>}
       </label>
 
-      {children}
-
       {guardado !== undefined && (
         <p className="editar-expediente-anterior">
           <span>Dato original:</span> {guardado}
@@ -93,6 +92,8 @@ function Campo({ id, label, requerido, error, guardado, children }: CampoProps) 
           {error}
         </p>
       )}
+
+      {children}
     </div>
   );
 }
@@ -222,8 +223,12 @@ export default function EditarExpediente({ id }: { id: string }) {
       const data = await res.json().catch(() => null);
 
       if (!res.ok || !data?.ok) {
-        if (data?.campos) setErrores(data.campos);
-        setErrorServidor(data?.error ?? "No se pudieron guardar los cambios.");
+        if (data?.campos) {
+          setErrores(data.campos);
+          setErrorServidor(resumenErroresCampos(data.campos) ? "" : data?.error ?? "Revisa los datos del expediente.");
+        } else {
+          setErrorServidor(data?.error ?? "No se pudieron guardar los cambios.");
+        }
         return;
       }
 
@@ -346,6 +351,7 @@ export default function EditarExpediente({ id }: { id: string }) {
 
         <fieldset className="crear-expediente-field crear-expediente-sexo">
           <legend className="crear-expediente-label">Sexo</legend>
+          {errores.sexo && <p className="crear-expediente-error" role="alert">{errores.sexo}</p>}
 
           <label className="crear-expediente-radio">
             <input
@@ -380,7 +386,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="ciudadNacimiento"
           label="Ciudad (Lugar de Nacimiento)"
           guardado={guardado("ciudadNacimiento")}
-        >
+         error={errores.ciudadNacimiento}>
           <input
             id="ciudadNacimiento"
             type="text"
@@ -395,7 +401,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="estadoNacimiento"
           label="Estado (Lugar de Nacimiento)"
           guardado={guardado("estadoNacimiento")}
-        >
+         error={errores.estadoNacimiento}>
           <input
             id="estadoNacimiento"
             type="text"
@@ -430,7 +436,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="residencia"
           label="Lugar de Residencia"
           guardado={guardado("residencia")}
-        >
+         error={errores.residencia}>
           <input
             id="residencia"
             type="text"
@@ -445,7 +451,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="antecedentes"
           label="Antecedentes"
           guardado={guardado("antecedentes")}
-        >
+         error={errores.antecedentes}>
           <textarea
             id="antecedentes"
             value={form.antecedentes}
@@ -481,7 +487,7 @@ export default function EditarExpediente({ id }: { id: string }) {
           id="familiarNombre"
           label="Nombre Completo del Familiar Responsable"
           guardado={guardado("familiarNombre")}
-        >
+         error={errores.familiarNombre}>
           <input
             id="familiarNombre"
             type="text"

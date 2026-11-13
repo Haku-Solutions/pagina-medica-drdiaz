@@ -3,14 +3,10 @@ import { getSessionUser } from "@/src/server/auth/requireSession";
 import { connectDB } from "@/src/server";
 import { ExpedienteMedico, Cirujano } from "@/src/server/db/model";
 import { created, fail, ok } from "@/src/server/utils/apiResponse";
+import { expedienteBodySchema } from "@/src/server/validation/requestSchemas";
 
 const escaparRegex = (texto: string) =>
   texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const texto = (valor: unknown, max: number) =>
-  typeof valor === "string" ? valor.trim().slice(0, max) : "";
-
-const opcional = (valor: unknown, max: number) => texto(valor, max) || undefined;
 
 function fechaValida(valor: string) {
   const fecha = new Date(`${valor}T00:00:00Z`);
@@ -73,36 +69,22 @@ export async function POST(request: NextRequest) {
   if (!session) return fail("No autorizado", 401);
 
   const raw = await request.json().catch(() => null);
-  if (!raw || typeof raw !== "object") return fail("Cuerpo inválido", 400);
-
-  const body = raw as Record<string, unknown>;
-
-  const nombre = texto(body.nombre, 200);
-  const fechaNacimiento = texto(body.fechaNacimiento, 10);
-  const sexo = texto(body.sexo, 10);
-  const curp = texto(body.curp, 40).toUpperCase();
-  const telefono = texto(body.telefono, 20);
-  const familiarTelefono = texto(body.familiarTelefono, 20);
+  const parsed = expedienteBodySchema.safeParse(raw);
+  if (!parsed.success) {
+    const campos = Object.fromEntries(parsed.error.issues.map((issue) => [String(issue.path[0] ?? "body"), issue.message]));
+    return NextResponse.json({ ok: false, error: "Revisa los campos marcados.", campos }, { status: 422 });
+  }
+  const body = parsed.data;
+  const nombre = body.nombre;
+  const fechaNacimiento = body.fechaNacimiento;
+  const sexo = body.sexo;
+  const curp = body.curp;
+  const telefono = body.telefono;
+  const familiarTelefono = body.familiarTelefono;
 
   const errores: Record<string, string> = {};
 
   if (!nombre) errores.nombre = "Escribe el nombre completo del paciente.";
-  if (fechaNacimiento && !fechaValida(fechaNacimiento)) {
-    errores.fechaNacimiento = "La fecha de nacimiento no es válida.";
-  }
-  if (!["", "hombre", "mujer"].includes(sexo)) {
-    errores.sexo = "Selecciona una opción válida.";
-  }
-  if (curp && !/^[A-Z0-9]{18}$/.test(curp)) {
-    errores.curp = "El CURP debe tener 18 caracteres.";
-  }
-  if (telefono && !/^\d{10}$/.test(telefono)) {
-    errores.telefono = "El teléfono debe tener 10 dígitos.";
-  }
-  if (familiarTelefono && !/^\d{10}$/.test(familiarTelefono)) {
-    errores.familiarTelefono = "El teléfono debe tener 10 dígitos.";
-  }
-
   if (Object.keys(errores).length > 0) {
     return NextResponse.json(
       { ok: false, error: "Revisa los campos marcados.", campos: errores },
@@ -140,13 +122,13 @@ export async function POST(request: NextRequest) {
         : undefined,
       edad: calcularEdad(fechaNacimiento),
       sexo: sexo === "hombre" ? "M" : sexo === "mujer" ? "F" : undefined,
-      antecedentes: opcional(body.antecedentes, 5000),
-      estado: opcional(body.estadoNacimiento, 120),
-      municipio: opcional(body.ciudadNacimiento, 120),
+      antecedentes: body.antecedentes || undefined,
+      estado: body.estadoNacimiento || undefined,
+      municipio: body.ciudadNacimiento || undefined,
       curp: curp || undefined,
-      lugarResidencia: opcional(body.residencia, 160),
+      lugarResidencia: body.residencia || undefined,
       telefono: telefono ? Number(telefono) : undefined,
-      familiarResponsable: opcional(body.familiarNombre, 200),
+      familiarResponsable: body.familiarNombre || undefined,
       telefonoFamiliar: familiarTelefono ? Number(familiarTelefono) : undefined,
     });
 

@@ -4,6 +4,8 @@ import { connectDB } from "@/src/server";
 import { NotaOperatoria, Archivo } from "@/src/server/db/model";
 import { fail, ok } from "@/src/server/utils/apiResponse";
 import { isValidObjectId } from "mongoose";
+import { NextResponse } from "next/server";
+import { notaOperatoriaUpdateBodySchema } from "@/src/server/validation/requestSchemas";
 
 export async function GET(
   _request: NextRequest,
@@ -35,14 +37,23 @@ export async function PUT(
   const { id } = await params;
   if (!isValidObjectId(id)) return fail("ID inválido", 400);
 
+  const raw = await request.json().catch(() => null);
+  const parsed = notaOperatoriaUpdateBodySchema.safeParse(raw);
+  if (!parsed.success) {
+    const campos = Object.fromEntries(
+      parsed.error.issues.map((issue) => [String(issue.path[0] ?? "body"), issue.message]),
+    );
+    return NextResponse.json(
+      { ok: false, error: "Revisa los campos marcados.", campos },
+      { status: 422 },
+    );
+  }
+
+  const body = parsed.data;
   await connectDB();
-
-  const body = await request.json().catch(() => null);
-  if (!body) return fail("Cuerpo inválido", 400);
-
   const nota = await NotaOperatoria.findByIdAndUpdate(
     id,
-    { $set: body },
+    { $set: { ...body, fechaCirugia: new Date(`${body.fechaCirugia}T00:00:00Z`) } },
     { new: true, runValidators: true }
   ).lean();
 

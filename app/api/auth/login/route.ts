@@ -8,16 +8,13 @@ import {
   SESSION_COOKIE_NAME,
 } from "@/src/server/auth/session";
 import { fail, ok } from "@/src/server/utils/apiResponse";
+import { loginBodySchema } from "@/src/server/validation/requestSchemas";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => null);
-  const nombreUsuario =
-    typeof body?.nombreUsuario === "string" ? body.nombreUsuario.trim() : "";
-  const contraseña = typeof body?.contraseña === "string" ? body.contraseña : "";
-
-  if (!nombreUsuario || !contraseña) {
-    return fail("Faltan credenciales", 400);
-  }
+  const raw = await request.json().catch(() => null);
+  const parsed = loginBodySchema.safeParse(raw);
+  if (!parsed.success) return fail("Cuerpo de inicio de sesión inválido", 400);
+  const { nombreUsuario, contraseña } = parsed.data;
 
   await connectDB();
 
