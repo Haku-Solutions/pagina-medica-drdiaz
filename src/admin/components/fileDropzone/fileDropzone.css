@@ -1,0 +1,116 @@
+.nota-dropzone { 
+    display: flex; 
+    min-height: 192px; 
+    box-sizing: border-box; 
+    cursor: pointer; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    padding: 22px; 
+    border: 1.5px dashed #aab9d5; 
+    border-radius: 14px; 
+    background: #f8faff; 
+    text-align: center; 
+    transition: border-color .2s, background .2s, transform .2s; 
+}
+.nota-dropzone:hover, .nota-dropzone.is-dragging { 
+    border-color: #4d79c7; 
+    background: #eef4ff; 
+}
+.nota-dropzone.is-disabled {
+    cursor: wait;
+    opacity: .65;
+}
+.nota-dropzone.is-dragging { 
+    transform: scale(1.01); 
+}
+.nota-upload-icon { 
+    display: grid; 
+    width: 43px; 
+    height: 43px; 
+    margin-bottom: 3px; 
+    place-items: center; 
+    border-radius: 13px; 
+    background: #e5edff; 
+    color: #527ac0; 
+}
+.nota-upload-icon svg { 
+    width: 23px; 
+    height: 23px; 
+}
+.nota-dropzone strong { 
+    color: #263752; 
+    font-size: 15px; 
+}
+.nota-dropzone > span:not(.nota-upload-icon) { 
+    color: #687791; 
+    font-size: 12px; 
+}
+.nota-dropzone small { 
+    color: #9aa5b7; 
+    font-size: 11px; 
+}
+.nota-file-input { 
+    display: none; 
+}
+.nota-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: .75rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+.nota-file-list li {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: .55rem;
+    padding: .6rem .75rem;
+    border: 1px solid #dce3ef;
+    border-radius: 4px;
+    background: #fff;
+    color: #52627b;
+    font-size: .75rem;
+}
+.nota-file-list li > svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+}
+.nota-file-list li > span {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.nota-file-list li > small {
+    flex: 0 0 auto;
+    color: #777;
+}
+.nota-file-remove {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .5rem;
+    border: 0;
+    border-radius: 4px;
+    background: #fff0f0;
+    color: #b42318;
+    cursor: pointer;
+    font: inherit;
+}
+.nota-file-remove:hover:not(:disabled) {
+    background: #ffe0e0;
+}
+.nota-file-remove:disabled {
+    cursor: wait;
+    opacity: .6;
+}
+.nota-file-remove svg {
+    width: 16px;
+    height: 16px;
+}
