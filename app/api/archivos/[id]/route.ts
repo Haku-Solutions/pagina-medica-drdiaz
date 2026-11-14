@@ -29,7 +29,7 @@ export async function GET(
   }
 
   const [buffer] = await bucket.file(ubicacion.path).download();
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": archivo.formatoArchivo || "application/octet-stream",
       "Content-Disposition": `inline; filename*=UTF-8''${encodeURIComponent(archivo.nombreArchivo)}`,
