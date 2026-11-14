@@ -147,7 +147,8 @@ const esImagen = (archivo: ArchivoNota) => {
   return /\.(png|jpe?g|webp|gif|avif|bmp|svg)$/.test(nombre);
 };
 
-const esUrlWeb = (url?: string) => Boolean(url && /^https?:\/\//i.test(url));
+const rutaArchivo = (archivo: ArchivoNota) =>
+  archivo._id ? `/api/archivos/${encodeURIComponent(archivo._id)}` : "";
 
 export default function VerNota({ id }: VerNotaProps) {
   const [nota, setNota] = useState<NotaOperatoria | null>(null);
@@ -472,7 +473,7 @@ export default function VerNota({ id }: VerNotaProps) {
                       {imagenes.map((archivo, index) => {
                         const nombre =
                           archivo.nombreArchivo || `Imagen ${index + 1}`;
-                        const url = esUrlWeb(archivo.url) ? archivo.url : "";
+                        const url = rutaArchivo(archivo);
 
                         return (
                           <figure
@@ -564,10 +565,10 @@ export default function VerNota({ id }: VerNotaProps) {
                         <HiDocumentText aria-hidden="true" />
                         <span>{archivo.nombreArchivo || "Archivo"}</span>
 
-                        {archivo.url && (
+                        {archivo._id && (
                           <a
                             className="ver-nota-file-link"
-                            href={archivo.url}
+                            href={rutaArchivo(archivo)}
                             target="_blank"
                             rel="noopener noreferrer"
                           >

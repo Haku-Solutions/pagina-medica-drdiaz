@@ -44,27 +44,25 @@ export async function POST(request: NextRequest) {
   const rutaStorage = `notas/${idNota}/${randomUUID()}-${nombreSeguro}`;
   const bucket = firebaseBucket();
   const objeto = bucket.file(rutaStorage);
-  const downloadToken = randomUUID();
-  const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(rutaStorage)}?alt=media&token=${downloadToken}`;
-
   try {
     await objeto.save(buffer, {
       resumable: false,
       metadata: {
         contentType: file.type,
-        metadata: { firebaseStorageDownloadTokens: downloadToken },
       },
     });
 
-    const registro = await Archivo.create({
+    const registro = new Archivo({
       idNota,
       nombreArchivo: nombreOriginal,
       formatoArchivo: file.type,
-      url,
       storagePath: rutaStorage,
     });
 
-    return ok(registro);
+    registro.url = `/api/archivos/${registro._id}`;
+    await registro.save();
+
+    return ok(registro.toObject());
   } catch (error) {
     await objeto.delete().catch(() => undefined);
     throw error;

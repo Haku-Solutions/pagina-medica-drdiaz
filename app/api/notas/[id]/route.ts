@@ -22,7 +22,10 @@ export async function GET(
   const nota = await NotaOperatoria.findById(id).lean();
   if (!nota) return fail("Nota operatoria no encontrada", 404);
 
-  const archivos = await Archivo.find({ idNota: id }).lean();
+  const archivos = (await Archivo.find({ idNota: id }).lean()).map((archivo) => ({
+    ...archivo,
+    url: `/api/archivos/${archivo._id}`,
+  }));
 
   return ok({ nota, archivos });
 }

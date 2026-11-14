@@ -303,7 +303,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
     ...archivos.filter((archivo) => esImagen(archivo) && !archivosPorEliminar.has(archivo._id)).map((archivo) => ({
       id: archivo._id,
       nombre: archivo.nombreArchivo,
-      url: /^https?:\/\//i.test(archivo.url) ? archivo.url : "",
+      url: `/api/archivos/${encodeURIComponent(archivo._id)}`,
       deleting: eliminando.has(archivo._id),
     })),
     ...nuevosArchivos

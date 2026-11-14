@@ -1,10 +1,43 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 import { getSessionUser } from "@/src/server/auth/requireSession";
 import { connectDB } from "@/src/server";
 import { Archivo } from "@/src/server/db/model";
 import { firebaseBucket } from "@/src/server/storage/firebase";
 import { fail, ok } from "@/src/server/utils/apiResponse";
+
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const session = await getSessionUser();
+  if (!session) return fail("No autorizado", 401);
+
+  const { id } = await params;
+  if (!isValidObjectId(id)) return fail("ID de archivo inválido", 400);
+
+  await connectDB();
+  const archivo = await Archivo.findById(id).lean();
+  if (!archivo) return fail("Archivo no encontrado", 404);
+
+  const bucket = firebaseBucket();
+  const ubicacion = archivo.storagePath
+    ? { bucket: bucket.name, path: archivo.storagePath }
+    : obtenerRutaStorage(archivo.url);
+  if (!ubicacion || ubicacion.bucket !== bucket.name) {
+    return fail("No se pudo identificar el archivo en Firebase Storage", 409);
+  }
+
+  const [buffer] = await bucket.file(ubicacion.path).download();
+  return new NextResponse(new Uint8Array(buffer), {
+    headers: {
+      "Content-Type": archivo.formatoArchivo || "application/octet-stream",
+      "Content-Disposition": `inline; filename*=UTF-8''${encodeURIComponent(archivo.nombreArchivo)}`,
+      "Cache-Control": "private, no-store, max-age=0",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
 
 function obtenerRutaStorage(url: string) {
   if (url.startsWith("gs://")) {
