@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 import { getSessionUser } from "@/src/server/auth/requireSession";
 import { connectDB } from "@/src/server";
-import { Archivo } from "@/src/server/db/model";
+import { Archivo, ExpedienteMedico, NotaOperatoria } from "@/src/server/db/model";
 import { firebaseBucket } from "@/src/server/storage/firebase";
 import { fail, ok } from "@/src/server/utils/apiResponse";
+
+async function perteneceAlUsuario(idNota: unknown, userId: string) {
+  const nota = await NotaOperatoria.findById(idNota).select("idExpediente");
+  if (!nota) return false;
+  return Boolean(await ExpedienteMedico.exists({ _id: nota.idExpediente, idCirujano: userId }));
+}
 
 export async function GET(
   _request: NextRequest,
@@ -19,6 +25,7 @@ export async function GET(
   await connectDB();
   const archivo = await Archivo.findById(id).lean();
   if (!archivo) return fail("Archivo no encontrado", 404);
+  if (!(await perteneceAlUsuario(archivo.idNota, session.id))) return fail("Archivo no encontrado", 404);
 
   const bucket = firebaseBucket();
   const ubicacion = archivo.storagePath
@@ -70,6 +77,7 @@ export async function DELETE(
   await connectDB();
   const archivo = await Archivo.findById(id).lean();
   if (!archivo) return fail("Archivo no encontrado", 404);
+  if (!(await perteneceAlUsuario(archivo.idNota, session.id))) return fail("Archivo no encontrado", 404);
 
   const bucket = firebaseBucket();
   const ubicacion = archivo.storagePath

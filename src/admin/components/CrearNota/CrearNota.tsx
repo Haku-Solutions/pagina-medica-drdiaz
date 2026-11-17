@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
+import { comprimirImagen } from "@/lib/comprimirImagen";
+import { subirImagen } from "@/lib/subirImagen";
 import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import "./CrearNota.css";
@@ -120,6 +122,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
   const [submitError, setSubmitError] = useState("");
   const [createdNoteId, setCreatedNoteId] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
+  const [uploadStatuses, setUploadStatuses] = useState<Record<string, { status: "optimizando" | "subiendo"; progress: number }>>({});
   const [deletingFiles, setDeletingFiles] = useState<Set<string>>(() => new Set());
   const [fileSelectionError, setFileSelectionError] = useState("");
   const [accesoValidado, setAccesoValidado] = useState(false);
@@ -175,7 +178,6 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
         jpg: "image/jpeg",
         jpeg: "image/jpeg",
         webp: "image/webp",
-        pdf: "application/pdf",
       };
       const accepted: ArchivoPendiente[] = [];
       const rejected: string[] = [];
@@ -184,7 +186,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       for (const file of Array.from(selected)) {
         const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
         const expectedMime = mimeByExtension[extension];
-        if (expectedMime && (!file.type || file.type === expectedMime)) {
+        if (expectedMime && (!file.type || file.type === expectedMime || (expectedMime.startsWith("image/he") && file.type === "application/octet-stream"))) {
           const fingerprint = huellaArchivo(file);
           if (huellasArchivos.current.has(fingerprint)) {
             duplicates.push(file.name);
@@ -201,7 +203,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       const messages = [];
       if (rejected.length) {
         messages.push(
-          `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.`,
+          `No se aceptaron: ${rejected.join(", ")}. Se permiten JPEG, PNG y WEBP.`,
         );
       }
       if (duplicates.length) {
@@ -256,6 +258,8 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
     name: file.name,
     size: file.size,
     uploaded: Boolean(uploadedFiles[id]),
+    uploadStatus: uploadStatuses[id]?.status,
+    uploadProgress: uploadStatuses[id]?.progress,
     deleting: deletingFiles.has(id),
   }));
 
@@ -322,24 +326,18 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
 
       for (const pending of files) {
         if (uploadedFiles[pending.id]) continue;
-        const uploadData = new FormData();
-        uploadData.append("archivo", pending.file);
-        uploadData.append("idNota", noteId);
-        const uploadResponse = await fetch("/api/archivos", {
-          method: "POST",
-          body: uploadData,
+        setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "optimizando", progress: 0 } }));
+        const optimized = await comprimirImagen(pending.file);
+        setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "subiendo", progress: 0 } }));
+        const uploadResult = await subirImagen(noteId, pending.file.name, optimized.blob, (progress) => {
+          setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "subiendo", progress } }));
         });
-        const uploadResult = await uploadResponse.json().catch(() => null);
-        if (!uploadResponse.ok || uploadResult?.ok === false) {
-          throw new Error(
-            uploadResult?.error || `No se pudo subir el archivo ${pending.file.name}.`
-          );
-        }
         const uploadedId = uploadResult?.data?._id;
         if (typeof uploadedId !== "string") {
           throw new Error(`No se recibió el identificador del archivo ${pending.file.name}.`);
         }
         setUploadedFiles((current) => ({ ...current, [pending.id]: uploadedId }));
+        setUploadStatuses((current) => { const next = { ...current }; delete next[pending.id]; return next; });
       }
 
       sessionStorage.removeItem("nota-expediente-activo");
@@ -749,7 +747,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               ? "Guardando..."
               : createdNoteId
                 ? "Reintentar y volver a Mis pacientes"
-                : "Crear Nota Operatoria"}
+                : "Confirmar y Guardar nota"}
           </button>
         </footer>
       </form>
