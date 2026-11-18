@@ -10,6 +10,8 @@ export interface DropzoneFile {
   size?: number;
   uploaded?: boolean;
   deleting?: boolean;
+  uploadStatus?: "optimizando" | "subiendo";
+  uploadProgress?: number;
 }
 
 interface FileDropzoneProps {
@@ -83,6 +85,10 @@ export default function FileDropzone({
               <span>{file.name}</span>
               {file.uploaded ? (
                 <small>Subido</small>
+              ) : file.uploadStatus === "optimizando" ? (
+                <small>Optimizando…</small>
+              ) : file.uploadStatus === "subiendo" ? (
+                <small>Subiendo {file.uploadProgress ?? 0}%</small>
               ) : typeof file.size === "number" ? (
                 <small>{(file.size / 1024).toFixed(0)} KB</small>
               ) : null}

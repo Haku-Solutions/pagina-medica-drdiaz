@@ -6,7 +6,11 @@ export const lugaresCirugia = [
 
 export const cirugias = [
   "Apendicectomía",
+  "Colecistectomía abierta",
   "Colecistectomía laparoscópica",
   "Hernioplastia",
+  "Hernia umbilical",
+  "Hernia inguinal",
+  "Hernia de pared",
   "Otra cirugía",
 ];

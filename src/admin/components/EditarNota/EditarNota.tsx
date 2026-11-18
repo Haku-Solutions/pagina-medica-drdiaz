@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
+import { comprimirImagen } from "@/lib/comprimirImagen";
+import { subirImagen } from "@/lib/subirImagen";
 import { HiChevronLeft, HiChevronRight, HiDocumentText, HiXMark } from "react-icons/hi2";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import type { NotaOperatoriaForm } from "../CrearNota/CrearNota";
@@ -117,6 +119,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
   const [archivos, setArchivos] = useState<ArchivoNota[]>([]);
   const [nuevosArchivos, setNuevosArchivos] = useState<ArchivoNuevo[]>([]);
   const [subidos, setSubidos] = useState<Record<string, string>>({});
+  const [uploadStatuses, setUploadStatuses] = useState<Record<string, { status: "optimizando" | "subiendo"; progress: number }>>({});
   const [archivosPorEliminar, setArchivosPorEliminar] = useState<Set<string>>(new Set());
   const [eliminando, setEliminando] = useState<Set<string>>(new Set());
   const [cargando, setCargando] = useState(true);
@@ -203,13 +206,13 @@ export default function EditarNota({ id }: EditarNotaProps) {
 
   const addFiles = (list: FileList | null) => {
     if (!list) return;
-    const allowed: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", pdf: "application/pdf" };
+    const allowed: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp"};
     const known = new Set(nuevosArchivos.map(({ file }) => fingerprint(file)));
     const accepted: ArchivoNuevo[] = [];
     const rejected: string[] = [];
     for (const file of Array.from(list)) {
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
-      if (!allowed[extension] || file.type !== allowed[extension]) { rejected.push(file.name); continue; }
+      if (!allowed[extension] || (file.type && file.type !== allowed[extension])) { rejected.push(file.name); continue; }
       const key = fingerprint(file);
       if (known.has(key)) continue;
       known.add(key);
@@ -219,7 +222,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
       accepted.push({ id, file, previewUrl });
     }
     setNuevosArchivos((current) => [...current, ...accepted]);
-    setError(rejected.length ? `No se aceptaron: ${rejected.join(", ")}. Solo se permiten PNG, JPEG, WEBP y PDF.` : "");
+    setError(rejected.length ? `No se aceptaron: ${rejected.join(", ")}. Se permiten JPEG, PNG y WEBP.` : "");
   };
 
   const removeFile = (fileId: string) => {
@@ -274,15 +277,18 @@ export default function EditarNota({ id }: EditarNotaProps) {
 
       for (const pending of nuevosArchivos) {
         if (subidos[pending.id]) continue;
-        const body = new FormData();
-        body.append("archivo", pending.file);
-        body.append("idNota", id);
-        const upload = await fetch("/api/archivos", { method: "POST", body });
-        const uploaded = await upload.json().catch(() => null);
-        if (!upload.ok || uploaded?.ok === false || typeof uploaded?.data?._id !== "string") {
-          throw new Error(uploaded?.error || `No se pudo subir el archivo ${pending.file.name}.`);
+        setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "optimizando", progress: 0 } }));
+        const optimized = await comprimirImagen(pending.file);
+        setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "subiendo", progress: 0 } }));
+        const uploaded = await subirImagen(id, pending.file.name, optimized.blob, (progress) => {
+          setUploadStatuses((current) => ({ ...current, [pending.id]: { status: "subiendo", progress } }));
+        });
+        const uploadedId = uploaded.data?._id;
+        if (!uploaded.ok || typeof uploadedId !== "string") {
+          throw new Error(uploaded?.error || `No se pudo registrar el archivo ${pending.file.name}.`);
         }
-        setSubidos((current) => ({ ...current, [pending.id]: uploaded.data._id }));
+        setSubidos((current) => ({ ...current, [pending.id]: uploadedId }));
+        setUploadStatuses((current) => { const next = { ...current }; delete next[pending.id]; return next; });
       }
       router.push(`/admin/ver-expediente/${encodeURIComponent(expedienteId)}`);
     } catch (cause) {
@@ -321,8 +327,8 @@ export default function EditarNota({ id }: EditarNotaProps) {
       .filter((archivo) => !esImagen(archivo) && !archivosPorEliminar.has(archivo._id))
       .map((archivo) => ({ id: archivo._id, name: archivo.nombreArchivo, uploaded: true, deleting: eliminando.has(archivo._id) })),
     ...nuevosArchivos
-      .filter(({ file }) => !file.type.startsWith("image/"))
-      .map(({ id: fileId, file }) => ({ id: fileId, name: file.name, size: file.size, uploaded: Boolean(subidos[fileId]), deleting: eliminando.has(fileId) })),
+      .filter(({ id: fileId, file }) => !file.type.startsWith("image/") || Boolean(uploadStatuses[fileId]))
+      .map(({ id: fileId, file }) => ({ id: fileId, name: file.name, size: file.size, uploaded: Boolean(subidos[fileId]), deleting: eliminando.has(fileId), uploadStatus: uploadStatuses[fileId]?.status, uploadProgress: uploadStatuses[fileId]?.progress })),
   ];
 
   const desplazarCarrusel = (direccion: -1 | 1) => {
