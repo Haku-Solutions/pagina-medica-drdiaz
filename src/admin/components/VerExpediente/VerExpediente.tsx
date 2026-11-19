@@ -280,7 +280,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
     const temporizador = window.setTimeout(() => {
       setNotaResaltadaId("");
-    }, 5000);
+    }, 3000);
 
     return () => window.clearTimeout(temporizador);
   }, [notaResaltadaId, cargando, notas]);
