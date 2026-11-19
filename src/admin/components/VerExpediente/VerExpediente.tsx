@@ -197,6 +197,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [mostrarNotaCreada, setMostrarNotaCreada] = useState(false);
+  const [notaResaltadaId, setNotaResaltadaId] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -243,10 +244,21 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
   }, [id]);
 
   useEffect(() => {
-    if (sessionStorage.getItem("nota-creada-expediente") !== id) return;
+    const guardado = sessionStorage.getItem("nota-creada-expediente");
+    if (!guardado) return;
+
+    let datos: { id?: string; notaId?: string } | null = null;
+    try {
+      datos = JSON.parse(guardado) as { id?: string; notaId?: string };
+    } catch {
+      datos = null;
+    }
+
+    if (datos?.id !== id && guardado !== id) return;
 
     sessionStorage.removeItem("nota-creada-expediente");
     setMostrarNotaCreada(true);
+    if (datos?.notaId) setNotaResaltadaId(datos.notaId);
   }, [id]);
 
   useEffect(() => {
@@ -254,10 +266,24 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
     const temporizador = window.setTimeout(() => {
       setMostrarNotaCreada(false);
-    }, 4000);
+    }, 5000);
 
     return () => window.clearTimeout(temporizador);
   }, [mostrarNotaCreada, cargando]);
+
+  useEffect(() => {
+    if (!notaResaltadaId || cargando || notas.length === 0) return;
+
+    const nota = document.getElementById(`nota-${notaResaltadaId}`);
+    const seccion = document.getElementById("notas-operatorias");
+    (nota ?? seccion)?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const temporizador = window.setTimeout(() => {
+      setNotaResaltadaId("");
+    }, 5000);
+
+    return () => window.clearTimeout(temporizador);
+  }, [notaResaltadaId, cargando, notas]);
 
   if (cargando) {
     return (
@@ -493,7 +519,10 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
           </button>
         </div>
 
-        <div className="ver-expediente-notas-operatorias">
+        <div
+          className="ver-expediente-notas-operatorias"
+          id="notas-operatorias"
+        >
           <h2 className="ver-expediente-notas-operatorias-titulo">
             Notas Operatorias Registradas
           </h2>
@@ -525,7 +554,12 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
                 return (
                   <li
-                    className="ver-expediente-nota"
+                    className={`ver-expediente-nota${
+                      notaResaltadaId === nota._id
+                        ? " ver-expediente-nota-resaltada"
+                        : ""
+                    }`}
+                    id={nota._id ? `nota-${nota._id}` : undefined}
                     key={nota._id ?? index}
                   >
                     <div className="ver-expediente-nota-principal">

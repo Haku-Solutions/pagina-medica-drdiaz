@@ -56,6 +56,7 @@
 .ver-expediente-notas-operatorias {
   margin-top: 2.5rem;
   text-align: center;
+  scroll-margin-top: 6rem;
 }
 
 .ver-expediente-notas-operatorias-titulo {
@@ -91,6 +92,25 @@
 
   background-color: #f2f2f2;
   border-radius: 8px;
+  scroll-margin-top: 6rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ver-expediente-nota-resaltada {
+  background-color: #e9fbef;
+  box-shadow: 0 0 0 2px #00c853, 0 8px 20px rgb(0 200 83 / 18%);
+  animation: ver-expediente-nota-resaltar 1.2s ease-in-out 2;
+}
+
+@keyframes ver-expediente-nota-resaltar {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px #00c853, 0 8px 20px rgb(0 200 83 / 18%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgb(0 200 83 / 30%), 0 8px 20px rgb(0 200 83 / 22%);
+  }
 }
 
 .ver-expediente-nota-principal {
