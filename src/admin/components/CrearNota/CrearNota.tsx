@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import { comprimirImagen } from "@/lib/comprimirImagen";
 import { subirImagen } from "@/lib/subirImagen";
-import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
+import CatalogoNotaInput from "./CatalogoNotaInput";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import "./CrearNota.css";
 
@@ -392,22 +392,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="lugarCirugia" label="Lugar de la Cirugía" requerido error={errores.lugarCirugia}>
-              <select
-                id="lugarCirugia"
-                value={form.lugarCirugia}
-                aria-invalid={Boolean(errores.lugarCirugia)}
-                onChange={(event) =>
-                  updateField("lugarCirugia", event.target.value)
-                }
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {lugaresCirugia.map((lugar) => (
-                  <option key={lugar} value={lugar}>
-                    {lugar}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="lugarCirugia" tipo="lugar" value={form.lugarCirugia} onChange={(value) => updateField("lugarCirugia", value)} />
             </Campo>
 
             <Campo id="notaPreoperatoria" label="Nota Preoperatoria" error={errores.notaPreoperatoria}>
@@ -461,37 +446,11 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="cirugiaProgramada" label="Cirugía Programada" error={errores.cirugiaProgramada}>
-              <select
-                id="cirugiaProgramada"
-                value={form.cirugiaProgramada}
-                onChange={(event) =>
-                  updateField("cirugiaProgramada", event.target.value)
-                }
-              >
-                <option value="">Selecciona una opción</option>
-                {cirugias.map((cirugia) => (
-                  <option key={cirugia} value={cirugia}>
-                    {cirugia}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="cirugiaProgramada" tipo="cirugia" value={form.cirugiaProgramada} onChange={(value) => updateField("cirugiaProgramada", value)} />
             </Campo>
 
             <Campo id="cirugiaRealizada" label="Cirugía Realizada" error={errores.cirugiaRealizada}>
-              <select
-                id="cirugiaRealizada"
-                value={form.cirugiaRealizada}
-                onChange={(event) =>
-                  updateField("cirugiaRealizada", event.target.value)
-                }
-              >
-                <option value="">Selecciona una opción</option>
-                {cirugias.map((cirugia) => (
-                  <option key={cirugia} value={cirugia}>
-                    {cirugia}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="cirugiaRealizada" tipo="cirugia" value={form.cirugiaRealizada} onChange={(value) => updateField("cirugiaRealizada", value)} />
             </Campo>
 
             <Campo

@@ -8,7 +8,7 @@ import { subirImagen } from "@/lib/subirImagen";
 import { HiChevronLeft, HiChevronRight, HiDocumentText, HiXMark } from "react-icons/hi2";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import type { NotaOperatoriaForm } from "../CrearNota/CrearNota";
-import { cirugias, lugaresCirugia } from "../CrearNota/mocks/notaOperatoria.mock";
+import CatalogoNotaInput from "../CrearNota/CatalogoNotaInput";
 import "../CrearNota/CrearNota.css";
 import "../VerNota/VerNota.css";
 
@@ -352,11 +352,7 @@ export default function EditarNota({ id }: EditarNotaProps) {
                   {field.kind === "textarea" ? (
                     <textarea id={field.name} rows={4} value={form[field.name]} onChange={(event) => update(field.name, event.target.value)} />
                   ) : field.kind === "place" || field.kind === "surgery" ? (
-                    <select id={field.name} value={form[field.name]} onChange={(event) => update(field.name, event.target.value)}>
-                      <option value="">Selecciona una opción</option>
-                      {!(field.kind === "place" ? lugaresCirugia : cirugias).includes(form[field.name]) && form[field.name] && <option value={form[field.name]}>{form[field.name]}</option>}
-                      {(field.kind === "place" ? lugaresCirugia : cirugias).map((option) => <option key={option} value={option}>{option}</option>)}
-                    </select>
+                    <CatalogoNotaInput id={field.name} tipo={field.kind === "place" ? "lugar" : "cirugia"} value={form[field.name]} onChange={(value) => update(field.name, value)} />
                   ) : (
                     <input id={field.name} type={field.kind === "date" ? "date" : "text"} value={form[field.name]} required={field.name === "fechaCirugia" || field.name === "lugarCirugia"} onChange={(event) => update(field.name, event.target.value)} />
                   )}
