@@ -128,6 +128,15 @@ const formatearFechaNota = (valor?: string) => {
   });
 };
 
+const LIMITE_TEXTO_NOTA = 50;
+
+const recortarTexto = (valor: string, limite = LIMITE_TEXTO_NOTA) => {
+  const limpio = valor.trim();
+  if (limpio.length <= limite) return limpio;
+
+  return `${limpio.slice(0, limite).trimEnd()}...`;
+};
+
 const resumenNota = (nota: NotaOperatoria) =>
   nota.cirugiaRealizada?.trim() ||
   nota.cirugiaProgramada?.trim() ||
@@ -505,8 +514,11 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
                         </p>
 
                         {diagnostico && (
-                          <p className="ver-expediente-nota-diagnostico">
-                            {diagnostico}
+                          <p
+                            className="ver-expediente-nota-diagnostico"
+                            title={diagnostico}
+                          >
+                            {recortarTexto(diagnostico)}
                           </p>
                         )}
                       </div>
