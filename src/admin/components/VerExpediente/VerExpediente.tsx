@@ -196,6 +196,7 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
   const [notas, setNotas] = useState<NotaOperatoria[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [mostrarNotaCreada, setMostrarNotaCreada] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -240,6 +241,23 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
     return () => controller.abort();
   }, [id]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("nota-creada-expediente") !== id) return;
+
+    sessionStorage.removeItem("nota-creada-expediente");
+    setMostrarNotaCreada(true);
+  }, [id]);
+
+  useEffect(() => {
+    if (!mostrarNotaCreada || cargando) return;
+
+    const temporizador = window.setTimeout(() => {
+      setMostrarNotaCreada(false);
+    }, 4000);
+
+    return () => window.clearTimeout(temporizador);
+  }, [mostrarNotaCreada, cargando]);
 
   if (cargando) {
     return (
@@ -287,6 +305,23 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
   return (
     <section className="crear-expediente ver-expediente">
+      {mostrarNotaCreada && (
+        <div className="ver-expediente-toast" role="status" aria-live="polite">
+          <span className="ver-expediente-toast-icono" aria-hidden="true">
+            ✓
+          </span>
+          <span>Nota creada</span>
+          <button
+            type="button"
+            className="ver-expediente-toast-cerrar"
+            aria-label="Cerrar aviso"
+            onClick={() => setMostrarNotaCreada(false)}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="crear-expediente-card">
         <header className="crear-expediente-header">
           <h1 className="crear-expediente-title">Ver Expediente</h1>

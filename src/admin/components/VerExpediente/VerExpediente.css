@@ -367,3 +367,65 @@
 .ver-expediente-estado .crear-expediente-btn {
   margin-top: 1.5rem;
 }
+
+.ver-expediente-toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+
+  background: #ffffff;
+  border: 1px solid #d8dde6;
+  border-left: 4px solid #00c853;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgb(0 0 0 / 12%);
+
+  color: #111;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.ver-expediente-toast-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+
+  background: #00c853;
+  border-radius: 50%;
+
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.ver-expediente-toast-cerrar {
+  margin-left: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  color: #6b7280;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ver-expediente-toast-cerrar:hover {
+  color: #111;
+}
+
+@media (max-width: 640px) {
+  .ver-expediente-toast {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+}
