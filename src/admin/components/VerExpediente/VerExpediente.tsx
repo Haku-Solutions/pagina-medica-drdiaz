@@ -128,7 +128,7 @@ const formatearFechaNota = (valor?: string) => {
   });
 };
 
-const LIMITE_TEXTO_NOTA = 50;
+const LIMITE_TEXTO_NOTA = 100;
 
 const recortarTexto = (valor: string, limite = LIMITE_TEXTO_NOTA) => {
   const limpio = valor.trim();
