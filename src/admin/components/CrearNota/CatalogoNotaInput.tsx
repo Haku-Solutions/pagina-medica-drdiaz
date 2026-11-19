@@ -22,6 +22,14 @@ export default function CatalogoNotaInput({ id, tipo, value, onChange }: {
   };
   useEffect(() => { void cargar(); }, []);
   useEffect(() => {
+    const sincronizar = (event: Event) => {
+      const item = (event as CustomEvent<Item>).detail;
+      if (item?.tipo) setItems((actuales) => actuales.some((actual) => actual._id === item._id) ? actuales : [...actuales, item]);
+    };
+    window.addEventListener("catalogo-nota:creado", sincronizar);
+    return () => window.removeEventListener("catalogo-nota:creado", sincronizar);
+  }, []);
+  useEffect(() => {
     const cerrar = (event: MouseEvent) => {
       if (!contenedor.current?.contains(event.target as Node)) setAbierto(false);
     };
@@ -41,7 +49,10 @@ export default function CatalogoNotaInput({ id, tipo, value, onChange }: {
       const response = await fetch("/api/catalogo-nota", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tipo, valor: nuevo }) });
       const result = await response.json();
       if (!response.ok || !result?.ok) throw new Error(result?.error || "No se pudo crear la opción.");
-      await cargar(); onChange(result.data.valor); setAbierto(false);
+      const item = result.data as Item;
+      setItems((actuales) => actuales.some((actual) => actual._id === item._id) ? actuales : [...actuales, item]);
+      window.dispatchEvent(new CustomEvent<Item>("catalogo-nota:creado", { detail: item }));
+      onChange(item.valor); setAbierto(false);
     } catch (error) { setMensaje(error instanceof Error ? error.message : "No se pudo crear la opción."); }
     finally { setGuardando(false); }
   };
