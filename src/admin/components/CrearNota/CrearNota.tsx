@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { resumenErroresCampos } from "@/src/admin/utils/formValidation";
 import { comprimirImagen } from "@/lib/comprimirImagen";
 import { subirImagen } from "@/lib/subirImagen";
-import { cirugias, lugaresCirugia } from "@/src/admin/components/CrearNota/mocks/notaOperatoria.mock";
+import CatalogoNotaInput from "./CatalogoNotaInput";
 import FileDropzone, { type DropzoneFile } from "../fileDropzone/fileDropzone";
 import "./CrearNota.css";
 
@@ -341,6 +341,10 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       }
 
       sessionStorage.removeItem("nota-expediente-activo");
+      sessionStorage.setItem(
+        "nota-creada-expediente",
+        JSON.stringify({ id: expedienteId, notaId: noteId }),
+      );
       router.push(`/admin/ver-expediente/${encodeURIComponent(expedienteId)}`);
     } catch (error) {
       setSubmitError(
@@ -392,22 +396,7 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="lugarCirugia" label="Lugar de la Cirugía" requerido error={errores.lugarCirugia}>
-              <select
-                id="lugarCirugia"
-                value={form.lugarCirugia}
-                aria-invalid={Boolean(errores.lugarCirugia)}
-                onChange={(event) =>
-                  updateField("lugarCirugia", event.target.value)
-                }
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {lugaresCirugia.map((lugar) => (
-                  <option key={lugar} value={lugar}>
-                    {lugar}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="lugarCirugia" tipo="lugar" value={form.lugarCirugia} onChange={(value) => updateField("lugarCirugia", value)} />
             </Campo>
 
             <Campo id="notaPreoperatoria" label="Nota Preoperatoria" error={errores.notaPreoperatoria}>
@@ -461,37 +450,11 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="cirugiaProgramada" label="Cirugía Programada" error={errores.cirugiaProgramada}>
-              <select
-                id="cirugiaProgramada"
-                value={form.cirugiaProgramada}
-                onChange={(event) =>
-                  updateField("cirugiaProgramada", event.target.value)
-                }
-              >
-                <option value="">Selecciona una opción</option>
-                {cirugias.map((cirugia) => (
-                  <option key={cirugia} value={cirugia}>
-                    {cirugia}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="cirugiaProgramada" tipo="cirugia" value={form.cirugiaProgramada} onChange={(value) => updateField("cirugiaProgramada", value)} />
             </Campo>
 
             <Campo id="cirugiaRealizada" label="Cirugía Realizada" error={errores.cirugiaRealizada}>
-              <select
-                id="cirugiaRealizada"
-                value={form.cirugiaRealizada}
-                onChange={(event) =>
-                  updateField("cirugiaRealizada", event.target.value)
-                }
-              >
-                <option value="">Selecciona una opción</option>
-                {cirugias.map((cirugia) => (
-                  <option key={cirugia} value={cirugia}>
-                    {cirugia}
-                  </option>
-                ))}
-              </select>
+              <CatalogoNotaInput id="cirugiaRealizada" tipo="cirugia" value={form.cirugiaRealizada} onChange={(value) => updateField("cirugiaRealizada", value)} />
             </Campo>
 
             <Campo
@@ -541,14 +504,20 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               id="materialesTextiles"
               label="Cuenta de Materiales y Textiles"
              error={errores.materialesTextiles}>
-              <input
-                id="materialesTextiles"
-                placeholder="Indica la cuenta de materiales y textiles"
-                value={form.materialesTextiles}
-                onChange={(event) =>
-                  updateField("materialesTextiles", event.target.value)
-                }
-              />
+              <fieldset className="nota-radio-group" aria-label="Cuenta de Materiales y Textiles">
+                {["Completo", "Incompleto"].map((opcion) => (
+                  <label className="nota-radio" key={opcion}>
+                    <input
+                      type="radio"
+                      name="materialesTextiles"
+                      value={opcion}
+                      checked={form.materialesTextiles === opcion}
+                      onChange={(event) => updateField("materialesTextiles", event.target.value)}
+                    />
+                    <span>{opcion}</span>
+                  </label>
+                ))}
+              </fieldset>
             </Campo>
 
             <Campo id="complicaciones" label="Complicaciones" error={errores.complicaciones}>
@@ -583,14 +552,20 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="tipoAnestesia" label="Tipo de Anestesia" error={errores.tipoAnestesia}>
-              <input
-                id="tipoAnestesia"
-                placeholder="Indica el tipo de anestesia"
-                value={form.tipoAnestesia}
-                onChange={(event) =>
-                  updateField("tipoAnestesia", event.target.value)
-                }
-              />
+              <fieldset className="nota-radio-group" aria-label="Tipo de Anestesia">
+                {["Local", "Local más sedación", "Regional", "General"].map((opcion) => (
+                  <label className="nota-radio" key={opcion}>
+                    <input
+                      type="radio"
+                      name="tipoAnestesia"
+                      value={opcion}
+                      checked={form.tipoAnestesia === opcion}
+                      onChange={(event) => updateField("tipoAnestesia", event.target.value)}
+                    />
+                    <span>{opcion}</span>
+                  </label>
+                ))}
+              </fieldset>
             </Campo>
 
             <Campo

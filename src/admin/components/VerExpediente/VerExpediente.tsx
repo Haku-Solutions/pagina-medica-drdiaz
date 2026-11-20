@@ -128,6 +128,15 @@ const formatearFechaNota = (valor?: string) => {
   });
 };
 
+const LIMITE_TEXTO_NOTA = 100;
+
+const recortarTexto = (valor: string, limite = LIMITE_TEXTO_NOTA) => {
+  const limpio = valor.trim();
+  if (limpio.length <= limite) return limpio;
+
+  return `${limpio.slice(0, limite).trimEnd()}...`;
+};
+
 const resumenNota = (nota: NotaOperatoria) =>
   nota.cirugiaRealizada?.trim() ||
   nota.cirugiaProgramada?.trim() ||
@@ -187,6 +196,8 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
   const [notas, setNotas] = useState<NotaOperatoria[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [mostrarNotaCreada, setMostrarNotaCreada] = useState(false);
+  const [notaResaltadaId, setNotaResaltadaId] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -231,6 +242,48 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
     return () => controller.abort();
   }, [id]);
+
+  useEffect(() => {
+    const guardado = sessionStorage.getItem("nota-creada-expediente");
+    if (!guardado) return;
+
+    let datos: { id?: string; notaId?: string } | null = null;
+    try {
+      datos = JSON.parse(guardado) as { id?: string; notaId?: string };
+    } catch {
+      datos = null;
+    }
+
+    if (datos?.id !== id && guardado !== id) return;
+
+    sessionStorage.removeItem("nota-creada-expediente");
+    setMostrarNotaCreada(true);
+    if (datos?.notaId) setNotaResaltadaId(datos.notaId);
+  }, [id]);
+
+  useEffect(() => {
+    if (!mostrarNotaCreada || cargando) return;
+
+    const temporizador = window.setTimeout(() => {
+      setMostrarNotaCreada(false);
+    }, 5000);
+
+    return () => window.clearTimeout(temporizador);
+  }, [mostrarNotaCreada, cargando]);
+
+  useEffect(() => {
+    if (!notaResaltadaId || cargando || notas.length === 0) return;
+
+    const nota = document.getElementById(`nota-${notaResaltadaId}`);
+    const seccion = document.getElementById("notas-operatorias");
+    (nota ?? seccion)?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const temporizador = window.setTimeout(() => {
+      setNotaResaltadaId("");
+    }, 3000);
+
+    return () => window.clearTimeout(temporizador);
+  }, [notaResaltadaId, cargando, notas]);
 
   if (cargando) {
     return (
@@ -278,6 +331,23 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
   return (
     <section className="crear-expediente ver-expediente">
+      {mostrarNotaCreada && (
+        <div className="ver-expediente-toast" role="status" aria-live="polite">
+          <span className="ver-expediente-toast-icono" aria-hidden="true">
+            ✓
+          </span>
+          <span>Nota creada</span>
+          <button
+            type="button"
+            className="ver-expediente-toast-cerrar"
+            aria-label="Cerrar aviso"
+            onClick={() => setMostrarNotaCreada(false)}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="crear-expediente-card">
         <header className="crear-expediente-header">
           <h1 className="crear-expediente-title">Ver Expediente</h1>
@@ -449,7 +519,10 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
           </button>
         </div>
 
-        <div className="ver-expediente-notas-operatorias">
+        <div
+          className="ver-expediente-notas-operatorias"
+          id="notas-operatorias"
+        >
           <h2 className="ver-expediente-notas-operatorias-titulo">
             Notas Operatorias Registradas
           </h2>
@@ -481,7 +554,12 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
 
                 return (
                   <li
-                    className="ver-expediente-nota"
+                    className={`ver-expediente-nota${
+                      notaResaltadaId === nota._id
+                        ? " ver-expediente-nota-resaltada"
+                        : ""
+                    }`}
+                    id={nota._id ? `nota-${nota._id}` : undefined}
                     key={nota._id ?? index}
                   >
                     <div className="ver-expediente-nota-principal">
@@ -505,8 +583,11 @@ export default function VerExpediente({ id }: VerExpedienteProps) {
                         </p>
 
                         {diagnostico && (
-                          <p className="ver-expediente-nota-diagnostico">
-                            {diagnostico}
+                          <p
+                            className="ver-expediente-nota-diagnostico"
+                            title={diagnostico}
+                          >
+                            {recortarTexto(diagnostico)}
                           </p>
                         )}
                       </div>

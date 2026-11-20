@@ -70,7 +70,15 @@ export const archivoSchema = new Schema(
   { timestamps: true, strict: "throw" }
 );
 
+export const CirugiasSchema = new Schema({
+  tipo: { type: String, required: true, enum: ["cirugia", "lugar"] },
+  valor: { type: String, required: true },
+  clave: { type: String, required: true },
+}, { timestamps: true, strict: "throw", collection: "cirugias" });
+CirugiasSchema.index({ tipo: 1, clave: 1 }, { unique: true });
+
 export const Cirujano = models.Cirujano || model("Cirujano", cirujanoSchema);
 export const ExpedienteMedico = models.ExpedienteMedico || model("ExpedienteMedico", expedienteSchema);
 export const NotaOperatoria = models.NotaOperatoria || model("NotaOperatoria", notaOperatoriaSchema);
 export const Archivo = models.Archivo || model("Archivo", archivoSchema);
+export const Cirugias = models.Cirugias || model("Cirugias", CirugiasSchema);

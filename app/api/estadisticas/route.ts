@@ -169,8 +169,8 @@ export async function GET() {
     expedientesEdad,
   ] = await Promise.all([
     NotaOperatoria.aggregate<ConteoAgrupado>([
-      { $match: { cirugiaProgramada: { $nin: [null, ""] } } },
-      { $group: { _id: "$cirugiaProgramada", total: { $sum: 1 } } },
+      { $match: { cirugiaRealizada: { $nin: [null, ""] } } },
+      { $group: { _id: "$cirugiaRealizada", total: { $sum: 1 } } },
       { $sort: { total: -1 } },
       { $limit: MAX_TIPOS_CIRUGIA },
     ]),
@@ -199,14 +199,14 @@ export async function GET() {
     NotaOperatoria.aggregate<DesglosePorTipo>([
       {
         $match: {
-          cirugiaProgramada: { $nin: [null, ""] },
+          cirugiaRealizada: { $nin: [null, ""] },
           fechaCirugia: { $gte: inicioDeVentana(MESES_EN_VENTANA) },
         },
       },
       {
         $group: {
           _id: {
-            tipo: "$cirugiaProgramada",
+            tipo: "$cirugiaRealizada",
             periodo: {
               $dateToString: { format: "%Y-%m", date: "$fechaCirugia" },
             },

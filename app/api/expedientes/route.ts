@@ -8,33 +8,6 @@ import { expedienteBodySchema } from "@/src/server/validation/requestSchemas";
 const escaparRegex = (texto: string) =>
   texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-function fechaValida(valor: string) {
-  const fecha = new Date(`${valor}T00:00:00Z`);
-
-  return (
-    /^\d{4}-\d{2}-\d{2}$/.test(valor) &&
-    !Number.isNaN(fecha.getTime()) &&
-    fecha.toISOString().startsWith(valor) &&
-    fecha.getTime() <= Date.now()
-  );
-}
-
-// La edad se calcula en el servidor; no se confía en la del navegador.
-function calcularEdad(fechaNacimiento: string): number | undefined {
-  if (!fechaNacimiento) return undefined;
-
-  const [anio, mes, dia] = fechaNacimiento.split("-").map(Number);
-  const hoy = new Date();
-  let edad = hoy.getFullYear() - anio;
-
-  const mesActual = hoy.getMonth() + 1;
-  if (mesActual < mes || (mesActual === mes && hoy.getDate() < dia)) {
-    edad -= 1;
-  }
-
-  return edad >= 0 ? edad : undefined;
-}
-
 export async function GET(request: NextRequest) {
   const session = await getSessionUser();
   if (!session) return fail("No autorizado", 401);
@@ -120,7 +93,7 @@ export async function POST(request: NextRequest) {
       fechaNacimiento: fechaNacimiento
         ? new Date(`${fechaNacimiento}T00:00:00Z`)
         : undefined,
-      edad: calcularEdad(fechaNacimiento),
+      edad: body.edad ? Number(body.edad) : undefined,
       sexo: sexo === "hombre" ? "M" : sexo === "mujer" ? "F" : undefined,
       antecedentes: body.antecedentes || undefined,
       estado: body.estadoNacimiento || undefined,
