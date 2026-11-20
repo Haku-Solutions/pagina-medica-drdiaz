@@ -7,22 +7,6 @@ import { isValidObjectId } from "mongoose";
 import { NextResponse } from "next/server";
 import { expedienteBodySchema } from "@/src/server/validation/requestSchemas";
 
-function calcularEdadPut(fechaNacimiento: string): number | undefined {
-  if (!fechaNacimiento) return undefined;
- 
-  const [anio, mes, dia] = fechaNacimiento.split("-").map(Number);
-  const hoy = new Date();
-  let edad = hoy.getFullYear() - anio;
- 
-  const mesActual = hoy.getMonth() + 1;
-  if (mesActual < mes || (mesActual === mes && hoy.getDate() < dia)) {
-    edad -= 1;
-  }
- 
-  return edad >= 0 ? edad : undefined;
-}
-
-
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -104,7 +88,7 @@ export async function PUT(
       fechaNacimiento: fechaNacimiento
         ? new Date(`${fechaNacimiento}T00:00:00Z`)
         : undefined,
-      edad: calcularEdadPut(fechaNacimiento),
+      edad: body.edad ? Number(body.edad) : undefined,
       sexo: sexo === "hombre" ? "M" : sexo === "mujer" ? "F" : undefined,
       antecedentes: body.antecedentes || undefined,
       estado: body.estadoNacimiento || undefined,

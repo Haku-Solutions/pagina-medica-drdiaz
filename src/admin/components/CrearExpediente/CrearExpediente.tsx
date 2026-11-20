@@ -10,6 +10,7 @@ type Sexo = "hombre" | "mujer" | "";
 const FORM_INICIAL = {
   nombre: "",
   fechaNacimiento: "",
+  edad: "",
   sexo: "" as Sexo,
   ciudadNacimiento: "",
   estadoNacimiento: "",
@@ -24,26 +25,8 @@ const FORM_INICIAL = {
 type Formulario = typeof FORM_INICIAL;
 type Errores = Partial<Record<keyof Formulario, string>>;
 
-const calcularEdad = (fecha: string) => {
-  if (!fecha) return "";
-
-  const nacimiento = new Date(`${fecha}T00:00:00`);
-  if (Number.isNaN(nacimiento.getTime())) return "";
-
-  const hoy = new Date();
-  let edad = hoy.getFullYear() - nacimiento.getFullYear();
-
-  const aunNoCumple =
-    hoy.getMonth() < nacimiento.getMonth() ||
-    (hoy.getMonth() === nacimiento.getMonth() &&
-      hoy.getDate() < nacimiento.getDate());
-
-  if (aunNoCumple) edad -= 1;
-
-  return edad >= 0 ? String(edad) : "";
-};
-
 const soloDigitos = (valor: string) => valor.replace(/\D/g, "").slice(0, 10);
+const soloEdad = (valor: string) => valor.replace(/\D/g, "").slice(0, 3);
 
 type CampoProps = {
   id: string;
@@ -82,8 +65,6 @@ export default function CrearExpediente() {
   // Se guarda una sola vez al abrir el formulario y no cambia con cada render.
   const [ingreso] = useState(() => new Date());
 
-  const edad = calcularEdad(form.fechaNacimiento);
-
   const actualizar = <K extends keyof Formulario>(
     campo: K,
     valor: Formulario[K],
@@ -97,6 +78,10 @@ export default function CrearExpediente() {
 
     if (!form.nombre.trim()) {
       nuevos.nombre = "Escribe el nombre completo del paciente.";
+    }
+
+    if (form.edad && Number(form.edad) > 120) {
+      nuevos.edad = "La edad debe estar entre 0 y 120 años.";
     }
 
     if (form.curp && form.curp.length !== 18) {
@@ -205,13 +190,15 @@ export default function CrearExpediente() {
           />
         </Campo>
 
-        <Campo id="edad" label="Edad">
+        <Campo id="edad" label="Edad" error={errores.edad}>
           <input
             id="edad"
             type="text"
-            value={edad}
-            readOnly
-            tabIndex={-1}
+            inputMode="numeric"
+            maxLength={3}
+            value={form.edad}
+            onChange={(e) => actualizar("edad", soloEdad(e.target.value))}
+            placeholder="Edad"
             className="crear-expediente-input crear-expediente-input-tiny"
           />
         </Campo>

@@ -341,6 +341,10 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
       }
 
       sessionStorage.removeItem("nota-expediente-activo");
+      sessionStorage.setItem(
+        "nota-creada-expediente",
+        JSON.stringify({ id: expedienteId, notaId: noteId }),
+      );
       router.push(`/admin/ver-expediente/${encodeURIComponent(expedienteId)}`);
     } catch (error) {
       setSubmitError(
