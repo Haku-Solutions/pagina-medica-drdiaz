@@ -20,6 +20,13 @@ const textoNombreConNumeros = (max: number) =>
   textoLibre(max).regex(/^[\p{L}\p{M}\p{N}\s.'-]*$/u, "Usa letras y puntuación básica");
 
 const telefono = z.string().regex(/^\d{10}$/).or(z.literal(""));
+const edad = z
+  .string()
+  .refine(
+    (value) => value === "" || (/^\d{1,3}$/.test(value) && Number(value) <= 120),
+    "La edad debe estar entre 0 y 120 años",
+  )
+  .optional();
 const fechaNacimiento = z.string().refine((value) => {
   if (!value) return true;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -35,6 +42,7 @@ export const loginBodySchema = strictObject({
 export const expedienteBodySchema = strictObject({
   nombre: textoNombreConNumeros(200).min(1),
   fechaNacimiento,
+  edad,
   sexo: z.enum(["", "hombre", "mujer"]),
   ciudadNacimiento: textoNombre(120),
   estadoNacimiento: textoNombre(120),

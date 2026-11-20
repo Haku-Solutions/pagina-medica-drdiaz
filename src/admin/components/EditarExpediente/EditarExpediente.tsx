@@ -10,6 +10,7 @@ type Sexo = "hombre" | "mujer" | "";
 const FORM_INICIAL = {
   nombre: "",
   fechaNacimiento: "",
+  edad: "",
   sexo: "" as Sexo,
   ciudadNacimiento: "",
   estadoNacimiento: "",
@@ -24,26 +25,8 @@ const FORM_INICIAL = {
 type Formulario = typeof FORM_INICIAL;
 type Errores = Partial<Record<keyof Formulario, string>>;
 
-const calcularEdad = (fecha: string) => {
-  if (!fecha) return "";
-
-  const nacimiento = new Date(`${fecha}T00:00:00`);
-  if (Number.isNaN(nacimiento.getTime())) return "";
-
-  const hoy = new Date();
-  let edad = hoy.getFullYear() - nacimiento.getFullYear();
-
-  const aunNoCumple =
-    hoy.getMonth() < nacimiento.getMonth() ||
-    (hoy.getMonth() === nacimiento.getMonth() &&
-      hoy.getDate() < nacimiento.getDate());
-
-  if (aunNoCumple) edad -= 1;
-
-  return edad >= 0 ? String(edad) : "";
-};
-
 const soloDigitos = (valor: string) => valor.replace(/\D/g, "").slice(0, 10);
+const soloEdad = (valor: string) => valor.replace(/\D/g, "").slice(0, 3);
 
 // Convierte el documento de MongoDB (modelo ExpedienteMedico) al formato del formulario.
 function aFormulario(doc: Record<string, unknown>): Formulario {
@@ -52,6 +35,7 @@ function aFormulario(doc: Record<string, unknown>): Formulario {
   return {
     nombre: str(doc.nombreCompleto),
     fechaNacimiento: str(doc.fechaNacimiento).slice(0, 10),
+    edad: str(doc.edad),
     sexo: doc.sexo === "M" ? "hombre" : doc.sexo === "F" ? "mujer" : "",
     ciudadNacimiento: str(doc.municipio),
     estadoNacimiento: str(doc.estado),
@@ -155,8 +139,6 @@ export default function EditarExpediente({ id }: { id: string }) {
     };
   }, [id]);
 
-  const edad = calcularEdad(form.fechaNacimiento);
-
   // Devuelve el valor guardado solo cuando el campo ya fue modificado.
   const guardado = (campo: keyof Formulario): string | undefined => {
     if (!original || form[campo] === original[campo]) return undefined;
@@ -187,6 +169,10 @@ export default function EditarExpediente({ id }: { id: string }) {
 
     if (!form.nombre.trim()) {
       nuevos.nombre = "Escribe el nombre completo del paciente.";
+    }
+
+    if (form.edad && Number(form.edad) > 120) {
+      nuevos.edad = "La edad debe estar entre 0 y 120 años.";
     }
 
     if (form.curp && form.curp.length !== 18) {
@@ -338,13 +324,20 @@ export default function EditarExpediente({ id }: { id: string }) {
           />
         </Campo>
 
-        <Campo id="edad" label="Edad">
+        <Campo
+          id="edad"
+          label="Edad"
+          error={errores.edad}
+          guardado={guardado("edad")}
+        >
           <input
             id="edad"
             type="text"
-            value={edad}
-            readOnly
-            tabIndex={-1}
+            inputMode="numeric"
+            maxLength={3}
+            value={form.edad}
+            onChange={(e) => actualizar("edad", soloEdad(e.target.value))}
+            placeholder="Edad"
             className="crear-expediente-input crear-expediente-input-tiny"
           />
         </Campo>
