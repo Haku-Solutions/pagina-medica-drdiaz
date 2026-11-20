@@ -26,8 +26,16 @@ export default function CatalogoNotaInput({ id, tipo, value, onChange }: {
       const item = (event as CustomEvent<Item>).detail;
       if (item?.tipo) setItems((actuales) => actuales.some((actual) => actual._id === item._id) ? actuales : [...actuales, item]);
     };
+    const sincronizarEliminacion = (event: Event) => {
+      const id = (event as CustomEvent<string>).detail;
+      if (id) setItems((actuales) => actuales.filter((item) => item._id !== id));
+    };
     window.addEventListener("catalogo-nota:creado", sincronizar);
-    return () => window.removeEventListener("catalogo-nota:creado", sincronizar);
+    window.addEventListener("catalogo-nota:eliminado", sincronizarEliminacion);
+    return () => {
+      window.removeEventListener("catalogo-nota:creado", sincronizar);
+      window.removeEventListener("catalogo-nota:eliminado", sincronizarEliminacion);
+    };
   }, []);
   useEffect(() => {
     const cerrar = (event: MouseEvent) => {
@@ -64,6 +72,7 @@ export default function CatalogoNotaInput({ id, tipo, value, onChange }: {
       const result = await response.json();
       if (!response.ok || !result?.ok) throw new Error(result?.error || "No se pudo eliminar la opción.");
       setItems((actuales) => actuales.filter((opcion) => opcion._id !== item._id));
+      window.dispatchEvent(new CustomEvent<string>("catalogo-nota:eliminado", { detail: item._id }));
       if (normalizar(value) === normalizar(item.valor)) onChange("");
     } catch (error) { setMensaje(error instanceof Error ? error.message : "No se pudo eliminar la opción."); }
   };
