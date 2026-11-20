@@ -353,6 +353,24 @@ export default function EditarNota({ id }: EditarNotaProps) {
                     <textarea id={field.name} rows={4} value={form[field.name]} onChange={(event) => update(field.name, event.target.value)} />
                   ) : field.kind === "place" || field.kind === "surgery" ? (
                     <CatalogoNotaInput id={field.name} tipo={field.kind === "place" ? "lugar" : "cirugia"} value={form[field.name]} onChange={(value) => update(field.name, value)} />
+                  ) : field.name === "materialesTextiles" || field.name === "tipoAnestesia" ? (
+                    <fieldset className="nota-radio-group" aria-label={field.label}>
+                      {(field.name === "materialesTextiles"
+                        ? ["Completo", "Incompleto"]
+                        : ["Local", "Local más sedación", "Regional", "General"]
+                      ).map((option) => (
+                        <label className="nota-radio" key={option}>
+                          <input
+                            type="radio"
+                            name={field.name}
+                            value={option}
+                            checked={form[field.name] === option}
+                            onChange={(event) => update(field.name, event.target.value)}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))}
+                    </fieldset>
                   ) : (
                     <input id={field.name} type={field.kind === "date" ? "date" : "text"} value={form[field.name]} required={field.name === "fechaCirugia" || field.name === "lugarCirugia"} onChange={(event) => update(field.name, event.target.value)} />
                   )}

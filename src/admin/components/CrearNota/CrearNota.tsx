@@ -504,14 +504,20 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
               id="materialesTextiles"
               label="Cuenta de Materiales y Textiles"
              error={errores.materialesTextiles}>
-              <input
-                id="materialesTextiles"
-                placeholder="Indica la cuenta de materiales y textiles"
-                value={form.materialesTextiles}
-                onChange={(event) =>
-                  updateField("materialesTextiles", event.target.value)
-                }
-              />
+              <fieldset className="nota-radio-group" aria-label="Cuenta de Materiales y Textiles">
+                {["Completo", "Incompleto"].map((opcion) => (
+                  <label className="nota-radio" key={opcion}>
+                    <input
+                      type="radio"
+                      name="materialesTextiles"
+                      value={opcion}
+                      checked={form.materialesTextiles === opcion}
+                      onChange={(event) => updateField("materialesTextiles", event.target.value)}
+                    />
+                    <span>{opcion}</span>
+                  </label>
+                ))}
+              </fieldset>
             </Campo>
 
             <Campo id="complicaciones" label="Complicaciones" error={errores.complicaciones}>
@@ -546,14 +552,20 @@ export default function CrearNota({ expedienteId }: CrearNotaProps) {
             </Campo>
 
             <Campo id="tipoAnestesia" label="Tipo de Anestesia" error={errores.tipoAnestesia}>
-              <input
-                id="tipoAnestesia"
-                placeholder="Indica el tipo de anestesia"
-                value={form.tipoAnestesia}
-                onChange={(event) =>
-                  updateField("tipoAnestesia", event.target.value)
-                }
-              />
+              <fieldset className="nota-radio-group" aria-label="Tipo de Anestesia">
+                {["Local", "Local más sedación", "Regional", "General"].map((opcion) => (
+                  <label className="nota-radio" key={opcion}>
+                    <input
+                      type="radio"
+                      name="tipoAnestesia"
+                      value={opcion}
+                      checked={form.tipoAnestesia === opcion}
+                      onChange={(event) => updateField("tipoAnestesia", event.target.value)}
+                    />
+                    <span>{opcion}</span>
+                  </label>
+                ))}
+              </fieldset>
             </Campo>
 
             <Campo
