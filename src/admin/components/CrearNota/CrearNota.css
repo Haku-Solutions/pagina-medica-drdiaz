@@ -181,6 +181,27 @@
   background: #00d26a;
 }
 
+.catalogo-nota { position: relative; }
+.catalogo-nota-lista {
+  position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
+  max-height: 260px; overflow-y: auto; padding: 5px; border: 1px solid #cbd5e1;
+  border-radius: 8px; background: #fff; box-shadow: 0 8px 24px #0f172a26;
+}
+.catalogo-nota-opcion { display: flex; align-items: center; gap: 6px; border-radius: 5px; }
+.catalogo-nota-opcion:hover, .catalogo-nota-crear:hover { background: #f1f5f9; }
+.catalogo-nota-seleccionar, .catalogo-nota-crear {
+  flex: 1; min-width: 0; padding: 9px 10px; border: 0; background: transparent;
+  color: #1e293b; text-align: left; cursor: pointer; font: inherit;
+}
+.catalogo-nota-borrar {
+  width: 30px; height: 30px; flex: 0 0 30px; border: 0; border-radius: 50%;
+  background: transparent; color: #64748b; font-size: 22px; line-height: 1; cursor: pointer;
+}
+.catalogo-nota-borrar:hover { background: #fee2e2; color: #b91c1c; }
+.catalogo-nota-crear { width: 100%; color: #0f766e; font-weight: 600; }
+.catalogo-nota-vacio { display: block; padding: 10px; color: #64748b; font-size: .9rem; }
+.catalogo-nota-message { display: block; margin-top: 5px; color: #b91c1c; font-size: .85rem; }
+
 .nota-form-actions button:hover {
   filter: brightness(0.92);
 }
